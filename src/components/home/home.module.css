@@ -1,0 +1,27 @@
+
+
+.gridContainer {
+  height: 50%;
+}
+
+.listContainer {
+  border-radius: 5px;
+  background-color: var(--mui-palette-background-800);
+  overflow: auto;
+  max-height: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: .5rem;
+}
+
+.listItem {
+  border-radius: 5px;
+  padding: 1.5rem 1rem;
+  transition: background-color .2s ease-in-out;
+  background-color: var(--mui-palette-background-850);
+}
+
+.listItem:hover {
+  background-color: var(--mui-palette-background-900);
+  cursor: pointer;
+}

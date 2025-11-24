@@ -38,6 +38,8 @@ async function createWindow() {
     icon: path.join(process.env.VITE_PUBLIC, 'logo.png'),
     width: 1600,
     height: 900,
+    minWidth: 900,
+    minHeight: 550,
     // hide titlebar
     frame: false,
     webPreferences: {

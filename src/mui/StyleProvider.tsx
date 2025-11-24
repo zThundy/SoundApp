@@ -4,19 +4,23 @@ import {
   responsiveFontSizes
 } from '@mui/material'
 
-let primaryColors: Record<number|string, string> = {};
+let primaryColors: Record<number | string, string> = {};
 primaryColors["main"] = 'hsl(298, 80%, 50%)';
 for (let i = 0; i <= 100; i++) {
   primaryColors[i * 10] = `hsl(298, 80%, ${100 - i}%)`;
 }
 
-let secondaryColors: Record<number|string, string> = {};
+let secondaryColors: Record<number | string, string> = {};
 secondaryColors["main"] = 'hsl(248, 80%, 30%)';
 for (let i = 0; i <= 100; i++) {
   secondaryColors[i * 10] = `hsl(248, 80%, ${100 - i}%)`;
 }
 
-// Theme derived from previously defined CSS template variables
+let backgroundColors: Record<number | string, string> = {};
+backgroundColors["main"] = "hsl(225, 40%, 5%)";
+for (let i = 0; i <= 100; i++) {
+  backgroundColors[i * 10] = `hsl(225, 40%, ${100 - i}%)`;
+}
 
 const theme = createTheme({
   cssVariables: {
@@ -39,18 +43,18 @@ const theme = createTheme({
     error: { main: '#ef4444' },
     success: { main: '#10b981' },
     warning: { main: '#f59e0b' },
-    info: { main: '#3b82f6' }, 
-    background: {
-      default: '#0b1020',
-      paper: '#0f1724',
-    },
+    info: { main: '#3b82f6' },
+    background: backgroundColors,
+    //   default: '#0b1020',
+    //   paper: '#0f1724',
+    // },
     text: {
       primary: '#e6eef8',
       secondary: '#6C6F72',
     },
   },
   shape: { borderRadius: 8 },
-  spacing: 8, 
+  spacing: 8,
   typography: {
     fontFamily: "'Poppins', sans-serif",
     fontSize: 14,

@@ -1,9 +1,36 @@
 import React, { useEffect, useMemo, useState } from "react"
 
-import { Grid } from "@mui/material"
+import style from "./home.module.css"
+
+import { Grid, Paper, styled } from "@mui/material"
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: "rgba(0,0,0,0)",
+  boxShadow: "0 0 0 0 rgba(0,0,0,0)",
+  textAlign: "left",
+  backgroundImage: "none",
+  padding: theme.spacing(1),
+}));
+
+const calculateImage = (reward: any) => {
+  if (reward.image && reward.image.url_4x) {
+    return reward.image.url_4x
+  } else if (reward.image && reward.image.url_2x) {
+    return reward.image.url_2x
+  } else if (reward.image && reward.image.url_1x) {
+    return reward.image.url_1x
+  } else if (reward.default_image && reward.default_image.url_4x) {
+    return reward.default_image.url_4x
+  } else if (reward.default_image && reward.default_image.url_2x) {
+    return reward.default_image.url_2x
+  } else if (reward.default_image && reward.default_image.url_1x) {
+    return reward.default_image.url_1x
+  }
+  return ""
+}
 
 // Memoized component to avoid rerenders when parent updates
-const CustomRewardsList = React.memo(function CustomRewardsList() {
+const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }: { selectReward: (reward: any) => void }) {
   const [customRewards, setCustomRewards] = useState<Array<any>>([])
 
   useEffect(() => {
@@ -11,6 +38,7 @@ const CustomRewardsList = React.memo(function CustomRewardsList() {
       ?.invoke("twitch:get-all-rewards")
       .then((result) => {
         // store raw data; sorting/memoization handled by useMemo below
+        console.log(result.data);
         setCustomRewards(() => result?.data || [])
       })
       .catch((error) => {
@@ -30,30 +58,65 @@ const CustomRewardsList = React.memo(function CustomRewardsList() {
   }
 
   return (
+    <Grid container spacing={1} justifyContent={"flex-start"}>
+      {sortedRewards.map((reward) => (
+        <Grid size={{ xs: 12 }} key={reward.id} className={style.listItem} onClick={() => selectReward(reward)}>
+          <Grid container>
+            <Grid size={{ xs: 9 }}>
+              <Item>{reward.title}</Item>
+            </Grid>
+
+            <Grid size={{ xs: 3 }}>
+              <Grid container spacing={1}>
+                <Grid size={{ xs: 6 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Item>{reward.cost}</Item>
+                </Grid>
+                <Grid size={{ xs: 6 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img src={calculateImage(reward)} alt="Reward" style={{ width: '32px', height: '32px' }} />
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      ))}
+    </Grid>
+  )
+});
+
+const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward }: { reward: any }) {
+  if (!reward) {
+    return <div>Select a reward to see details.</div>
+  }
+
+  return (
     <div>
-      <h1>Twitch Custom Rewards</h1>
-      <ul>
-        {sortedRewards.map((reward) => (
-          <li key={reward.id}>
-            {reward.title} - Cost: {reward.cost}
-          </li>
-        ))}
-      </ul>
+      <h3>{reward.title}</h3>
+      <p>Cost: {reward.cost}</p>
+      <img src={calculateImage(reward)} alt="Reward" />
     </div>
   )
-})
+});
 
 export default function Home() {
-  const [redemptions, setRedemptions] = useState<any[]>([])
+  const [selectedReward, setSelectedReward] = useState<any>(null)
+
+  const _selectReward = (reward: any) => {
+    console.log('Selected reward:', reward)
+    setSelectedReward(reward)
+  }
 
   useEffect(() => {
     // placeholder for future fetches
   }, [])
 
   return (
-    <Grid container spacing={2} padding={2}>
-      <Grid size={{ xs: 12 }}>
-        <CustomRewardsList />
+    <Grid container spacing={2} padding={2} className={style.gridContainer}>
+      <Grid size={{ xs: 6 }} className={style.listContainer}>
+        <CustomRewardsList selectReward={_selectReward} />
+      </Grid>
+
+      <Grid size={{ xs: 6 }} className={style.listContainer}>
+        <CustomRewardDetails reward={selectedReward} />
       </Grid>
     </Grid>
   )
