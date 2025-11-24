@@ -1,5 +1,4 @@
 :root {
-	--titlebar-height: 36px;
 	--titlebar-bg: linear-gradient(180deg, #1f2937, #11182700);
 	--titlebar-color: #e5e7eb;
 	--control-hover: rgba(255,255,255,0.08);
@@ -32,7 +31,7 @@
 .logo {
 	width: 18px;
 	height: 18px;
-	background: url('/src/assets/logo-electron.svg') center/contain no-repeat;
+	background: url('/src/assets/logo.png') center/contain no-repeat;
 }
 
 .title {
@@ -69,9 +68,4 @@
 .close:hover {
 	background: var(--close-hover);
 	color: #fff;
-}
-
-/* ensure application content isn't hidden under the title bar */
-:global(body) {
-	padding-top: var(--titlebar-height);
 }
