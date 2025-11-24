@@ -23,6 +23,25 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // ...
 })
 
+// Expose a small safeStore API that calls the main-process SafeStorageService
+contextBridge.exposeInMainWorld('safeStore', {
+  setItem(key: string, value: string) {
+    return ipcRenderer.invoke('safe-store:set', key, value)
+  },
+  getItem(key: string) {
+    return ipcRenderer.invoke('safe-store:get', key)
+  },
+  removeItem(key: string) {
+    return ipcRenderer.invoke('safe-store:remove', key)
+  },
+  hasItem(key: string) {
+    return ipcRenderer.invoke('safe-store:has', key)
+  },
+  clear() {
+    return ipcRenderer.invoke('safe-store:clear')
+  },
+})
+
 // --------- Preload scripts loading ---------
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise(resolve => {

@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
 import { update } from './update'
+import SafeStorageWrapper from './safeStorageWrapper'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 process.env.APP_ROOT = path.join(__dirname, '../..')
@@ -26,6 +27,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 let win: BrowserWindow | null = null
+let safeStore: SafeStorageWrapper | null = null
 const preload = path.join(__dirname, '../preload/index.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
@@ -71,7 +73,17 @@ async function createWindow() {
   update(win)
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  // instantiate the safe storage helper after app ready (uses app.getPath)
+  try {
+    safeStore = new SafeStorageWrapper()
+  } catch (err) {
+    console.error('Failed to initialize SafeStorageWrapper', err)
+    safeStore = null
+  }
+
+  createWindow()
+})
 
 app.on('window-all-closed', () => {
   win = null
@@ -135,3 +147,88 @@ ipcMain.handle('window:toggle-maximize', () => {
     return true
   }
 })
+
+ipcMain.handle('safe-store:set', async (_evt, key: string, value: string) => {
+  if (!safeStore) return false
+  return safeStore.set(key, value)
+})
+
+ipcMain.handle('safe-store:get', async (_evt, key: string) => {
+  console.log('IPC safe-store:get for key:', key);
+  if (!safeStore) return null
+  const value = safeStore.get(key);
+  console.log('Retrieved value:', value);
+  return value;
+})
+
+ipcMain.handle('safe-store:remove', (_evt, key: string) => {
+  if (!safeStore) return false
+  return safeStore.remove(key)
+})
+
+ipcMain.handle('safe-store:has', (_evt, key: string) => {
+  if (!safeStore) return false
+  return safeStore.has(key)
+})
+
+ipcMain.handle('safe-store:clear', (_evt) => {
+  if (!safeStore) return false
+  return safeStore.clear()
+})
+
+ipcMain.handle('oauth:start-twitch', (_evt) => {
+  const authWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    frame: true,
+    // hide file, edit, view menu
+    autoHideMenuBar: true,
+    webPreferences: {
+      contextIsolation: true,
+    },
+  });
+
+  const stateString = Math.random().toString(36).substring(2, 15);
+  const scopes = [
+    "channel:read:redemptions",
+    "channel:manage:redemptions",
+    "user:read:chat",
+    "chat:read",
+    "chat:edit"
+  ].join(' ');
+
+  // implicit grant flow
+  const clientId = '64aeehn5qo2902i5c4gvz41yjqd9h2';
+  const forceVerify = false;
+  const redirectUri = 'http://localhost/';
+  const responseType = 'token';
+
+  const authUrl = new URL('https://id.twitch.tv/oauth2/authorize');
+  if (forceVerify) {
+    authUrl.searchParams.set('force_verify', 'true');
+  }
+  authUrl.searchParams.set('client_id', clientId);
+  authUrl.searchParams.set('redirect_uri', redirectUri);
+  authUrl.searchParams.set('response_type', responseType);
+  authUrl.searchParams.set('scope', scopes);
+  authUrl.searchParams.set('state', stateString);
+
+  authWindow.loadURL(authUrl.toString());
+
+  const { session: { webRequest } } = authWindow.webContents;
+  const filter = { urls: ['http://localhost/*'] };
+
+  webRequest.onBeforeRequest(filter, async ({ url }) => {
+    console.log('Redirect URL:', url);
+    const urlObj = new URL(url);
+    const hashParams = new URLSearchParams(urlObj.hash.substring(1)); // Remove the '#' character
+    const accessToken = hashParams.get('access_token');
+    const returnedState = hashParams.get('state');
+    if (accessToken && returnedState === stateString) {
+      console.log('Twitch Access Token:', accessToken);
+      safeStore?.set('twitchAccessToken', accessToken);
+      // You can now use the access token as needed
+      authWindow.close();
+    }
+  });
+});
