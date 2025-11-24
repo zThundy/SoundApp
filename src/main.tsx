@@ -11,8 +11,8 @@ import './demos/ipc'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <TitleBar />
-    <App />
+      <TitleBar />
+      <App />
   </React.StrictMode>,
 )
 
