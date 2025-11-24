@@ -49,7 +49,7 @@ class SafeStorageWrapper {
         return true;
     }
 
-    get(key: string): string | null {
+    get(key: string): string | null | undefined {
         if (!this.isEncryptionAvailable()) return null;
         // Retrieve the encrypted buffer from a file or database
         const encryptedBuffer = this.storage.get(key);

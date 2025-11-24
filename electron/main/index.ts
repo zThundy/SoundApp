@@ -4,6 +4,7 @@ import path from 'node:path'
 import os from 'node:os'
 import { update } from './update'
 import SafeStorageWrapper from './safeStorageWrapper'
+import { getBroadcasterId, getTwitchRedemptions, getCustomRewards } from './twitchWorker'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 process.env.APP_ROOT = path.join(__dirname, '../..')
@@ -231,4 +232,20 @@ ipcMain.handle('oauth:start-twitch', (_evt) => {
       authWindow.close();
     }
   });
+});
+
+ipcMain.handle("twitch:get-all-redemptions", async () => {
+  const accessToken = await safeStore?.get('twitchAccessToken');
+  const broadcasterId = await getBroadcasterId(accessToken as string);
+  const customRewards = await getCustomRewards(accessToken as string, broadcasterId);
+  const redemptions = await getTwitchRedemptions(accessToken as string, broadcasterId);
+  
+  return redemptions;
+});
+
+ipcMain.handle("twitch:get-all-rewards", async () => {
+  const accessToken = await safeStore?.get('twitchAccessToken');
+  const broadcasterId = await getBroadcasterId(accessToken as string);
+  const customRewards = await getCustomRewards(accessToken as string, broadcasterId);
+  return customRewards;
 });
