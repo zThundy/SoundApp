@@ -1,0 +1,25 @@
+.App {
+    /* Keep existing horizontal padding, and add top spacing equal to the titlebar height
+       so the scrollable content does not overlap with the fixed titlebar. */
+    padding: var(--space-md);
+    padding-top: calc(var(--space-md) + var(--titlebar-height));
+    position: relative;
+}
+
+.btnContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: var(--space-md);
+}
+
+.lorem {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    text-align: center;
+    height: fit-content;
+}
