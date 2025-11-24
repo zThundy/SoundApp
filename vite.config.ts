@@ -7,7 +7,7 @@ import pkg from './package.json'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
-  rmSync('dist-electron', { recursive: true, force: true })
+  rmSync('dist', { recursive: true, force: true })
 
   const isServe = command === 'serve'
   const isBuild = command === 'build'
@@ -36,7 +36,7 @@ export default defineConfig(({ command }) => {
             build: {
               sourcemap,
               minify: isBuild,
-              outDir: 'dist-electron/main',
+              outDir: 'dist/main',
               rollupOptions: {
                 external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
@@ -51,7 +51,7 @@ export default defineConfig(({ command }) => {
             build: {
               sourcemap: sourcemap ? 'inline' : undefined, // #332
               minify: isBuild,
-              outDir: 'dist-electron/preload',
+              outDir: 'dist/preload',
               rollupOptions: {
                 external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },

@@ -1,10 +1,9 @@
 {
-  "name": "electron-vite-react",
-  "version": "2.2.0",
-  "main": "dist-electron/main/index.js",
-  "description": "Electron Vite React boilerplate.",
-  "author": "草鞋没号 <308487730@qq.com>",
-  "license": "MIT",
+  "name": "sound-app",
+  "version": "0.0.0",
+  "main": "dist/main/index.js",
+  "description": "An electron-based app for managing twitch stream sound alerts",
+  "author": "zThundy__",
   "private": true,
   "debug": {
     "env": {
