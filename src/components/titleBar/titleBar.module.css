@@ -1,0 +1,77 @@
+:root {
+	--titlebar-height: 36px;
+	--titlebar-bg: linear-gradient(180deg, #1f2937, #11182700);
+	--titlebar-color: #e5e7eb;
+	--control-hover: rgba(255,255,255,0.08);
+	--close-hover: #e11d48;
+}
+
+.titleBar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: var(--titlebar-height);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 8px;
+	background: var(--titlebar-bg);
+	color: var(--titlebar-color);
+	z-index: 9999;
+	-webkit-user-select: none;
+	-webkit-app-region: drag; /* make the bar draggable */
+}
+
+.titleLeft {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.logo {
+	width: 18px;
+	height: 18px;
+	background: url('/src/assets/logo-electron.svg') center/contain no-repeat;
+}
+
+.title {
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.windowControls {
+	display: flex;
+	gap: 6px;
+	align-items: center;
+	-webkit-app-region: no-drag; /* buttons must be clickable */
+}
+
+.btn {
+	width: 36px;
+	height: 28px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: none;
+	color: var(--titlebar-color);
+	font-size: 12px;
+	cursor: pointer;
+	padding: 0 6px;
+	border-radius: 4px;
+}
+
+.btn:hover {
+	background: var(--control-hover);
+}
+
+.close:hover {
+	background: var(--close-hover);
+	color: #fff;
+}
+
+/* ensure application content isn't hidden under the title bar */
+:global(body) {
+	padding-top: var(--titlebar-height);
+}
