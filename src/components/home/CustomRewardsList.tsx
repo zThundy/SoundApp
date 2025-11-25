@@ -3,10 +3,8 @@ import React, { useEffect, useState, useMemo } from "react"
 
 import style from "./home.module.css"
 
-import { styled, Paper } from "@mui/material"
+import { styled, Paper, Grid } from "@mui/material"
 
-import { Grid, Box } from "@mui/material"
-import { QuestionMark } from "@mui/icons-material";
 import EmptyList from "./EmptyList";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -34,16 +32,12 @@ const calculateImage = (reward: any) => {
   return ""
 }
 
-// Memoized component to avoid rerenders when parent updates
 const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }: { selectReward: (reward: any) => void }) {
   const [customRewards, setCustomRewards] = useState<Array<any>>([])
 
   useEffect(() => {
-    window.ipcRenderer
-      ?.invoke("twitch:get-all-rewards")
+    window.ipcRenderer?.invoke("twitch:get-all-rewards")
       .then((result) => {
-        // store raw data; sorting/memoization handled by useMemo below
-        console.log(result.data);
         setCustomRewards(() => result?.data || [])
       })
       .catch((error) => {
@@ -51,8 +45,6 @@ const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }
       })
   }, [])
 
-  // Memoize the sorted rewards so the list rendering only updates when
-  // the rewards array actually changes.
   const sortedRewards = useMemo(() => {
     if (!customRewards || customRewards.length === 0) return []
     return [...customRewards].sort((a: any, b: any) => a.cost - b.cost)
