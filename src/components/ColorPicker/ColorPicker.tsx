@@ -4,8 +4,6 @@ import { styled } from '@mui/material/styles';
 
 import { Button, Menu, Typography, Box } from '@mui/material';
 
-// import List from '@mui/material/List';
-// import MenuItem from '@mui/material/MenuItem';
 import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 
 import { ColorOption } from './ColorOption';

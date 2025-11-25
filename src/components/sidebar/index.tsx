@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 import style from './sidebar.module.css'
 
-import { Home, Settings, LogoutOutlined, Tv, VideoLibrary } from '@mui/icons-material'
+import { Settings, LogoutOutlined, Tv, VideoLibrary } from '@mui/icons-material'
 import { useNavigate } from 'react-router'
 
 export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: string) => void }) {
