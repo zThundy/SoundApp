@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 import style from './sidebar.module.css'
 
-import { Home, Settings, LogoutOutlined } from '@mui/icons-material'
+import { Home, Settings, LogoutOutlined, Tv } from '@mui/icons-material'
 import { useNavigate } from 'react-router'
 
 export default function Sidebar() {
@@ -44,6 +44,17 @@ export default function Sidebar() {
 
           <Tooltip title="Settings" placement="right">
             <Settings />
+          </Tooltip>
+
+        </Grid>
+        <Grid
+          size={{ xs: 12 }}
+          className={style.iconContainer + ' ' + (currentView === "alert" ? style.current : "")}
+          onClick={() => setCurrentView("alert")}
+        >
+
+          <Tooltip title="Alert" placement="right">
+            <Tv />
           </Tooltip>
 
         </Grid>
