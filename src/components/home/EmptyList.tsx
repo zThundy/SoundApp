@@ -9,7 +9,7 @@ const StyledStack = styled(Stack)(({ theme }) => ({
   justifyContent: 'center',
   flexDirection: 'column',
   fontSize: 24,
-  color: (theme.palette as any).text.secondary,
+  color: (theme as any).palette.text.secondary,
 }));
 
 export default function EmptyList({ text }: { text?: string }) {

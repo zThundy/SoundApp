@@ -44,7 +44,7 @@ class SafeStorageWrapper {
         const encrypted = this.safeStorage.encryptString(value);
         console.log('Storing encrypted value for key:', key, encrypted);
         const base64Encoded = encrypted.toString('base64');
-        this.storage.set(key, base64Encoded);
+        (this.storage as any).set(key, base64Encoded);
         console.log('Value stored successfully.', base64Encoded);
         return true;
     }
@@ -52,7 +52,7 @@ class SafeStorageWrapper {
     get(key: string): string | null | undefined {
         if (!this.isEncryptionAvailable()) return null;
         // Retrieve the encrypted buffer from a file or database
-        const encryptedBuffer = this.storage.get(key);
+        const encryptedBuffer = (this.storage as any).get(key);
         if (!encryptedBuffer) return null;
         const buffer = encryptedBuffer ? Buffer.from(encryptedBuffer as string, 'base64') : null;
         if (!buffer) return null;
@@ -61,19 +61,19 @@ class SafeStorageWrapper {
     }
 
     remove(key: string): boolean {
-        this.storage.delete(key);
+        (this.storage as any).delete(key);
         return true;
     }
 
     has(key: string): boolean {
-        const value = this.storage.get(key);
+        const value = (this.storage as any).get(key);
         if (value === undefined || value === null) return false;
-        if (!this.storage.has(key)) return false;
+        if (!(this.storage as any).has(key)) return false;
         return true;
     }
 
     clear(): boolean {
-        this.storage.clear();
+        (this.storage as any).clear();
         return true;
     }
 }

@@ -350,5 +350,6 @@ buck-out/
 
 ### Custom Stack ###
 dist-*/
+release/
 
 # End of https://www.toptal.com/developers/gitignore/api/node,react,reactnative
