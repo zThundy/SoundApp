@@ -20,7 +20,7 @@ export default function Reedems() {
 
         <Grid container spacing={1} flexDirection={"column"}>
           <Grid size={{ xs: 12 }} className={style.listTitle}>
-            <h2>Custom Rewards</h2>
+            <h2>Redeems List</h2>
           </Grid>
           <Grid size={{ xs: 12 }} className={style.listContainer}>
             <CustomRewardsList selectReward={_selectReward} />
@@ -33,7 +33,7 @@ export default function Reedems() {
 
         <Grid container spacing={1} flexDirection={"column"}>
           <Grid size={{ xs: 12 }} className={style.listTitle}>
-            <h2>Custom Rewards</h2>
+            <h2>Selected Reedem</h2>
           </Grid>
           <Grid size={{ xs: 12 }} className={style.listContainer}>
             <CustomRewardDetails reward={selectedReward} />
