@@ -5,7 +5,9 @@ import style from "./home.module.css"
 
 import { styled, Paper } from "@mui/material"
 
-import { Grid } from "@mui/material"
+import { Grid, Box } from "@mui/material"
+import { QuestionMark } from "@mui/icons-material";
+import EmptyList from "./EmptyList";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "rgba(0,0,0,0)",
@@ -57,7 +59,7 @@ const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }
   }, [customRewards])
 
   if (!sortedRewards || sortedRewards.length === 0) {
-    return <div>No custom rewards found.</div>
+    return <EmptyList text="No custom rewards defined on twitch." />
   }
 
   return (

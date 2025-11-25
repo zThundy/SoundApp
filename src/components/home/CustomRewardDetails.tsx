@@ -4,10 +4,11 @@ import React, { useEffect, useState } from "react"
 import { Grid, styled, TextField, Checkbox, FormControlLabel, Button, Stack, Box, Avatar, Tooltip } from "@mui/material"
 import { ColorPicker } from '@/components/ColorPicker';
 import { Info } from "@mui/icons-material";
+import EmptyList from "./EmptyList";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
-  padding: theme.spacing(1.8),
+  padding: theme.spacing(2.2),
   borderRadius: theme.shape.borderRadius,
   justifyContent: "space-between",
   alignContent: "center",
@@ -87,7 +88,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward }: 
   }, [reward])
 
   if (!form) {
-    return <div>Select a reward to see details.</div>
+    return <EmptyList text="No custom reward selected." />
   }
 
   const handleCheckbox = (key: string) => (ev: React.ChangeEvent<HTMLInputElement>) => {
