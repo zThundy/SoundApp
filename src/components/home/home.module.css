@@ -1,14 +1,31 @@
 
+.sidebarContainer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.mainContainer {
+  height: 100%;
+}
 
 .gridContainer {
-  height: 50%;
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
 }
 
 .listContainer {
   border-radius: 5px;
   background-color: var(--mui-palette-background-800);
   overflow: auto;
-  max-height: 100%;
+  flex-wrap: nowrap;
+  flex-grow: 0 auto;
+  min-height: 0;
+  max-height: calc(100vh - var(--titlebar-height) - 8rem);
+  height: 100%;
+  width: 100%;
+  min-width: 0;
   justify-content: center;
   align-items: center;
   padding: .5rem;
@@ -16,9 +33,10 @@
 
 .listItem {
   border-radius: 5px;
-  padding: 1.5rem 1rem;
+  padding: 1rem;
   transition: background-color .2s ease-in-out;
   background-color: var(--mui-palette-background-850);
+  min-width: 0;
 }
 
 .listItem:hover {

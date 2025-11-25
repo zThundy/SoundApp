@@ -8,7 +8,7 @@
 }
 
 .loginContainer {
-    background: var(--mui-palette-background-paper);
+    background: var(--mui-palette-background-950);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 2rem;
     border-radius: 8px;

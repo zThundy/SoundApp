@@ -116,6 +116,28 @@ const theme = createTheme({
         },
       ],
     },
+    MuiMenu: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+        }),
+        list: ({ theme }) => ({
+          backgroundColor: (theme.palette as any).background["800"],
+          border: `1px solid ${(theme.palette as any).background["700"]}`,
+          borderRadius: theme.shape.borderRadius,
+          // orient menu horizontally
+          display: 'flex',
+          flexDirection: 'row',
+          padding: 0,
+          // max 10 columns
+          flexWrap: 'wrap',
+          maxWidth: '20rem',
+
+          "& .MuiMenuItem-root": {
+            border: "5px solid" + (theme.palette as any).background["700"],
+          }
+        }),
+      },
+    },
   },
 })
 
