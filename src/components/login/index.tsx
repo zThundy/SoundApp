@@ -21,6 +21,12 @@ export default function Login() {
 
   const clicked = () => {
     window.ipcRenderer?.invoke('oauth:start-twitch')
+      .then(() => {
+        navigate('/home');
+      })
+      .catch((err) => {
+        console.error('Error during Twitch OAuth:', err);
+      })
   }
 
   return (
@@ -30,10 +36,11 @@ export default function Login() {
           variant="contained"
           color="primary"
           sx={{ width: '100%', fontSize: 18, padding: '10px 0' }}
-          endIcon={
+          startIcon={
             <img src="/twitch.png" alt="Twitch Logo" style={{
-              width: 20,
-              height: 20,
+              width: 25,
+              height: 25,
+              paddingRight: 10,
               filter: "brightness(0) invert(1)"
             }} />
           }
