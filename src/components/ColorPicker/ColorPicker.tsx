@@ -1,13 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import Typography from '@mui/material/Typography';
+
+import { styled } from '@mui/material/styles';
+
+import { Button, Menu, Typography, Box } from '@mui/material';
+
 // import List from '@mui/material/List';
 // import MenuItem from '@mui/material/MenuItem';
-import Box from '@mui/material/Box';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 
 import { ColorOption } from './ColorOption';
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  justifyContent: 'space-evenly',
+  border: `1px solid ${theme.palette.text.secondary}`,
+  height: "100%",
+  transition: "border-color .2s ease-in-out, background-color .2s ease-in-out",
+  ":hover": {
+    border: `1px solid ${theme.palette.text.primary}`,
+    backgroundColor: "rgba(0,0,0,0)",
+
+    "& .MuiButton-endIcon": {
+      "& .MuiSvgIcon-root": {
+        color: theme.palette.text.primary + " !important",
+      },
+    },
+  },
+  ":active": {
+    border: `1px solid ${theme.palette.primary.main}`,
+  },
+  "& .MuiButton-endIcon": {
+    "& .MuiSvgIcon-root": {
+      fontSize: '3rem',
+    },
+  },
+}));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  outline: 'none',
+  cursor: 'pointer',
+  position: 'relative',
+  width: '80%',
+  height: '80%',
+  boxSizing: 'border-box',
+  borderRadius: theme.shape.borderRadius,
+}));
 
 export interface ColorPickerProps {
   palette?: ColorPaletteType;
@@ -163,10 +199,6 @@ export const ColorPicker = (props: ColorPickerProps) => {
     )
   }
 
-  /**
-   * Generate a set of shades/tints from a base hex color.
-   * Returns an object mapping keys like `gen-50`, `gen-100`, ... to hex colors.
-   */
   function generateShadesFromHex(hex: string, count = 7): ColorPaletteType {
     const cleaned = (hex || '').replace('#', '')
     if (!/^[0-9a-fA-F]{3,8}$/.test(cleaned)) throw new Error('invalid hex')
@@ -191,7 +223,6 @@ export const ColorPicker = (props: ColorPickerProps) => {
     return out
   }
 
-  // color helpers
   function hexToRgb(hex: string) {
     const cleaned = hex.replace('#', '')
     if (cleaned.length === 3) {
@@ -277,28 +308,37 @@ export const ColorPicker = (props: ColorPickerProps) => {
   }
 
   return (
-    <div>
-      <Button
+    <div style={{
+      height: '58px',
+      width: '100%',
+      position: 'relative',
+    }}>
+      <StyledButton
         id="color-picker-button"
         aria-controls={open ? 'color-picker-menu' : undefined}
         aria-haspopup="true"
+        fullWidth
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
-        endIcon={<ArrowDropDownIcon />}
+        style={open ? { borderColor: 'var(--mui-palette-primary-main' } : {}}
+        endIcon={
+          open ?
+            <ArrowDropUp
+              style={{
+                color: 'var(--mui-palette-primary-main)'
+              }}
+            />
+            :
+            <ArrowDropDown
+              style={{
+                color: 'var(--mui-palette-text-secondary)'
+              }} />
+        }
       >
-        <Box
+        <StyledBox
           tabIndex={-1}
-          component="div"
           className="color-dot-container"
           sx={{
-            outline: 'none',
-            cursor: 'pointer',
-            position: 'relative',
-            width: '18px',
-            height: '18px',
-            margin: '3px',
-            boxSizing: 'border-box',
-            borderRadius: '50%',
             backgroundColor: `${props.previousValue || selected}`,
           }}
         >
@@ -314,8 +354,8 @@ export const ColorPicker = (props: ColorPickerProps) => {
               opacity: 0,
             }}
           />
-        </Box>
-      </Button>
+        </StyledBox>
+      </StyledButton>
 
       <Menu
         component="div"
@@ -333,7 +373,7 @@ export const ColorPicker = (props: ColorPickerProps) => {
           horizontal: 'left',
         }}
       >
-  {buildPaletteOptions(localPalette)}
+        {buildPaletteOptions(localPalette)}
       </Menu>
     </div>
   );
