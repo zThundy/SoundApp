@@ -1,12 +1,13 @@
 
 import React, { useEffect, useState } from "react"
 
-import { Grid, styled, TextField, Checkbox, FormControlLabel, Button, Stack, Box, Avatar } from "@mui/material"
+import { Grid, styled, TextField, Checkbox, FormControlLabel, Button, Stack, Box, Avatar, Tooltip } from "@mui/material"
 import { ColorPicker } from '@/components/ColorPicker';
+import { Info } from "@mui/icons-material";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
-  padding: theme.spacing(2),
+  padding: theme.spacing(1.8),
   borderRadius: theme.shape.borderRadius,
   justifyContent: "space-between",
   alignContent: "center",
@@ -17,7 +18,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   transition: "background-color .2s ease-in-out",
 
   ":hover": {
-    backgroundColor: (theme.palette as any).background["900"],
+    backgroundColor: (theme.palette as any).background["800"],
   }
 }));
 
@@ -76,6 +77,8 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward }: 
       max_per_stream_value: reward.max_per_stream_setting?.max_per_stream ?? reward.max_per_stream ?? '',
       max_per_user_enabled: !!(reward.max_per_user_per_stream_setting?.is_enabled),
       max_per_user_value: reward.max_per_user_per_stream_setting?.max_per_user_per_stream ?? reward.max_per_user_per_stream ?? '',
+      global_cooldown_enabled: !!(reward.global_cooldown_setting?.is_enabled),
+      global_cooldown: reward.global_cooldown_setting?.global_cooldown_seconds ?? reward.global_cooldown_seconds ?? '',
       cost: reward.cost ?? 0,
       background_color: reward.background_color ?? '#000000',
     })
@@ -127,6 +130,14 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward }: 
     }
   }
 
+  const handleCancel = () => {
+    // reset form to last saved state
+    if (reward) {
+      lastRewardId.current = null // force resync
+      setForm(null)
+    }
+  }
+
   return (
     <Box>
       <Grid container spacing={1} justifyContent={"space-between"} >
@@ -155,44 +166,12 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward }: 
           </Grid>
         </StyledBox>
 
-        <StyledBox>
-          <Grid size={{ xs: 12, md: 12 }}>
+        <StyledBox justifyContent={"space-between"} flex={1} gap={2}>
+          <Grid size={{ xs: 6, md: 6 }}>
             <TextField label="Cost" type="number" fullWidth value={form.cost as any} onChange={handleChange('cost')} />
           </Grid>
-        </StyledBox>
 
-        <StyledBox>
-          <Grid size={{ xs: 12, md: 8 }}>
-            <Stack direction="row" spacing={2} flexWrap="wrap">
-              <FormControlLabel control={<Checkbox checked={!!form.is_enabled} onChange={handleCheckbox('is_enabled')} />} label="is_enabled" />
-              <FormControlLabel control={<Checkbox checked={!!form.is_in_stock} onChange={handleCheckbox('is_in_stock')} />} label="is_in_stock" />
-              <FormControlLabel control={<Checkbox checked={!!form.is_paused} onChange={handleCheckbox('is_paused')} />} label="is_paused" />
-              <FormControlLabel control={<Checkbox checked={!!form.is_user_input_required} onChange={handleCheckbox('is_user_input_required')} />} label="is_user_input_required" />
-              <FormControlLabel control={<Checkbox checked={!!form.should_redemptions_skip_request_queue} onChange={handleCheckbox('should_redemptions_skip_request_queue')} />} label="should_redemptions_skip_request_queue" />
-            </Stack>
-          </Grid>
-        </StyledBox>
-
-        <StyledBox>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <Stack direction="row" spacing={10} alignItems="center" justifyContent={"space-around"}>
-              <TextField label="Max per stream" type="number" fullWidth value={form.max_per_stream_value as any} onChange={handleChange('max_per_stream_value')} />
-              <FormControlLabel control={<Checkbox checked={!!form.max_per_stream_enabled} onChange={handleCheckbox('max_per_stream_enabled')} />} label="Enabled" />
-            </Stack>
-          </Grid>
-        </StyledBox>
-
-        <StyledBox>
-          <Grid size={{ xs: 12, md: 12 }}>
-            <Stack direction="row" spacing={10} alignItems="center" justifyContent={"space-around"}>
-              <TextField label="Max per user per stream" type="number" fullWidth value={form.max_per_user_value as any} onChange={handleChange('max_per_user_value')} />
-              <FormControlLabel control={<Checkbox checked={!!form.max_per_user_enabled} onChange={handleCheckbox('max_per_user_enabled')} />} label="Enabled" />
-            </Stack>
-          </Grid>
-        </StyledBox>
-
-        <StyledBox>
-          <Grid size={{ xs: 12, md: 12 }}>
+          <Grid size={{ xs: 6, md: 6 }}>
             <ColorPicker value={backgroundColor} previousValue={backgroundChanged ? backgroundColor : form.background_color} onClick={(color) => {
               setBackgroundColor(color);
               setBackgroundChanged(true);
@@ -200,11 +179,139 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward }: 
           </Grid>
         </StyledBox>
 
-        <Grid size={{ xs: 12 }}>
-          <Stack direction="row" spacing={2}>
-            <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
-          </Stack>
-        </Grid>
+        <StyledBox>
+          <Grid size={{ xs: 12, md: 8 }}>
+            <Stack direction="column" spacing={2} flexWrap="wrap">
+
+              <Stack direction="row" spacing={2} alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!!form.is_in_stock}
+                      onChange={handleCheckbox('is_in_stock')}
+                      disabled
+                    />}
+                  label="In Stock" />
+                <Tooltip title="Indicates whether the reward is in stock." placement="right">
+                  <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
+                </Tooltip>
+              </Stack>
+
+              <Stack direction="row" spacing={2} alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!!form.is_enabled}
+                      onChange={handleCheckbox('is_enabled')}
+                    />}
+                  label="Enabled" />
+                <Tooltip title="This indicates whether the reward is enabled. Viewers see only enabled rewards." placement="right">
+                  <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
+                </Tooltip>
+              </Stack>
+
+              <Stack direction="row" spacing={2} alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!!form.is_paused}
+                      onChange={handleCheckbox('is_paused')}
+                    />}
+                  label="Paused" />
+                <Tooltip title="This determines whether to pause the reward. Viewers can't redeem paused rewards." placement="right">
+                  <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
+                </Tooltip>
+              </Stack>
+
+              <Stack direction="row" spacing={2} alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!!form.is_user_input_required}
+                      onChange={handleCheckbox('is_user_input_required')}
+                    />}
+                  label="Is user input required?" />
+                <Tooltip title="This determines whether users must enter information to redeem the reward. Change the prompt field to customize the user input requirements." placement="right">
+                  <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
+                </Tooltip>
+              </Stack>
+
+              <Stack direction="row" spacing={2} alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!!form.should_redemptions_skip_request_queue}
+                      onChange={handleCheckbox('should_redemptions_skip_request_queue')}
+                    />}
+                  label="Should redemptions be skipped?" />
+                <Tooltip title="This determines whether redemptions should be set to FULFILLED status immediately when a reward is redeemed. If unchecked, status is set to UNFULFILLED and follows the normal request queue process." placement="right">
+                  <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
+                </Tooltip>
+              </Stack>
+
+            </Stack>
+          </Grid>
+        </StyledBox>
+
+        <StyledBox>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <Stack direction="row" spacing={{ xs: 2, md: 4 }} alignItems="center" justifyContent={"space-between"}>
+              <Stack direction="row" spacing={2} alignItems="center" justifyContent={"space-evenly"}>
+                <TextField label="Max per stream" type="number" fullWidth value={form.max_per_stream_value as any} onChange={handleChange('max_per_stream_value')} />
+                <FormControlLabel control={<Checkbox checked={!!form.max_per_stream_enabled} onChange={handleCheckbox('max_per_stream_enabled')} />} label="Enabled" />
+              </Stack>
+
+              <Stack direction="row" spacing={2} alignItems="center" padding={2}>
+                <Tooltip title="The maximum number of redemptions allowed per live stream. The minimum value is 1." placement="right">
+                  <Info fontSize={"medium"} style={{ cursor: 'pointer' }} />
+                </Tooltip>
+              </Stack>
+            </Stack>
+          </Grid>
+        </StyledBox>
+
+        <StyledBox>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <Stack direction="row" spacing={{ xs: 2, md: 4 }} alignItems="center" justifyContent={"space-between"}>
+              <Stack direction="row" spacing={2} alignItems="center" justifyContent={"space-evenly"}>
+                <TextField label="Max per user per stream" type="number" fullWidth value={form.max_per_user_value as any} onChange={handleChange('max_per_user_value')} />
+                <FormControlLabel control={<Checkbox checked={!!form.max_per_user_enabled} onChange={handleCheckbox('max_per_user_enabled')} />} label="Enabled" />
+              </Stack>
+
+              <Stack direction="row" spacing={2} alignItems="center" padding={2}>
+                <Tooltip title="The maximum number of redemptions allowed per user per stream. The minimum value is 1." placement="right">
+                  <Info fontSize={"medium"} style={{ cursor: 'pointer' }} />
+                </Tooltip>
+              </Stack>
+            </Stack>
+          </Grid>
+        </StyledBox>
+
+        <StyledBox>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <Stack direction="row" spacing={{ xs: 2, md: 4 }} alignItems="center" justifyContent={"space-between"}>
+              <Stack direction="row" spacing={2} alignItems="center" justifyContent={"space-evenly"}>
+                <TextField label="Global Cooldown" type="number" fullWidth value={form.global_cooldown as any} onChange={handleChange('global_cooldown')} />
+                <FormControlLabel control={<Checkbox checked={!!form.global_cooldown_enabled} onChange={handleCheckbox('global_cooldown_enabled')} />} label="Enabled" />
+              </Stack>
+
+              <Stack direction="row" spacing={2} alignItems="center" padding={2}>
+                <Tooltip title="The global cooldown period for all redemptions. The minimum value is 1." placement="right">
+                  <Info fontSize={"medium"} style={{ cursor: 'pointer' }} />
+                </Tooltip>
+              </Stack>
+            </Stack>
+          </Grid>
+        </StyledBox>
+
+        <StyledBox>
+          <Grid size={{ xs: 12 }}>
+            <Stack direction="row" spacing={2}>
+              <Button variant="contained" color="primary" onClick={handleSave} fullWidth>Save</Button>
+              <Button variant="outlined" color="secondary" onClick={handleCancel} fullWidth>Cancel</Button>
+            </Stack>
+          </Grid>
+        </StyledBox>
       </Grid>
     </Box>
   )

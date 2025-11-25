@@ -17,7 +17,8 @@ html, body {
 
 body {
   font-family: "Poppins", sans-serif;
-  background: var(--mui-palette-background-default);
+  background: var(--mui-palette-background-950);
+  /* background: var(--mui-palette-background-default); */
   color: var(--mui-palette-text-primary);
 
   /* -webkit-font-smoothing: antialiased; */
@@ -35,7 +36,7 @@ body {
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: var(--mui-palette-primary-750);
+  background: var(--mui-palette-primary-main);
 }
 
 *::-webkit-scrollbar-track {

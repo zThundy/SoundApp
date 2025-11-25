@@ -138,6 +138,20 @@ const theme = createTheme({
         }),
       },
     },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+        }),
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+        }),
+        input: ({ theme }) => ({
+        }),
+      },
+    }
   },
 })
 

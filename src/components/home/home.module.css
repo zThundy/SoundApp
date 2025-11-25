@@ -15,9 +15,15 @@
   flex-wrap: wrap;
 }
 
+.listTitle {
+  font-weight: 600;
+  color: var(--mui-palette-text-primary);
+  text-align: center;
+}
+
 .listContainer {
   border-radius: 5px;
-  background-color: var(--mui-palette-background-800);
+  background-color: var(--mui-palette-background-900);
   overflow: auto;
   flex-wrap: nowrap;
   flex-grow: 0 auto;
@@ -40,6 +46,6 @@
 }
 
 .listItem:hover {
-  background-color: var(--mui-palette-background-900);
+  background-color: var(--mui-palette-background-800);
   cursor: pointer;
 }
