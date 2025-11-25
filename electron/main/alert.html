@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Twitch Alerts</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+            color: #000;
+            font-family: system-ui, Arial, sans-serif;
+        }
+
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .alert {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: 600;
+            animation: fade 5s ease-out forwards;
+        }
+
+        .fadeImageWrap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            animation: fade 6s ease-in-out forwards;
+        }
+
+        .fadeImageWrap img {
+            max-width: 50vw;
+            height: auto;
+            display: block;
+            margin: 0 auto 1rem;
+        }
+
+        .fadeImageWrap .caption {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        @keyframes fade {
+            0% {
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <script>
+        const es = new EventSource('/events');
+        es.onmessage = (ev) => {
+            try {
+                const data = JSON.parse(ev.data);
+                // Expect shape: { type: 'alert', text: '...' }
+                if (data.type === 'alert') {
+                    const node = document.createElement('div');
+                    node.className = 'alert';
+                    node.textContent = data.text || 'Alert';
+                    document.getElementById('container').appendChild(node);
+                    setTimeout(() => node.remove(), 6000);
+                } else if (data.type === 'imageTemplate') {
+                    // Expect: { imageDataUrl, text, duration }
+                    const wrap = document.createElement('div');
+                    wrap.className = 'fadeImageWrap';
+                    const img = document.createElement('img');
+                    img.src = data.imageDataUrl;
+                    const caption = document.createElement('div');
+                    caption.className = 'caption';
+                    caption.textContent = data.text || '';
+                    wrap.appendChild(img);
+                    wrap.appendChild(caption);
+                    document.getElementById('container').appendChild(wrap);
+                    setTimeout(() => wrap.remove(), (data.duration || 6000));
+                } else if (data.type === 'raw') {
+                    // { html, css?, js? } - inject into isolated container
+                    const wrapper = document.createElement('div');
+                    wrapper.style.position = 'absolute';
+                    wrapper.style.top = '0';
+                    wrapper.style.left = '0';
+                    wrapper.style.width = '100%';
+                    wrapper.style.height = '100%';
+                    // Basic sandbox attempt: remove <script> tags then optionally execute js separately
+                    let html = data.html || '';
+                    html = html.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+                    wrapper.innerHTML = html;
+                    if (data.css) {
+                        const styleEl = document.createElement('style');
+                        styleEl.textContent = data.css;
+                        wrapper.appendChild(styleEl);
+                    }
+                    document.getElementById('container').appendChild(wrapper);
+                    if (data.js) {
+                        try { new Function(data.js)(); } catch (e) { console.error('Raw JS error', e); }
+                    }
+                    setTimeout(() => wrapper.remove(), data.duration || 10000);
+                }
+            } catch (e) {
+                console.error('Bad alert payload', e, ev.data);
+            }
+        };
+    </script>
+</body>
+
+</html>

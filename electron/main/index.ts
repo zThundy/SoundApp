@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
 import { update } from './update'
+import { startAlertServer } from './alertServer'
 import SafeStorageWrapper from './safeStorageWrapper'
 import { getBroadcasterId, getTwitchRedemptions, getCustomRewards } from './twitchWorker'
 
@@ -84,6 +85,26 @@ app.whenReady().then(() => {
     console.error('Failed to initialize SafeStorageWrapper', err)
     safeStore = null
   }
+
+  startAlertServer(3137).then(server => {
+    console.log(`[AlertServer] running on http://localhost:${server.port}`);
+    (globalThis as any).alertBroadcast = server.broadcast;
+
+    ipcMain.handle('alerts:broadcast', (_evt, payload) => {
+      try {
+        if (!payload || typeof payload !== 'object' || !('type' in payload)) {
+          throw new Error('Invalid alert payload');
+        }
+        server.broadcast(payload);
+        return { ok: true };
+      } catch (err: any) {
+        console.error('Failed to broadcast alert', err);
+        return { ok: false, error: err.message };
+      }
+    })
+  }).catch(err => {
+    console.error('Failed to start AlertServer', err)
+  })
 
   createWindow()
 })
@@ -252,7 +273,7 @@ ipcMain.handle("twitch:get-all-redemptions", async () => {
   const broadcasterId = await getBroadcasterId(accessToken as string);
   const customRewards = await getCustomRewards(accessToken as string, broadcasterId);
   const redemptions = await getTwitchRedemptions(accessToken as string, broadcasterId);
-  
+
   return redemptions;
 });
 

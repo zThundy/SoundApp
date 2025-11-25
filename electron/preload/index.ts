@@ -42,6 +42,13 @@ contextBridge.exposeInMainWorld('safeStore', {
   },
 })
 
+// Alerts API for broadcasting custom alerts to OBS page
+contextBridge.exposeInMainWorld('alerts', {
+  broadcast(payload: any) {
+    return ipcRenderer.invoke('alerts:broadcast', payload)
+  }
+})
+
 // --------- Preload scripts loading ---------
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise(resolve => {

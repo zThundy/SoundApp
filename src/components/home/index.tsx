@@ -6,6 +6,7 @@ import { Grid } from "@mui/material"
 
 import Sidebar from "../sidebar"
 import Reedems from "./Reedems"
+import AlertEditor from "./AlertEditor"
 
 export default function Home() {
   const [selectedPageState, setSelectedPageState] = useState<string | undefined>("redeems");
@@ -22,6 +23,7 @@ export default function Home() {
 
       <Grid size={{ xs: 11 }}>
         {selectedPageState === "redeems" && <Reedems />}
+        {selectedPageState === "alert" && <AlertEditor />}
       </Grid>
     </Grid>
   )
