@@ -148,6 +148,18 @@ ipcMain.handle('open-win', (_, arg) => {
   }
 })
 
+// Open a URL in the system default browser
+ipcMain.handle('open-external', async (_evt, url: string) => {
+  try {
+    // Basic validation to avoid executing arbitrary protocols
+    if (typeof url !== 'string') throw new Error('Invalid URL')
+    await shell.openExternal(url)
+    return { ok: true }
+  } catch (err: any) {
+    return { ok: false, error: err?.message ?? 'Failed to open external link' }
+  }
+})
+
 // Window control handlers for the custom title bar
 ipcMain.handle('window:minimize', () => {
   win?.minimize()
@@ -244,13 +256,11 @@ ipcMain.handle('oauth:start-twitch', (_evt) => {
     const filter = { urls: ['http://localhost/*'] };
 
     webRequest.onBeforeRequest(filter, async ({ url }) => {
-      console.log('Redirect URL:', url);
       const urlObj = new URL(url);
       const hashParams = new URLSearchParams(urlObj.hash.substring(1)); // Remove the '#' character
       const accessToken = hashParams.get('access_token');
       const returnedState = hashParams.get('state');
       if (accessToken && returnedState === stateString) {
-        console.log('Twitch Access Token:', accessToken);
         safeStore?.set('twitchAccessToken', accessToken);
         // You can now use the access token as needed
         authWindow.close();
