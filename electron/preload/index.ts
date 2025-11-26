@@ -46,6 +46,15 @@ contextBridge.exposeInMainWorld('safeStore', {
 contextBridge.exposeInMainWorld('alerts', {
   broadcast(payload: any) {
     return ipcRenderer.invoke('alerts:broadcast', payload)
+  },
+  getPort() {
+    return ipcRenderer.invoke('alerts:get-port')
+  },
+  setPort(port: number) {
+    return ipcRenderer.invoke('alerts:set-port', port)
+  },
+  restart() {
+    return ipcRenderer.invoke('alerts:restart')
   }
 })
 

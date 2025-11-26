@@ -13,6 +13,8 @@ process.env.APP_ROOT = path.join(__dirname, '../..')
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 export const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
 
+const INTERNAL_SERVER_PORT = 4823
+
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, 'public')
   : RENDERER_DIST
@@ -30,6 +32,7 @@ if (!app.requestSingleInstanceLock()) {
 
 let win: BrowserWindow | null = null
 let safeStore: SafeStorageWrapper | null = null
+let alertServerRef: { stop: () => Promise<void>; port: number; broadcast: (p: any) => void } | null = null
 const preload = path.join(__dirname, '../preload/index.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
@@ -86,20 +89,76 @@ app.whenReady().then(() => {
     safeStore = null
   }
 
-  startAlertServer(3137).then(server => {
+  // Resolve alert server port: prefer SafeStorage value, else default
+  const configuredPortStr = safeStore?.get('alertServerPort') ?? null
+  const configuredPort = configuredPortStr ? Number(configuredPortStr) : null
+  const alertPort = configuredPort && configuredPort > 0 ? configuredPort : INTERNAL_SERVER_PORT
+
+  startAlertServer(alertPort).then(server => {
     console.log(`[AlertServer] running on http://localhost:${server.port}`);
     (globalThis as any).alertBroadcast = server.broadcast;
+    alertServerRef = server as any;
 
     ipcMain.handle('alerts:broadcast', (_evt, payload) => {
       try {
         if (!payload || typeof payload !== 'object' || !('type' in payload)) {
           throw new Error('Invalid alert payload');
         }
-        server.broadcast(payload);
+        const broadcaster = alertServerRef?.broadcast ?? (globalThis as any).alertBroadcast
+        if (typeof broadcaster !== 'function') {
+          throw new Error('Alert server not available')
+        }
+        broadcaster(payload);
         return { ok: true };
       } catch (err: any) {
         console.error('Failed to broadcast alert', err);
         return { ok: false, error: err.message };
+      }
+    })
+
+    // IPC: get current alert server port (prefers stored value, falls back to actual server port)
+    ipcMain.handle('alerts:get-port', () => {
+      const stored = safeStore?.get('alertServerPort') ?? null
+      const portNum = stored ? Number(stored) : (alertServerRef?.port ?? server.port)
+      return { port: portNum }
+    })
+
+    // IPC: set alert server port and persist to SafeStorage
+    ipcMain.handle('alerts:set-port', async (_evt, port: number | string) => {
+      try {
+        const p = typeof port === 'string' ? Number(port) : port
+        if (!Number.isFinite(p) || p <= 0 || p >= 65536) {
+          throw new Error('Invalid port number')
+        }
+        // persist
+        await safeStore?.set('alertServerPort', String(p))
+        // Note: changing port requires restarting the alert server; caller should prompt app restart
+        return { ok: true, port: p, requiresRestart: true }
+      } catch (err: any) {
+        return { ok: false, error: err?.message ?? 'Failed to set port' }
+      }
+    })
+
+    // IPC: restart alert server using configured (or default) port
+    ipcMain.handle('alerts:restart', async () => {
+      try {
+        console.log('[AlertServer] restarting...');
+        const configuredPortStr = safeStore?.get('alertServerPort') ?? null
+        const configuredPort = configuredPortStr ? Number(configuredPortStr) : null
+        const alertPort = configuredPort && configuredPort > 0 ? configuredPort : INTERNAL_SERVER_PORT
+
+        if (alertServerRef) {
+          await alertServerRef.stop()
+          alertServerRef = null
+        }
+        const newServer = await startAlertServer(alertPort)
+        alertServerRef = newServer as any
+        ;(globalThis as any).alertBroadcast = newServer.broadcast
+        console.log(`[AlertServer] restarted on http://localhost:${newServer.port}`)
+        return { ok: true, port: newServer.port }
+      } catch (err: any) {
+        console.error('Failed to restart AlertServer', err)
+        return { ok: false, error: err?.message ?? 'Restart failed' }
       }
     })
   }).catch(err => {

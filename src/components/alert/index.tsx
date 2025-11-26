@@ -53,7 +53,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function AlertEditor() {
-  const previewUrl = 'http://localhost:3137/';
+  const [serverUrl, setServerUrl] = useState('http://localhost:4823');
   const [tab, setTab] = useState(0);
   // Raw editor state
   const [rawHtml, setRawHtml] = useState('<div style="font-size:4rem;font-weight:700;">Hello!</div>');
@@ -76,6 +76,13 @@ export default function AlertEditor() {
       return () => clearTimeout(timer);
     }
   }, [copied]);
+
+  useEffect(() => {
+    // Fetch the server port from the main process
+    (window.alerts as any).getPort().then((res: any) => {
+      setServerUrl(`http://localhost:${res?.port || 4823}`);
+    });
+  }, []);
 
   function toDataUrl(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -215,7 +222,7 @@ export default function AlertEditor() {
                     sx={{ p: '10px' }}
                     aria-label="menu"
                     onClick={() => {
-                      navigator.clipboard.writeText(previewUrl);
+                      navigator.clipboard.writeText(serverUrl);
                       setCopied(true);
                     }}
                   >
@@ -224,7 +231,7 @@ export default function AlertEditor() {
                 </Tooltip>
                 <InputBase
                   sx={{ ml: 1, flex: 1 }}
-                  value={previewUrl}
+                  value={serverUrl}
                 />
               </Paper>
             </StyledBox>
@@ -234,7 +241,7 @@ export default function AlertEditor() {
                 <Tooltip title="Apri nel browser" placement="top" arrow>
                   <IconButton
                     aria-label="open-external"
-                    onClick={() => window.ipcRenderer?.invoke('open-external', previewUrl)}
+                    onClick={() => window.ipcRenderer?.invoke('open-external', serverUrl)}
                     sx={{
                       position: 'absolute',
                       top: 8,
@@ -251,7 +258,7 @@ export default function AlertEditor() {
                 </Tooltip>
                 <iframe
                   title="Alert Preview"
-                  src={previewUrl}
+                  src={serverUrl}
                   style={{ width: '100%', height: '25rem', border: 'none' }}
                 />
               </Box>

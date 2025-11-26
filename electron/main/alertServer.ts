@@ -17,6 +17,7 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
     const emitter = new EventEmitter();
     let nextClientId = 1;
     const clients: SseClient[] = [];
+    const sockets = new Set<import('net').Socket>();
 
     const server = http.createServer((req, res) => {
       if (!req.socket.remoteAddress || req.socket.remoteAddress !== '127.0.0.1') {
@@ -44,6 +45,7 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
       }
 
       if (req.url === '/' || req.url?.startsWith('/index')) {
+        console.log("Got request for index page");
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end(`
 <!doctype html>
@@ -207,6 +209,12 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
       res.end('Not Found');
     });
 
+    // Track sockets so we can destroy them on shutdown (SSE keeps them open)
+    server.on('connection', (socket) => {
+      sockets.add(socket);
+      socket.on('close', () => sockets.delete(socket));
+    });
+
     function broadcast(payload: unknown) {
       const dataStr = JSON.stringify(payload);
       for (const c of clients) {
@@ -222,7 +230,20 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
         port: actualPort,
         broadcast,
         stop: () => new Promise<void>((res, rej) => {
-          server.close(err => err ? rej(err) : res());
+          try {
+            // End SSE clients cleanly
+            for (const c of clients.splice(0, clients.length)) {
+              try { c.res.end(); } catch { /* noop */ }
+            }
+            // Destroy all sockets to ensure server.close resolves
+            for (const s of Array.from(sockets)) {
+              try { s.destroy(); } catch { /* noop */ }
+            }
+            // Close the server
+            server.close(err => err ? rej(err) : res());
+          } catch (e) {
+            rej(e as any);
+          }
         })
       });
     });
