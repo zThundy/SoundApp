@@ -63,7 +63,7 @@ export default function AlertEditor() {
 
   // Image template state
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imageText, setImageText] = useState('Nuovo redeem!');
+  const [imageText, setImageText] = useState('${username} has redeemed ${reward_title}!');
   const [imageDuration, setImageDuration] = useState(6000);
 
   const [sending, setSending] = useState(false);
@@ -104,6 +104,9 @@ export default function AlertEditor() {
       let image = null;
       if (imageFile) {
         image = await toDataUrl(imageFile);
+      } else {
+        // add logo.png as default image
+        image = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
       }
       const payload = { type: 'imageTemplate', imageDataUrl: image, text: imageText, duration: imageDuration };
       const res = await window.alerts?.broadcast(payload);

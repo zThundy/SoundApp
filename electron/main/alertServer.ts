@@ -55,62 +55,88 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
     <style>
         html,
         body {
-            margin: 0;
-            padding: 0;
-            background: hsla(0 0% 100% / 0);
-            color: #000;
-            font-family: system-ui, Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background: hsla(0 0% 100% / 0);
+          color: #000;
+          font-family: system-ui, Arial, sans-serif;
         }
 
         #container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            /* animation: fade 6s ease-in-out forwards; */
+          position: relative;
+          width: 100vw;
+          height: 100vh;
+          overflow: hidden;
+          /* animation: fade 6s ease-in-out forwards; */
         }
 
         .alert {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3rem;
-            font-weight: 600;
-            animation: fade 5s ease-out forwards;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 1rem;
+          font-weight: 600;
         }
 
         .fadeImageWrap {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          text-align: center;
         }
 
         .fadeImageWrap img {
-            max-width: 50vw;
-            height: auto;
-            display: block;
-            margin: 0 auto 1rem;
+          max-width: 60vw;
+          height: auto;
+          display: block;
+          margin: 0 auto .5rem;
         }
 
         .fadeImageWrap .caption {
-            font-size: 2rem;
-            font-weight: 600;
+          background: linear-gradient(210deg, hsl(298, 80%, 40%), hsl(248, 80%, 20%));
+          padding: 0.5rem 1rem;
+          color: #fff;
+          border-radius: 4px;
+          font-size: 1rem;
+          font-weight: 600;
         }
 
         @keyframes fade {
-            0%, 100% {
+            0% {
               opacity: 0;
+              transform: translate(-50%, -40%);
             }
 
-            20%, 80% {
+            5% {
               opacity: 1;
+              transform: translate(-50%, -50%);
+            }
+
+            8% {
+              opacity: 1;
+              transform: translate(-50%, -50%) scale(1.1);
+            }
+
+            12% {
+              opacity: 1;
+              transform: translate(-50%, -50%) scale(1);
             }
 
             50% {
               opacity: 1;
+              transform: translate(-50%, -50%) scale(1);
+            }
+
+            95% {
+              opacity: 0;
+              transform: translate(-50%, -40%);
+            }
+
+            100% {
+              opacity: 0;
+              transform: translate(-50%, -40%);
             }
         }
     </style>
@@ -132,6 +158,7 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
                 } else if (data.type === 'imageTemplate') {
                     const wrap = document.createElement('div');
                     wrap.className = 'fadeImageWrap';
+                    wrap.style.animation = 'fade ' + ((data.duration || 6000) / 1000) + 's cubic-bezier(0.3, 0.6, 0.3, 1) forwards';
                     const img = document.createElement('img');
                     if (!data.imageDataUrl) data.imageDataUrl = "logo.png";
                     img.src = data.imageDataUrl;
