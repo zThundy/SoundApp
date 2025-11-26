@@ -73,6 +73,9 @@ const theme = createTheme({
             cursor: 'not-allowed',
           },
         }),
+        disabled: ({ theme }) => ({
+          cursor: 'not-allowed',
+        }),
       },
       variants: [
         {

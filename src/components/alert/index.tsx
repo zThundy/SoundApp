@@ -118,7 +118,7 @@ export default function AlertEditor() {
 
   return (
     <Box p={2}>
-      <Typography variant="h5" mb={2}>Editor Alert OBS</Typography>
+      <Typography variant="h5" mb={2}>Alert Editor</Typography>
       <Tabs value={tab} onChange={(_, v) => setTab(v)}>
         <Tab label="Template Immagine" />
         <Tab label="Custom HTML/CSS/JS" />
