@@ -42,7 +42,7 @@ const calculateImage = (reward: any) => {
   return ""
 }
 
-const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward }: { reward: any }) {
+const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, clearReward }: { reward: any, clearReward: () => void }) {
   const [form, setForm] = React.useState<any>(null)
   const lastRewardId = React.useRef<string | null>(null)
   const [backgroundColor, setBackgroundColor] = React.useState<string>('#000000');
@@ -133,6 +133,8 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward }: 
     if (reward) {
       lastRewardId.current = null // force resync
       setForm(null)
+      setBackgroundChanged(false);
+      clearReward();
     }
   }
 

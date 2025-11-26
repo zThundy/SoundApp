@@ -36,7 +36,7 @@ export default function Reedems() {
             <h2>Selected Reedem</h2>
           </Grid>
           <Grid size={{ xs: 12 }} className={style.listContainer}>
-            <CustomRewardDetails reward={selectedReward} />
+            <CustomRewardDetails reward={selectedReward} clearReward={() => setSelectedReward(null)} />
           </Grid>
         </Grid>
 
