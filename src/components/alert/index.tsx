@@ -96,7 +96,6 @@ export default function AlertEditor() {
     setIframeError(false);
     try {
       const resp = await fetch(currentUrl + "/health", { method: 'GET', cache: 'no-store' });
-      console.log('Health check failed, status:', currentUrl, resp.status, resp.ok, resp);
       if (!resp.ok) {
         setIframeError(true);
       } else {
@@ -156,7 +155,10 @@ export default function AlertEditor() {
       <Typography variant="h5" mb={2}>Alert Editor</Typography>
       <Tabs value={tab} onChange={(_, v) => setTab(v)}>
         <Tab label="Template Immagine" />
-        <Tab label="Custom HTML/CSS/JS" />
+
+        <Tooltip title="Coming soon..." placement="top" arrow>
+          <Tab label="Custom HTML/CSS/JS" disabled />
+        </Tooltip>
       </Tabs>
 
       <Grid container spacing={{ lg: 2, md: 6 }} >

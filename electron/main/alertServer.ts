@@ -67,7 +67,6 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
       }
 
       if (pathname === '/' || pathname === '/index' || pathname === '/index.html') {
-        console.log("Got request for index page");
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end(`
 <!doctype html>

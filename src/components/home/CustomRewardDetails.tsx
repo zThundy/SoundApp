@@ -94,12 +94,10 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward }: 
   }
 
   const handleCheckbox = (key: string) => (ev: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleCheckbox", key, ev.target.checked)
     setForm((s: any) => ({ ...s, [key]: ev.target.checked }))
   }
 
   const handleChange = (key: string) => (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    console.log("handleChange", key, ev.target.value)
     const val = ev.target.value
     setForm((s: any) => ({ ...s, [key]: val }))
   }
@@ -124,12 +122,9 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward }: 
     if (window.ipcRenderer?.invoke) {
       try {
         await window.ipcRenderer.invoke('twitch:update-reward', updated)
-        console.log('Updated reward sent to main process')
       } catch (err) {
         console.error('Failed to update reward via IPC', err)
       }
-    } else {
-      console.log('Updated reward (local only):', updated)
     }
   }
 

@@ -12,7 +12,6 @@ export default function Login() {
   useEffect(() => {
     window.ipcRenderer?.invoke('safe-store:has', "twitchAccessToken")
       .then((has) => {
-        console.log('Twitch access token exists:', has);
         if (has) {
           navigate('/home');
         }

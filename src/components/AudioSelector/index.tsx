@@ -53,11 +53,6 @@ export default function AudioSelector({ value, onChange }: Props) {
   // Use a fixed media query: convert slider when viewport < 1200px
   const isBelow1200 = useMediaQuery("(max-width:1200px)");
 
-  // Optional: react to viewport change
-  React.useEffect(() => {
-    // console.log("viewport <1200px:", isBelow1200);
-  }, [isBelow1200]);
-
   React.useEffect(() => {
     setSrc(value ?? null);
   }, [value]);
