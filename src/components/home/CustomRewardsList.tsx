@@ -5,7 +5,7 @@ import style from "./home.module.css"
 
 import { styled, Paper, Grid } from "@mui/material"
 
-import EmptyList from "./EmptyList";
+import EmptyList from "@/components/home/EmptyList";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "rgba(0,0,0,0)",

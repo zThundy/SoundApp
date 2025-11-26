@@ -2,8 +2,8 @@ import { useState } from "react"
 
 import style from "./home.module.css"
 
-import CustomRewardDetails from "./CustomRewardDetails"
-import CustomRewardsList from "./CustomRewardsList"
+import CustomRewardDetails from "@/components/home/CustomRewardDetails"
+import CustomRewardsList from "@/components/home/CustomRewardsList"
 
 import { Grid } from "@mui/material"
 

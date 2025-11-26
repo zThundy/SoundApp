@@ -4,9 +4,9 @@ import style from "./home.module.css"
 
 import { Grid } from "@mui/material"
 
-import Sidebar from "../sidebar"
-import Reedems from "./Reedems"
-import AlertEditor from "./AlertEditor"
+import Sidebar from "@/components/sidebar"
+import Reedems from "@/components/home/Reedems"
+import AlertEditor from "@/components/alert"
 
 export default function Home() {
   const [selectedPageState, setSelectedPageState] = useState<string | undefined>("redeems");

@@ -5,7 +5,7 @@ import { Grid, styled, TextField, Checkbox, FormControlLabel, Button, Stack, Box
 import { ColorPicker } from '@/components/ColorPicker';
 import { Info } from "@mui/icons-material";
 
-import EmptyList from "./EmptyList";
+import EmptyList from "@/components/home/EmptyList";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
