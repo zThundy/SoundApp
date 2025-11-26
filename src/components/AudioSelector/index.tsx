@@ -160,7 +160,7 @@ export default function AudioSelector({ value, onChange }: Props) {
           <Grid container direction="row" alignItems="center" justifyContent={"space-around"} spacing={2} sx={{ width: "100%" }}>
             <Grid size={{ lg: 1, md: 1 }}>
               <Stack direction="row" alignItems="center" spacing={1} justifyContent="center">
-                <Tooltip title={isPlaying ? "Pausa" : "Riproduci"}>
+                <Tooltip title={isPlaying ? "Pausa" : "Riproduci"} placement="top" arrow>
                   <IconButton color="primary" onClick={togglePlay} disabled={!src}>
                     {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
                   </IconButton>
@@ -192,7 +192,7 @@ export default function AudioSelector({ value, onChange }: Props) {
                   onMouseEnter={() => isBelow1200 && setHoverVol(true)}
                   onMouseLeave={() => isBelow1200 && setHoverVol(false)}
                 >
-                  <Tooltip title={muted ? "Riattiva audio" : "Silenzia"} placement="top">
+                  <Tooltip title={muted ? "Riattiva audio" : "Silenzia"} placement="top" arrow>
                     <IconButton onClick={toggleMute}>
                       {muted ? <VolumeOffIcon /> : <VolumeUpIcon />}
                     </IconButton>
