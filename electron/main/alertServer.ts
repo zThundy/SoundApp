@@ -19,9 +19,10 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
     const clients: SseClient[] = [];
 
     const server = http.createServer((req, res) => {
-      // CORS is intentionally restrictive (local only). OBS runs locally, so this is fine.
       if (!req.socket.remoteAddress || req.socket.remoteAddress !== '127.0.0.1') {
-        // Still allow but we could reject non-local requests here.
+        res.writeHead(403, { 'Content-Type': 'text/plain' });
+        res.end('Forbidden');
+        return;
       }
 
       if (req.url === '/events') {
@@ -66,6 +67,7 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
             width: 100vw;
             height: 100vh;
             overflow: hidden;
+            /* animation: fade 6s ease-in-out forwards; */
         }
 
         .alert {
@@ -84,7 +86,6 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            animation: fade 6s ease-in-out forwards;
         }
 
         .fadeImageWrap img {
@@ -100,16 +101,16 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
         }
 
         @keyframes fade {
-            0% {
-                opacity: 1;
+            0%, 100% {
+              opacity: 0;
             }
 
-            80% {
-                opacity: 1;
+            20%, 80% {
+              opacity: 1;
             }
 
-            100% {
-                opacity: 0;
+            50% {
+              opacity: 1;
             }
         }
     </style>
@@ -122,7 +123,6 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
         es.onmessage = (ev) => {
             try {
                 const data = JSON.parse(ev.data);
-                // Expect shape: { type: 'alert', text: '...' }
                 if (data.type === 'alert') {
                     const node = document.createElement('div');
                     node.className = 'alert';
@@ -130,10 +130,10 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
                     document.getElementById('container').appendChild(node);
                     setTimeout(() => node.remove(), 6000);
                 } else if (data.type === 'imageTemplate') {
-                    // Expect: { imageDataUrl, text, duration }
                     const wrap = document.createElement('div');
                     wrap.className = 'fadeImageWrap';
                     const img = document.createElement('img');
+                    if (!data.imageDataUrl) data.imageDataUrl = "logo.png";
                     img.src = data.imageDataUrl;
                     const caption = document.createElement('div');
                     caption.className = 'caption';
@@ -143,7 +143,6 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
                     document.getElementById('container').appendChild(wrap);
                     setTimeout(() => wrap.remove(), (data.duration || 6000));
                 } else if (data.type === 'raw') {
-                    // { html, css?, js? } - inject into isolated container
                     const wrapper = document.createElement('div');
                     wrapper.style.position = 'absolute';
                     wrapper.style.top = '0';
@@ -154,13 +153,13 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
                     html = html.replace(/<script[\s\S]*?>[\s\S]*?<\\/script>/gi, '');
                     wrapper.innerHTML = html;
                     if (data.css) {
-                        const styleEl = document.createElement('style');
-                        styleEl.textContent = data.css;
-                        wrapper.appendChild(styleEl);
+                      const styleEl = document.createElement('style');
+                      styleEl.textContent = data.css;
+                      wrapper.appendChild(styleEl);
                     }
                     document.getElementById('container').appendChild(wrapper);
                     if (data.js) {
-                        try { new Function(data.js)(); } catch (e) { console.error('Raw JS error', e); }
+                      try { new Function(data.js)(); } catch (e) { console.error('Raw JS error', e); }
                     }
                     setTimeout(() => wrapper.remove(), data.duration || 10000);
                 }
