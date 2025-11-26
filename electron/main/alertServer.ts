@@ -112,7 +112,7 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
         }
 
         .fadeImageWrap img {
-          max-width: 60vw;
+          max-width: 20rem;
           height: auto;
           display: block;
           margin: 0 auto .5rem;
