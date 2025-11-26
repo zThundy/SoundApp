@@ -1,5 +1,4 @@
 import http from 'node:http';
-import { EventEmitter } from 'node:events';
 
 interface SseClient {
   id: number;
@@ -14,19 +13,36 @@ export interface AlertServer {
 
 export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
   return new Promise((resolve, reject) => {
-    const emitter = new EventEmitter();
     let nextClientId = 1;
     const clients: SseClient[] = [];
     const sockets = new Set<import('net').Socket>();
 
     const server = http.createServer((req, res) => {
+      const origin = req.headers.origin;
+
+      if (origin && /^http:\/\/localhost(:\d+)?$/.test(origin)) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+        // res.setHeader("Access-Control-Allow-Credentials", "true");
+      }
+
+      res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+
+      const rawUrl = req.url || '/'
+      let pathname = '/'
+      try {
+        const u = new URL(rawUrl, `http://127.0.0.1:${preferredPort}`)
+        pathname = u.pathname || '/'
+      } catch {
+        pathname = rawUrl.split('?')[0] || '/'
+      }
       if (!req.socket.remoteAddress || req.socket.remoteAddress !== '127.0.0.1') {
         res.writeHead(403, { 'Content-Type': 'text/plain' });
         res.end('Forbidden');
         return;
       }
 
-      if (req.url === '/events') {
+      if (pathname === '/events') {
         // SSE endpoint
         res.writeHead(200, {
           'Content-Type': 'text/event-stream',
@@ -44,7 +60,13 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
         return;
       }
 
-      if (req.url === '/' || req.url?.startsWith('/index')) {
+      if (pathname === "/health") {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'ok' }));
+        return;
+      }
+
+      if (pathname === '/' || pathname === '/index' || pathname === '/index.html') {
         console.log("Got request for index page");
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end(`

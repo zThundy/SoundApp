@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   Box,
   Tabs,
@@ -21,6 +21,7 @@ import {
   CopyAll as Clipboard,
   Close,
   OpenInNew,
+  ErrorOutline,
 } from '@mui/icons-material';
 
 import { styled } from '@mui/material/styles';
@@ -69,6 +70,9 @@ export default function AlertEditor() {
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [iframeError, setIframeError] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const [checking, setChecking] = useState(false);
 
   useEffect(() => {
     if (copied) {
@@ -80,9 +84,30 @@ export default function AlertEditor() {
   useEffect(() => {
     // Fetch the server port from the main process
     (window.alerts as any).getPort().then((res: any) => {
-      setServerUrl(`http://localhost:${res?.port || 4823}`);
+      if (!res?.port) return;
+      setServerUrl(`http://localhost:${res?.port}`);
+      checkServerHealth(`http://localhost:${res?.port}`);
     });
   }, []);
+
+  // Health check: fetch the root page; if network fails or status !200 => error
+  async function checkServerHealth(currentUrl: string) {
+    setChecking(true);
+    setIframeError(false);
+    try {
+      const resp = await fetch(currentUrl + "/health", { method: 'GET', cache: 'no-store' });
+      console.log('Health check failed, status:', currentUrl, resp.status, resp.ok, resp);
+      if (!resp.ok) {
+        setIframeError(true);
+      } else {
+        setIframeError(false);
+      }
+    } catch {
+      setIframeError(true);
+    } finally {
+      setChecking(false);
+    }
+  }
 
   function toDataUrl(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -257,10 +282,41 @@ export default function AlertEditor() {
                   </IconButton>
                 </Tooltip>
                 <iframe
+                  ref={iframeRef}
                   title="Alert Preview"
                   src={serverUrl}
                   style={{ width: '100%', height: '25rem', border: 'none' }}
                 />
+                {iframeError && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      inset: 0,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1,
+                      width: '100%',
+                      height: '25rem',
+                      color: 'text.primary',
+                      backgroundColor: 'rgba(0,0,0,0.7)'
+                    }}
+                  >
+                    <ErrorOutline sx={{ fontSize: 48 }} />
+                    <Typography variant="body1" sx={{ mb: 1, textAlign: 'center' }}>Errore nel contattare il server<br />Prova a riavviare il server e riprova.</Typography>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="secondary"
+                      sx={{ p: "8px 16px", fontSize: 15 }}
+                      onClick={() => {
+                        // Simple re-check without touching iframe src (keeps current view)
+                        checkServerHealth(serverUrl);
+                      }}
+                    >{checking ? 'Verifico...' : 'Riprova'}</Button>
+                  </Box>
+                )}
               </Box>
             </StyledBox>
 
