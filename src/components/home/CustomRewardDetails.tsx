@@ -6,6 +6,7 @@ import { ColorPicker } from '@/components/ColorPicker';
 import { Info } from "@mui/icons-material";
 
 import EmptyList from "@/components/home/EmptyList";
+import AudioSelector from "@/components/AudioSelector";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
@@ -165,6 +166,13 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward }: 
 
           <Grid size={{ lg: 5, md: 4 }}>
             <TextField label="Prompt" fullWidth value={form.prompt} onChange={handleChange('prompt')} />
+          </Grid>
+        </StyledBox>
+
+        <StyledBox>
+          <Grid size={{ lg: 12, md: 12 }}>
+            {/* Audio selector inside the empty styled box */}
+            <AudioSelector />
           </Grid>
         </StyledBox>
 
