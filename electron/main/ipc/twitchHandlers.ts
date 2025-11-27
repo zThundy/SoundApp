@@ -1,6 +1,11 @@
 import { ipcMain, BrowserWindow } from 'electron'
 import SafeStorageWrapper from '../safeStorageWrapper'
-import { getBroadcasterId, getTwitchRedemptions, getCustomRewards } from '../twitchWorker'
+import {
+  getBroadcasterId,
+  getTwitchRedemptions,
+  getCustomRewards,
+  updateCustomReward
+} from '../twitchWorker'
 
 export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null) {
   ipcMain.handle('oauth:start-twitch', (_evt) => {
@@ -78,5 +83,12 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null) {
     const broadcasterId = await getBroadcasterId(accessToken as string)
     const customRewards = await getCustomRewards(accessToken as string, broadcasterId)
     return customRewards
+  })
+
+  ipcMain.handle("twitch:update-reward", async (_evt, rewardId: string, settings: any) => {
+    const accessToken = await safeStore?.get('twitchAccessToken')
+    const broadcasterId = await getBroadcasterId(accessToken as string)
+    const updatedReward = await updateCustomReward(accessToken as string, broadcasterId, rewardId, settings)
+    return updatedReward
   })
 }

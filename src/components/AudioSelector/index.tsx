@@ -13,7 +13,11 @@ import styled from "@emotion/styled";
 
 type Props = {
   value?: string | null; // file URL
+  volume?: number; // 0..1
+  muted?: boolean;
   onChange?: (fileUrl: string | null, file?: File | null) => void;
+  onVolumeChange?: (vol: number) => void;
+  onMutedChange?: (muted: boolean) => void;
 };
 
 const StyledControlsContainer = styled(Box)(({ theme }: any) => ({
@@ -39,7 +43,7 @@ const formatTime = (sec: number) => {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 };
 
-export default function AudioSelector({ value, onChange }: Props) {
+export default function AudioSelector({ value, volume: volumeProp, muted: mutedProp, onChange, onVolumeChange, onMutedChange }: Props) {
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const [src, setSrc] = React.useState<string | null>(value ?? null);
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -56,6 +60,23 @@ export default function AudioSelector({ value, onChange }: Props) {
   React.useEffect(() => {
     setSrc(value ?? null);
   }, [value]);
+
+  React.useEffect(() => {
+    if (typeof volumeProp === 'number') {
+      setVolume(volumeProp);
+      setVolumeLabel(Math.round(volumeProp * 100).toString());
+      const el = audioRef.current;
+      if (el) el.volume = volumeProp;
+    }
+  }, [volumeProp]);
+
+  React.useEffect(() => {
+    if (typeof mutedProp === 'boolean') {
+      setMuted(mutedProp);
+      const el = audioRef.current;
+      if (el) el.muted = mutedProp;
+    }
+  }, [mutedProp]);
 
   const handleFilePick = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const file = ev.target.files?.[0] ?? null;
@@ -116,6 +137,7 @@ export default function AudioSelector({ value, onChange }: Props) {
     setVolume(v);
     setVolumeLabel(Math.round((Array.isArray(val) ? val[0] : val)).toString());
     if (el) el.volume = v;
+    if (onVolumeChange) onVolumeChange(v);
   };
 
   const toggleMute = () => {
@@ -123,6 +145,7 @@ export default function AudioSelector({ value, onChange }: Props) {
     const next = !muted;
     setMuted(next);
     if (el) el.muted = next;
+    if (onMutedChange) onMutedChange(next);
   };
 
   const clearAudio = () => {

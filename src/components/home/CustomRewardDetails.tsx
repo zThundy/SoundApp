@@ -47,6 +47,10 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
   const lastRewardId = React.useRef<string | null>(null)
   const [backgroundColor, setBackgroundColor] = React.useState<string>('#000000');
   const [backgroundChanged, setBackgroundChanged] = React.useState<boolean>(false);
+  const [audioUrl, setAudioUrl] = React.useState<string | null>(null);
+  const [audioFile, setAudioFile] = React.useState<File | null>(null);
+  const [audioVolume, setAudioVolume] = React.useState<number>(1); // 0..1
+  const [audioMuted, setAudioMuted] = React.useState<boolean>(false);
 
   // sync local form state only when a different reward is selected (by id)
   React.useEffect(() => {
@@ -87,6 +91,33 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
     })
 
     setBackgroundColor(reward.background_color ?? '#000000');
+    // Try to load locally saved alert settings for this reward
+    (async () => {
+      try {
+        const rewardId = reward.id;
+        const settingsPath = `settings/${rewardId}.json`;
+        const res = await window.fileManager?.read?.('alerts', settingsPath, true);
+        if (res?.ok && res.data) {
+          const settings = JSON.parse(res.data as string);
+          if (settings.background_color) setBackgroundColor(settings.background_color);
+          if (typeof settings.volume === 'number') setAudioVolume(settings.volume);
+          if (typeof settings.muted === 'boolean') setAudioMuted(settings.muted);
+          if (settings.audioPath) {
+            const exists = await window.fileManager?.exists?.('alerts', settings.audioPath);
+            if (exists?.ok && exists.exists) {
+              // construct a blob URL for preview: read file as buffer and create object URL
+              const fileRead = await window.fileManager?.read?.('alerts', settings.audioPath, false);
+              if (fileRead?.ok && fileRead.data) {
+                const buf = fileRead.data as any as ArrayBuffer;
+                const blob = new Blob([buf]);
+                const url = URL.createObjectURL(blob);
+                setAudioUrl(url);
+              }
+            }
+          }
+        }
+      } catch { /* ignore */ }
+    })();
   }, [reward])
 
   if (!form) {
@@ -125,6 +156,31 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
       } catch (err) {
         console.error('Failed to update reward via IPC', err)
       }
+    }
+
+    // Save local alert settings including audio
+    try {
+      const rewardId = reward.id as string;
+      // If a new audio file was selected, copy it into app data
+      let storedAudioRelPath: string | null = null;
+      if (audioFile) {
+        const ext = (audioFile.name.split('.').pop() || 'dat').toLowerCase();
+        const relPath = `audio/${rewardId}.${ext}`;
+        const buf = await audioFile.arrayBuffer();
+        await window.fileManager?.save?.('alerts', relPath, new Uint8Array(buf) as any);
+        storedAudioRelPath = relPath;
+      }
+      const settings = {
+        rewardId,
+        background_color: backgroundColor,
+        volume: audioVolume,
+        muted: audioMuted,
+        audioPath: storedAudioRelPath,
+        updatedAt: Date.now(),
+      };
+      await window.fileManager?.save?.('alerts', `settings/${rewardId}.json`, JSON.stringify(settings, null, 2));
+    } catch (err) {
+      console.error('Failed to save local alert settings', err);
     }
   }
 
@@ -169,7 +225,13 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
         <StyledBox>
           <Grid size={{ lg: 12, md: 12 }}>
             {/* Audio selector inside the empty styled box */}
-            <AudioSelector />
+            <AudioSelector
+              value={audioUrl}
+              onChange={async (fileUrl, file) => {
+                setAudioUrl(fileUrl);
+                setAudioFile(file ?? null);
+              }}
+            />
           </Grid>
         </StyledBox>
 

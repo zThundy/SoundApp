@@ -45,8 +45,28 @@ const getBroadcasterId = async (accessToken: string): Promise<string> => {
     return data.data[0].id;
 };
 
+const updateCustomReward = async (accessToken: string, broadcasterId: string, rewardId: string, settings: any) => {
+    const url = `https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=${broadcasterId}&id=${rewardId}`;
+    const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+        'Client-Id': clientId,
+        'Content-Type': 'application/json'
+    };
+    const response = await fetch(url, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(settings)
+    });
+    if (!response.ok) {
+        throw new Error('Failed to update custom reward: ' + response.statusText);
+    }
+    const data = await response.json();
+    return data;
+};
+
 export {
     getTwitchRedemptions,
     getBroadcasterId,
-    getCustomRewards
+    getCustomRewards,
+    updateCustomReward
 };
