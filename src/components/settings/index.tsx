@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
-import { Box, Button, Grid, TextField, Typography } from '@mui/material'
+import { useEffect, useState, useContext } from 'react'
+import { Box, Button, Grid, TextField, Typography, Select, MenuItem } from '@mui/material'
+import { TranslationContext } from '@/i18n/TranslationProvider'
 
 export default function Settings() {
+  const { t, language, setLanguage, availableLanguages } = useContext(TranslationContext)
   const [port, setPort] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string>('')
@@ -25,16 +27,16 @@ export default function Settings() {
     try {
       const pNum = Number(port)
       if (!Number.isFinite(pNum) || pNum <= 0 || pNum >= 65536) {
-        throw new Error('Porta non valida. Usa 1-65535')
+        throw new Error(t('settings.invalidPort'))
       }
       const res = await (window.alerts as any).setPort(pNum)
       if (res?.ok) {
-        setMessage(`Porta salvata: ${pNum}`)
+        setMessage(t('settings.portSaved', { port: pNum }))
       } else {
-        throw new Error(res?.error || 'Salvataggio fallito')
+        throw new Error(res?.error || t('settings.saveFailed'))
       }
     } catch (e: any) {
-      setMessage(e?.message || 'Errore')
+      setMessage(e?.message || t('settings.error'))
     } finally {
       setLoading(false)
     }
@@ -46,12 +48,12 @@ export default function Settings() {
     try {
       const res = await (window.alerts as any).restart()
       if (res?.ok) {
-        setMessage(`Server riavviato sulla porta ${res.port}`)
+        setMessage(t('settings.serverRestarted', { port: res.port }))
       } else {
-        throw new Error(res?.error || 'Riavvio fallito')
+        throw new Error(res?.error || t('settings.restartFailed'))
       }
     } catch (e: any) {
-      setMessage(e?.message || 'Errore')
+      setMessage(e?.message || t('settings.error'))
     } finally {
       setLoading(false)
     }
@@ -59,11 +61,11 @@ export default function Settings() {
 
   return (
     <Box p={3}>
-      <Typography variant="h5" gutterBottom>Impostazioni</Typography>
+      <Typography variant="h5" gutterBottom>{t('settings.title')}</Typography>
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 6 }}>
           <TextField
-            label="Porta Alert Server"
+            label={t('settings.portLabel')}
             value={port}
             onChange={(e) => setPort(e.target.value)}
             type="number"
@@ -72,8 +74,21 @@ export default function Settings() {
           />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }} display="flex" alignItems="center" gap={2}>
-          <Button variant="contained" color="primary" onClick={savePort} disabled={loading}>Salva porta</Button>
-          <Button variant="outlined" color="secondary" onClick={restartServer} disabled={loading}>Riavvia server</Button>
+          <Button variant="contained" color="primary" onClick={savePort} disabled={loading}>{t('settings.savePort')}</Button>
+          <Button variant="outlined" color="secondary" onClick={restartServer} disabled={loading}>{t('settings.restartServer')}</Button>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }} display="flex" alignItems="center" gap={2}>
+          <Typography variant="subtitle1" sx={{ mr: 2 }}>{t('settings.language') || 'Language'}</Typography>
+          <Select
+            value={language}
+            onChange={(e) => setLanguage(String(e.target.value))}
+            size="small"
+            sx={{ minWidth: 160 }}
+          >
+            {availableLanguages.map((lang) => (
+              <MenuItem key={lang.code} value={lang.code}>{lang.label}</MenuItem>
+            ))}
+          </Select>
         </Grid>
         {message && (
           <Grid size={{ xs: 12 }}>

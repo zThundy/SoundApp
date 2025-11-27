@@ -1,0 +1,13 @@
+{
+  "settings.title": "Impostazioni",
+  "settings.portLabel": "Porta Alert Server",
+  "settings.savePort": "Salva porta",
+  "settings.restartServer": "Riavvia server",
+  "settings.language": "Lingua",
+  "settings.invalidPort": "Porta non valida. Usa 1-65535",
+  "settings.portSaved": "Porta salvata: {port}",
+  "settings.saveFailed": "Salvataggio fallito",
+  "settings.serverRestarted": "Server riavviato sulla porta {port}",
+  "settings.restartFailed": "Riavvio fallito",
+  "settings.error": "Errore"
+}
