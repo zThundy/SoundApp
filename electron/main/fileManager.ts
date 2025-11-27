@@ -35,10 +35,26 @@ class FileManager {
     }
   }
 
+  private doesFileExist(path: string): boolean {
+    try {
+      fs.accessSync(path, fs.constants.F_OK);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private createFileIfNotExists(path: string): void {
+    if (!this.doesFileExist(path)) {
+      fs.writeFileSync(path, '');
+    }
+  }
+
   readFile(context: string, relativePath: string): Promise<Buffer> {
     let appPath = this.initFileContext(context);
     const fullPath = `${appPath}/${relativePath}`;
     this.createFolderAndSubfolders(fullPath);
+    this.createFileIfNotExists(fullPath);
     return fs.promises.readFile(fullPath);
   }
 
@@ -46,6 +62,7 @@ class FileManager {
     let appPath = this.initFileContext(context);
     const fullPath = `${appPath}/${relativePath}`;
     this.createFolderAndSubfolders(fullPath);
+    this.createFileIfNotExists(fullPath);
     return fs.promises.writeFile(fullPath, data);
   }
 
@@ -53,6 +70,8 @@ class FileManager {
     let appPath = this.initFileContext(context);
     const fullPath = `${appPath}/${relativePath}`;
     this.createFolderAndSubfolders(fullPath);
+    // idk why, but i'm putting this here to avoid annoying errors
+    this.createFileIfNotExists(fullPath);
     return fs.promises.unlink(fullPath);
   }
 

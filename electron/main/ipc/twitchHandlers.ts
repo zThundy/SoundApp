@@ -88,7 +88,8 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null) {
   ipcMain.handle("twitch:update-reward", async (_evt, rewardId: string, settings: any) => {
     const accessToken = await safeStore?.get('twitchAccessToken')
     const broadcasterId = await getBroadcasterId(accessToken as string)
-    const updatedReward = await updateCustomReward(accessToken as string, broadcasterId, rewardId, settings)
-    return updatedReward
+    // const updatedReward = await updateCustomReward(accessToken as string, broadcasterId, rewardId, settings)
+    // return updatedReward
+    return false
   })
 }

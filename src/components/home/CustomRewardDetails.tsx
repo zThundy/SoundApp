@@ -51,12 +51,21 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
   const [audioFile, setAudioFile] = React.useState<File | null>(null);
   const [audioVolume, setAudioVolume] = React.useState<number>(1); // 0..1
   const [audioMuted, setAudioMuted] = React.useState<boolean>(false);
+  const [audioResetKey, setAudioResetKey] = React.useState<number>(0);
+  const [audioRelPath, setAudioRelPath] = React.useState<string | null>(null);
 
   // sync local form state only when a different reward is selected (by id)
   React.useEffect(() => {
     if (!reward) {
       setForm(null)
       lastRewardId.current = null
+      // full reset for audio when reward becomes null
+      if (audioUrl) URL.revokeObjectURL(audioUrl)
+      setAudioUrl(null)
+      setAudioFile(null)
+      setAudioVolume(1)
+      setAudioMuted(false)
+      setAudioResetKey(k => k + 1)
       return
     }
 
@@ -68,6 +77,13 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
       return
     }
 
+    // reward changed: reset audio component state before loading new persisted settings
+    if (audioUrl) URL.revokeObjectURL(audioUrl)
+    setAudioUrl(null)
+    setAudioFile(null)
+    setAudioVolume(1)
+    setAudioMuted(false)
+    setAudioResetKey(k => k + 1)
     lastRewardId.current = reward.id
 
     setForm({
@@ -98,23 +114,36 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
         const settingsPath = `settings/${rewardId}.json`;
         const res = await window.fileManager?.read?.('alerts', settingsPath, true);
         if (res?.ok && res.data) {
+          console.log('Loaded local alert settings for reward', rewardId, res.data);
           const settings = JSON.parse(res.data as string);
           if (settings.background_color) setBackgroundColor(settings.background_color);
           if (typeof settings.volume === 'number') setAudioVolume(settings.volume);
           if (typeof settings.muted === 'boolean') setAudioMuted(settings.muted);
+          setAudioRelPath(settings.audioPath ?? null);
           if (settings.audioPath) {
+            console.log('Found audioPath in settings:', settings.audioPath);
             const exists = await window.fileManager?.exists?.('alerts', settings.audioPath);
             if (exists?.ok && exists.exists) {
+              console.log('Audio file exists:', settings.audioPath);
               // construct a blob URL for preview: read file as buffer and create object URL
               const fileRead = await window.fileManager?.read?.('alerts', settings.audioPath, false);
               if (fileRead?.ok && fileRead.data) {
+                console.log('Read audio file for preview:', settings.audioPath);
                 const buf = fileRead.data as any as ArrayBuffer;
                 const blob = new Blob([buf]);
                 const url = URL.createObjectURL(blob);
+                console.log('Created object URL for audio preview:', url);
                 setAudioUrl(url);
               }
             }
           }
+        } else {
+          setAudioUrl(null);
+          setAudioFile(null);
+          setAudioVolume(1);
+          setAudioMuted(false);
+          setAudioResetKey(k => k + 1)
+          setAudioRelPath(null);
         }
       } catch { /* ignore */ }
     })();
@@ -162,13 +191,14 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
     try {
       const rewardId = reward.id as string;
       // If a new audio file was selected, copy it into app data
-      let storedAudioRelPath: string | null = null;
+      let storedAudioRelPath: string | null = audioRelPath;
       if (audioFile) {
         const ext = (audioFile.name.split('.').pop() || 'dat').toLowerCase();
         const relPath = `audio/${rewardId}.${ext}`;
         const buf = await audioFile.arrayBuffer();
         await window.fileManager?.save?.('alerts', relPath, new Uint8Array(buf) as any);
         storedAudioRelPath = relPath;
+        setAudioRelPath(relPath);
       }
       const settings = {
         rewardId,
@@ -226,11 +256,17 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
           <Grid size={{ lg: 12, md: 12 }}>
             {/* Audio selector inside the empty styled box */}
             <AudioSelector
+              key={audioResetKey + ':' + (reward?.id || 'none')}
               value={audioUrl}
+              volume={audioVolume}
+              muted={audioMuted}
               onChange={async (fileUrl, file) => {
                 setAudioUrl(fileUrl);
                 setAudioFile(file ?? null);
+                if (!fileUrl && !file) setAudioRelPath(null);
               }}
+              onVolumeChange={(v) => setAudioVolume(v)}
+              onMutedChange={(m) => setAudioMuted(m)}
             />
           </Grid>
         </StyledBox>
@@ -251,20 +287,19 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
         <StyledBox>
           <Grid size={{ xs: 12, md: 8 }}>
             <Stack direction="column" spacing={2} flexWrap="wrap">
-
-              <Stack direction="row" spacing={2} alignItems="center">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={!!form.is_in_stock}
-                      onChange={handleCheckbox('is_in_stock')}
-                      disabled
-                    />}
-                  label="In Stock" />
-                <Tooltip title="Indicates whether the reward is in stock." placement="right">
-                  <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
-                </Tooltip>
-              </Stack>
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={!!form.is_in_stock}
+                        onChange={handleCheckbox('is_in_stock')}
+                        disabled
+                      />}
+                    label="In Stock" />
+                  <Tooltip title="Indicates whether the reward is in stock." placement="right">
+                    <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
+                  </Tooltip>
+                </Stack>
 
               <Stack direction="row" spacing={2} alignItems="center">
                 <FormControlLabel

@@ -59,6 +59,21 @@ export default function AudioSelector({ value, volume: volumeProp, muted: mutedP
 
   React.useEffect(() => {
     setSrc(value ?? null);
+    // If no value provided, hard-reset all runtime state
+    if (!value) {
+      const el = audioRef.current;
+      if (el) {
+        el.pause();
+        el.removeAttribute('src');
+        try { el.load(); } catch {}
+      }
+      setIsPlaying(false);
+      setDuration(0);
+      setCurrentTime(0);
+      setVolume(volumeProp != null ? volumeProp : 1);
+      setVolumeLabel(volumeProp != null ? Math.round(volumeProp * 100).toString() : '100');
+      setMuted(mutedProp != null ? mutedProp : false);
+    }
   }, [value]);
 
   React.useEffect(() => {
