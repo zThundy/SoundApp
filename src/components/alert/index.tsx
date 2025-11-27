@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import {
   Box,
   Tabs,
@@ -27,6 +27,8 @@ import {
 import { styled } from '@mui/material/styles';
 
 import style from "./alert.module.css"
+
+import { TranslationContext } from '@/i18n/TranslationProvider';
 
 declare global {
   interface Window {
@@ -59,6 +61,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function AlertEditor() {
+  const { t } = useContext(TranslationContext);
   const [serverUrl, setServerUrl] = useState('http://localhost:4823');
   const [tab, setTab] = useState(0);
   // Raw editor state
@@ -123,17 +126,17 @@ export default function AlertEditor() {
   }
 
   async function sendRaw() {
-    setSending(true); setStatus(null);
+    setSending(true);
+    setStatus(null);
     try {
       const payload = { type: 'raw', html: rawHtml, css: rawCss, js: rawJs, duration: rawDuration };
       const res = await window.alerts?.broadcast(payload);
-      setStatus(res?.ok ? 'Inviato!' : 'Errore: ' + res?.error);
-    } catch (e: any) { setStatus('Errore invio: ' + e.message); }
+      setStatus(res?.ok ? t("common.sent") : t("common.error") + " " + res?.error);
+    } catch (e: any) { setStatus(t("common.error") + " " + e.message); }
     finally { setSending(false); }
   }
 
   async function sendImageTemplate() {
-    // if (!imageFile) { setStatus('Seleziona un\'immagine'); return; }
     setSending(true);
     setStatus(null);
     try {
@@ -146,8 +149,8 @@ export default function AlertEditor() {
       }
       const payload = { type: 'imageTemplate', imageDataUrl: image, text: imageText, duration: imageDuration };
       const res = await window.alerts?.broadcast(payload);
-      setStatus(res?.ok ? 'Inviato!' : 'Errore: ' + res?.error);
-    } catch (e: any) { setStatus('Errore invio: ' + e.message); }
+      setStatus(res?.ok ? t("common.sent") : t("common.error") + " " + res?.error);
+    } catch (e: any) { setStatus(t("common.error") + " " + e.message); }
     finally {
       setTimeout(() => {
         setSending(false)
@@ -157,12 +160,12 @@ export default function AlertEditor() {
 
   return (
     <Box p={2}>
-      <Typography variant="h5" mb={2}>Alert Editor</Typography>
+      <Typography variant="h5" mb={2}>{t('alert.alert')}</Typography>
       <Tabs value={tab} onChange={(_, v) => setTab(v)}>
-        <Tab label="Template Immagine" />
+        <Tab label={t('alert.imageTemplate')} />
 
-        <Tooltip title="Coming soon..." placement="top" arrow>
-          <Tab label="Custom HTML/CSS/JS" disabled />
+        <Tooltip title={t('alert.comingSoon')} placement="top" arrow>
+          <Tab label={t('alert.customHtmlCssJs')} disabled />
         </Tooltip>
       </Tabs>
 
@@ -172,11 +175,10 @@ export default function AlertEditor() {
 
             {tab === 0 && (
               <Stack spacing={2}>
-                <Typography variant="body2">Mostra un\'immagine con fade e testo sotto.</Typography>
                 {imageFile && <Typography fontSize={12}>File: {imageFile.name}</Typography>}
                 <StyledBox>
                   <TextField
-                    label="Testo"
+                    label={t("alert.textFieldLabel")}
                     value={imageText}
                     onChange={e => setImageText(e.target.value)}
                     fullWidth
@@ -184,7 +186,7 @@ export default function AlertEditor() {
                 </StyledBox>
                 <StyledBox>
                   <TextField
-                    label="Durata (ms)"
+                    label={t("alert.durationMs")}
                     type="number"
                     value={imageDuration}
                     onChange={e => setImageDuration(parseInt(e.target.value) || 6000)}
@@ -192,8 +194,8 @@ export default function AlertEditor() {
                   />
                 </StyledBox>
                 <Stack direction="row" spacing={2} width={"100%"}>
-                  <Button variant="contained" disabled={sending} onClick={sendImageTemplate}>Invia Template Immagine</Button>
-                  <Button component="label" variant="outlined" color="secondary">Seleziona Immagine
+                  <Button variant="contained" disabled={sending} onClick={sendImageTemplate}>{t("alert.sendTemplate")}</Button>
+                  <Button component="label" variant="outlined" color="secondary">{t("alert.selectImage")}
                     <input hidden type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} />
                   </Button>
                 </Stack>
@@ -228,7 +230,9 @@ export default function AlertEditor() {
             mt={2}
             justifyContent={"space-between"}
           >
-            <Typography variant="h6">Anteprima Alert</Typography>
+            <StyledBox>
+              <Typography variant="h6">{t("alert.preview")}</Typography>
+            </StyledBox>
 
             <StyledBox>
               <Paper
@@ -243,7 +247,7 @@ export default function AlertEditor() {
                 }}
               >
                 <Tooltip
-                  title={copied ? "Copiato!" : "Copia negli appunti"}
+                  title={copied ? t("common.copied") : t("common.copyToClipboard")}
                   placement={"top"}
                   slots={{
                     transition: Zoom
@@ -270,7 +274,7 @@ export default function AlertEditor() {
 
             <StyledBox>
               <Box sx={{ position: 'relative', width: '100%' }}>
-                <Tooltip title="Apri nel browser" placement="top" arrow>
+                <Tooltip title={t("alert.openInBrowser")} placement="top" arrow>
                   <IconButton
                     aria-label="open-external"
                     onClick={() => window.ipcRenderer?.invoke('open-external', serverUrl)}
@@ -290,7 +294,7 @@ export default function AlertEditor() {
                 </Tooltip>
                 <iframe
                   ref={iframeRef}
-                  title="Alert Preview"
+                  title={t("alert.previewIframeTitle")}
                   src={serverUrl}
                   style={{ width: '100%', height: '25rem', border: 'none' }}
                 />
@@ -311,7 +315,7 @@ export default function AlertEditor() {
                     }}
                   >
                     <ErrorOutline sx={{ fontSize: 48 }} />
-                    <Typography variant="body1" sx={{ mb: 1, textAlign: 'center' }}>Errore nel contattare il server<br />Prova a riavviare il server e riprova.</Typography>
+                    <Typography variant="body1" sx={{ mb: 1, textAlign: 'center' }}>{t("alert.errorContactingServer")}<br />{t("alert.tryRestartingServer")}</Typography>
                     <Button
                       size="small"
                       variant="outlined"
@@ -321,7 +325,7 @@ export default function AlertEditor() {
                         // Simple re-check without touching iframe src (keeps current view)
                         checkServerHealth(serverUrl);
                       }}
-                    >{checking ? 'Verifico...' : 'Riprova'}</Button>
+                    >{checking ? t("update.checking") : t("common.ok")}</Button>
                   </Box>
                 )}
               </Box>

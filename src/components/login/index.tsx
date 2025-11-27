@@ -3,9 +3,12 @@ import { useEffect } from "react"
 import style from "./login.module.css"
 
 import { Button } from "@mui/material"
+import { useContext } from 'react'
+import { TranslationContext } from '@/i18n/TranslationProvider'
 import { useLocation, useNavigate } from "react-router"
 
 export default function Login() {
+  const { t } = useContext(TranslationContext)
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -36,7 +39,7 @@ export default function Login() {
           color="primary"
           sx={{ width: '100%', fontSize: 18, padding: '10px 0' }}
           startIcon={
-            <img src="/twitch.png" alt="Twitch Logo" style={{
+            <img src="/twitch.png" alt={t('login.twitchLogoAlt')} style={{
               width: 25,
               height: 25,
               paddingRight: 10,
@@ -45,7 +48,7 @@ export default function Login() {
           }
           onClick={clicked}
         >
-          Login with Twitch
+          {t('login.withTwitch')}
         </Button>
       </div>
     </div>

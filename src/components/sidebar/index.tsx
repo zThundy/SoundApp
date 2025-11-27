@@ -1,6 +1,8 @@
 
 
 import { Grid, Tooltip } from '@mui/material'
+import { useContext } from 'react'
+import { TranslationContext } from '@/i18n/TranslationProvider'
 import { useState } from 'react'
 
 import style from './sidebar.module.css'
@@ -9,6 +11,7 @@ import { Settings, LogoutOutlined, Tv, VideoLibrary } from '@mui/icons-material'
 import { useNavigate } from 'react-router'
 
 export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: string) => void }) {
+  const { t } = useContext(TranslationContext)
   const [currentView, setCurrentView] = useState<string>('redeems')
   const navigate = useNavigate()
 
@@ -36,7 +39,7 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
           onClick={() => handleNavigation("redeems")}
         >
           
-          <Tooltip title="Redeems" placement="right">
+          <Tooltip title={t('sidebar.redeems')} placement="right">
             <VideoLibrary />
           </Tooltip>
 
@@ -47,7 +50,7 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
           onClick={() => handleNavigation("settings")}
         >
 
-          <Tooltip title="Settings" placement="right">
+          <Tooltip title={t('sidebar.settings')} placement="right">
             <Settings />
           </Tooltip>
 
@@ -58,7 +61,7 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
           onClick={() => handleNavigation("alert")}
         >
 
-          <Tooltip title="Alert" placement="right">
+          <Tooltip title={t('sidebar.alert')} placement="right">
             <Tv />
           </Tooltip>
 
@@ -69,7 +72,7 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
           onClick={logout}
         >
 
-          <Tooltip title="Log out" placement="right">
+          <Tooltip title={t('sidebar.logout')} placement="right">
             <LogoutOutlined />
           </Tooltip>
 

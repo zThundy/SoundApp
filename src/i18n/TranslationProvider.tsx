@@ -16,12 +16,18 @@ export const TranslationContext = createContext<TranslationContextProps>({
   availableLanguages: [
     { code: 'en-EN', label: 'English' },
     { code: 'it-IT', label: 'Italiano' },
+    { code: 'de-DE', label: 'Deutsch' },
+    { code: 'es-ES', label: 'Español' },
+    { code: 'fr-FR', label: 'Français' },
   ],
 });
 
 const languageFiles: Record<string, () => Promise<any>> = {
   'en-EN': () => import('./en-EN.json'),
   'it-IT': () => import('./it-IT.json'),
+  'de-DE': () => import('./de-DE.json'),
+  'es-ES': () => import('./es-ES.json'),
+  'fr-FR': () => import('./fr-FR.json'),
 };
 
 export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -52,6 +58,9 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const availableLanguages = [
     { code: 'en-EN', label: 'English' },
     { code: 'it-IT', label: 'Italiano' },
+    { code: 'de-DE', label: 'Deutsch' },
+    { code: 'es-ES', label: 'Español' },
+    { code: 'fr-FR', label: 'Français' },
   ];
 
   return (

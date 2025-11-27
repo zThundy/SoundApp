@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useContext } from 'react'
+import { TranslationContext } from '@/i18n/TranslationProvider'
 import { createPortal } from 'react-dom'
 import './modal.css'
 
@@ -11,12 +12,13 @@ const ModalTemplate: React.FC<React.PropsWithChildren<{
   onOk?: () => void
   width?: number
 }>> = props => {
+  const { t } = useContext(TranslationContext)
   const {
     title,
     children,
     footer,
-    cancelText = 'Cancel',
-    okText = 'OK',
+    cancelText = t('common.cancel'),
+    okText = t('common.ok'),
     onCancel,
     onOk,
     width = 530,

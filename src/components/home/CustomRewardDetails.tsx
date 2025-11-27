@@ -1,5 +1,5 @@
 
-import React from "react"
+import React, { useContext } from "react"
 
 import { Grid, styled, TextField, Checkbox, FormControlLabel, Button, Stack, Box, Avatar, Tooltip } from "@mui/material"
 import { ColorPicker } from '@/components/ColorPicker';
@@ -7,6 +7,8 @@ import { Info } from "@mui/icons-material";
 
 import EmptyList from "@/components/home/EmptyList";
 import AudioSelector from "@/components/AudioSelector";
+
+import { TranslationContext } from "@/i18n/TranslationProvider"
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
@@ -43,6 +45,8 @@ const calculateImage = (reward: any) => {
 }
 
 const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, clearReward }: { reward: any, clearReward: () => void }) {
+  const { t } = useContext(TranslationContext);
+  
   const [form, setForm] = React.useState<any>(null)
   const lastRewardId = React.useRef<string | null>(null)
   const [backgroundColor, setBackgroundColor] = React.useState<string>('#000000');
@@ -150,7 +154,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
   }, [reward])
 
   if (!form) {
-    return <EmptyList text="No custom reward selected." />
+    return <EmptyList text={t("redeems.noRewardsSelected")} />
   }
 
   const handleCheckbox = (key: string) => (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -244,11 +248,11 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
           </Grid>
 
           <Grid size={{ lg: 5, md: 5 }}>
-            <TextField label="Title" fullWidth value={form.title} onChange={handleChange('title')} />
+            <TextField label={t("common.title")} fullWidth value={form.title} onChange={handleChange('title')} />
           </Grid>
 
           <Grid size={{ lg: 5, md: 4 }}>
-            <TextField label="Prompt" fullWidth value={form.prompt} onChange={handleChange('prompt')} />
+            <TextField label={t("common.prompt")} fullWidth value={form.prompt} onChange={handleChange('prompt')} />
           </Grid>
         </StyledBox>
 
@@ -273,7 +277,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
 
         <StyledBox justifyContent={"space-between"} flex={1} gap={2}>
           <Grid size={{ xs: 6, md: 6 }}>
-            <TextField label="Cost" type="number" fullWidth value={form.cost as any} onChange={handleChange('cost')} />
+            <TextField label={t("common.cost")} type="number" fullWidth value={form.cost as any} onChange={handleChange('cost')} />
           </Grid>
 
           <Grid size={{ xs: 6, md: 6 }}>
@@ -295,8 +299,8 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
                         onChange={handleCheckbox('is_in_stock')}
                         disabled
                       />}
-                    label="In Stock" />
-                  <Tooltip title="Indicates whether the reward is in stock." placement="right">
+                    label={t("redeems.inStock")} />
+                <Tooltip title={t("redeems.inStockInfo")} placement="right">
                     <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
                   </Tooltip>
                 </Stack>
@@ -308,8 +312,8 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
                       checked={!!form.is_enabled}
                       onChange={handleCheckbox('is_enabled')}
                     />}
-                  label="Enabled" />
-                <Tooltip title="This indicates whether the reward is enabled. Viewers see only enabled rewards." placement="right">
+                  label={t("redeems.enabled")} />
+                <Tooltip title={t("redeems.enabledInfo")} placement="right">
                   <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
                 </Tooltip>
               </Stack>
@@ -321,8 +325,8 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
                       checked={!!form.is_paused}
                       onChange={handleCheckbox('is_paused')}
                     />}
-                  label="Paused" />
-                <Tooltip title="This determines whether to pause the reward. Viewers can't redeem paused rewards." placement="right">
+                  label={t("redeems.paused")} />
+                <Tooltip title={t("redeems.pausedInfo")} placement="right">
                   <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
                 </Tooltip>
               </Stack>
@@ -334,8 +338,8 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
                       checked={!!form.is_user_input_required}
                       onChange={handleCheckbox('is_user_input_required')}
                     />}
-                  label="Is user input required?" />
-                <Tooltip title="This determines whether users must enter information to redeem the reward. Change the prompt field to customize the user input requirements." placement="right">
+                  label={t("redeems.isUserInputRequired")} />
+                <Tooltip title={t("redeems.isUserInputRequiredInfo")} placement="right">
                   <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
                 </Tooltip>
               </Stack>
@@ -347,8 +351,8 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
                       checked={!!form.should_redemptions_skip_request_queue}
                       onChange={handleCheckbox('should_redemptions_skip_request_queue')}
                     />}
-                  label="Should redemptions be skipped?" />
-                <Tooltip title="This determines whether redemptions should be set to FULFILLED status immediately when a reward is redeemed. If unchecked, status is set to UNFULFILLED and follows the normal request queue process." placement="right">
+                  label={t("redeems.shouldRedemptionsBeSkipped")} />
+                <Tooltip title={t("redeems.shouldRedemptionsBeSkippedInfo")} placement="right">
                   <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
                 </Tooltip>
               </Stack>
@@ -361,12 +365,12 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
           <Grid size={{ xs: 12, md: 12 }}>
             <Stack direction="row" spacing={{ xs: 2, md: 4 }} alignItems="center" justifyContent={"space-between"}>
               <Stack direction="row" spacing={2} alignItems="center" justifyContent={"space-evenly"}>
-                <TextField label="Max per stream" type="number" fullWidth value={form.max_per_stream_value as any} onChange={handleChange('max_per_stream_value')} />
-                <FormControlLabel control={<Checkbox checked={!!form.max_per_stream_enabled} onChange={handleCheckbox('max_per_stream_enabled')} />} label="Enabled" />
+                <TextField label={t("redeems.maxPerStream")} type="number" fullWidth value={form.max_per_stream_value as any} onChange={handleChange('max_per_stream_value')} />
+                <FormControlLabel control={<Checkbox checked={!!form.max_per_stream_enabled} onChange={handleCheckbox('max_per_stream_enabled')} />} label={t("common.enabled")} />
               </Stack>
 
               <Stack direction="row" spacing={2} alignItems="center" padding={2}>
-                <Tooltip title="The maximum number of redemptions allowed per live stream. The minimum value is 1." placement="right">
+                <Tooltip title={t("redeems.maxPerStreamInfo")} placement="right">
                   <Info fontSize={"medium"} style={{ cursor: 'pointer' }} />
                 </Tooltip>
               </Stack>
@@ -378,12 +382,12 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
           <Grid size={{ xs: 12, md: 12 }}>
             <Stack direction="row" spacing={{ xs: 2, md: 4 }} alignItems="center" justifyContent={"space-between"}>
               <Stack direction="row" spacing={2} alignItems="center" justifyContent={"space-evenly"}>
-                <TextField label="Max per user per stream" type="number" fullWidth value={form.max_per_user_value as any} onChange={handleChange('max_per_user_value')} />
-                <FormControlLabel control={<Checkbox checked={!!form.max_per_user_enabled} onChange={handleCheckbox('max_per_user_enabled')} />} label="Enabled" />
+                <TextField label={t("redeems.maxPerUserPerStream")} type="number" fullWidth value={form.max_per_user_value as any} onChange={handleChange('max_per_user_value')} />
+                <FormControlLabel control={<Checkbox checked={!!form.max_per_user_enabled} onChange={handleCheckbox('max_per_user_enabled')} />} label={t("common.enabled")} />
               </Stack>
 
               <Stack direction="row" spacing={2} alignItems="center" padding={2}>
-                <Tooltip title="The maximum number of redemptions allowed per user per stream. The minimum value is 1." placement="right">
+                <Tooltip title={t("redeems.maxPerUserPerStreamInfo")} placement="right">
                   <Info fontSize={"medium"} style={{ cursor: 'pointer' }} />
                 </Tooltip>
               </Stack>
@@ -395,12 +399,12 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
           <Grid size={{ xs: 12, md: 12 }}>
             <Stack direction="row" spacing={{ xs: 2, md: 4 }} alignItems="center" justifyContent={"space-between"}>
               <Stack direction="row" spacing={2} alignItems="center" justifyContent={"space-evenly"}>
-                <TextField label="Global Cooldown" type="number" fullWidth value={form.global_cooldown as any} onChange={handleChange('global_cooldown')} />
-                <FormControlLabel control={<Checkbox checked={!!form.global_cooldown_enabled} onChange={handleCheckbox('global_cooldown_enabled')} />} label="Enabled" />
+                <TextField label={t("redeems.globalCooldown")} type="number" fullWidth value={form.global_cooldown as any} onChange={handleChange('global_cooldown')} />
+                <FormControlLabel control={<Checkbox checked={!!form.global_cooldown_enabled} onChange={handleCheckbox('global_cooldown_enabled')} />} label={t("common.enabled")} />
               </Stack>
 
               <Stack direction="row" spacing={2} alignItems="center" padding={2}>
-                <Tooltip title="The global cooldown period for all redemptions. The minimum value is 1." placement="right">
+                <Tooltip title={t("redeems.globalCooldownInfo")} placement="right">
                   <Info fontSize={"medium"} style={{ cursor: 'pointer' }} />
                 </Tooltip>
               </Stack>
@@ -411,8 +415,8 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
         <StyledBox>
           <Grid size={{ xs: 12 }}>
             <Stack direction="row" spacing={2}>
-              <Button variant="contained" color="primary" onClick={handleSave} fullWidth>Save</Button>
-              <Button variant="outlined" color="secondary" onClick={handleCancel} fullWidth>Cancel</Button>
+              <Button variant="contained" color="primary" onClick={handleSave} fullWidth>{t("common.save")}</Button>
+              <Button variant="outlined" color="secondary" onClick={handleCancel} fullWidth>{t("common.cancel")}</Button>
             </Stack>
           </Grid>
         </StyledBox>

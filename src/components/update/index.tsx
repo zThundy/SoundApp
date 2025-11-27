@@ -1,10 +1,12 @@
 import type { ProgressInfo } from 'electron-updater'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useContext } from 'react'
+import { TranslationContext } from '@/i18n/TranslationProvider'
 import Modal from '@/components/update/Modal'
 import Progress from '@/components/update/Progress'
 import './update.css'
 
 const Update = () => {
+  const { t } = useContext(TranslationContext)
   const [checking, setChecking] = useState(false)
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [versionInfo, setVersionInfo] = useState<VersionInfo>()
@@ -43,8 +45,8 @@ const Update = () => {
     if (arg1.update) {
       setModalBtn(state => ({
         ...state,
-        cancelText: 'Cancel',
-        okText: 'Update',
+        cancelText: t('update.cancel'),
+        okText: t('update.update'),
         onOk: () => window.ipcRenderer.invoke('start-download'),
       }))
       setUpdateAvailable(true)
@@ -66,8 +68,8 @@ const Update = () => {
     setProgressInfo({ percent: 100 })
     setModalBtn(state => ({
       ...state,
-      cancelText: 'Later',
-      okText: 'Install now',
+      cancelText: t('update.later'),
+      okText: t('update.installNow'),
       onOk: () => window.ipcRenderer.invoke('quit-and-install'),
     }))
   }, [])
@@ -101,16 +103,16 @@ const Update = () => {
           {updateError
             ? (
               <div>
-                <p>Error downloading the latest version.</p>
+                <p>{t('update.errorDownloading')}</p>
                 <p>{updateError.message}</p>
               </div>
             ) : updateAvailable
               ? (
                 <div>
-                  <div>The last version is: v{versionInfo?.newVersion}</div>
+                  <div>{t('update.lastVersionIs', { version: versionInfo?.newVersion })}</div>
                   <div className='new-version__target'>v{versionInfo?.version} -&gt; v{versionInfo?.newVersion}</div>
                   <div className='update__progress'>
-                    <div className='progress__title'>Update progress:</div>
+                    <div className='progress__title'>{t('update.progressTitle')}</div>
                     <div className='progress__bar'>
                       <Progress percent={progressInfo?.percent} ></Progress>
                     </div>
@@ -123,7 +125,7 @@ const Update = () => {
         </div>
       </Modal>
       <button disabled={checking} onClick={checkUpdate} className="btn btn-secondary">
-        {checking ? 'Checking...' : 'Check update'}
+        {checking ? t('update.checking') : t('update.checkUpdate')}
       </button>
     </>
   )

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Button, Stack, Typography, Slider, IconButton, Tooltip, Grid, Fade } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -10,6 +10,8 @@ import {
 } from "@mui/icons-material";
 
 import styled from "@emotion/styled";
+
+import { TranslationContext } from "@/i18n/TranslationProvider";
 
 type Props = {
   value?: string | null; // file URL
@@ -44,6 +46,7 @@ const formatTime = (sec: number) => {
 };
 
 export default function AudioSelector({ value, volume: volumeProp, muted: mutedProp, onChange, onVolumeChange, onMutedChange }: Props) {
+  const { t } = useContext(TranslationContext);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const [src, setSrc] = React.useState<string | null>(value ?? null);
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -193,7 +196,7 @@ export default function AudioSelector({ value, volume: volumeProp, muted: mutedP
           <Grid container direction="row" alignItems="center" justifyContent={"space-around"} spacing={2} sx={{ width: "100%" }}>
             <Grid size={{ lg: 1, md: 1 }}>
               <Stack direction="row" alignItems="center" spacing={1} justifyContent="center">
-                <Tooltip title={isPlaying ? "Pausa" : "Riproduci"} placement="top" arrow>
+                <Tooltip title={isPlaying ? t("audio.pause") : t("audio.play")} placement="top" arrow>
                   <IconButton color="primary" onClick={togglePlay} disabled={!src}>
                     {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
                   </IconButton>
@@ -225,7 +228,7 @@ export default function AudioSelector({ value, volume: volumeProp, muted: mutedP
                   onMouseEnter={() => isBelow1200 && setHoverVol(true)}
                   onMouseLeave={() => isBelow1200 && setHoverVol(false)}
                 >
-                  <Tooltip title={muted ? "Riattiva audio" : "Silenzia"} placement="top" arrow>
+                  <Tooltip title={muted ? t("audio.unmute") : t("audio.mute")} placement="top" arrow>
                     <IconButton onClick={toggleMute}>
                       {muted ? <VolumeOffIcon /> : <VolumeUpIcon />}
                     </IconButton>
@@ -283,12 +286,12 @@ export default function AudioSelector({ value, volume: volumeProp, muted: mutedP
 
       <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
         <Button variant="contained" component="label" fullWidth>
-          Seleziona audio
+          {t("audio.selectAudioFile")}
           <input hidden type="file" accept="audio/*" onChange={handleFilePick} />
         </Button>
         {src && (
           <Button variant="outlined" color="secondary" onClick={clearAudio} fullWidth>
-            Rimuovi
+            {t("audio.removeAudioFile")}
           </Button>
         )}
       </Stack>

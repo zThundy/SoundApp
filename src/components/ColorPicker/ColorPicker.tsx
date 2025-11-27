@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import { styled } from '@mui/material/styles';
 
@@ -7,6 +7,8 @@ import { Button, Menu, Typography, Box } from '@mui/material';
 import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 
 import { ColorOption } from './ColorOption';
+
+import { TranslationContext } from '@/i18n/TranslationProvider';
 
 const StyledButton = styled(Button)(({ theme }) => ({
   justifyContent: 'space-evenly',
@@ -61,6 +63,8 @@ const createGroupsOf = (arr: any[], perGroup: number): any => {
 };
 
 export const ColorPicker = (props: ColorPickerProps) => {
+  const { t } = useContext(TranslationContext);
+
   const palette = props.palette || {
     tomato: '#D50000',
     flamingo: '#E67C73',
@@ -168,28 +172,28 @@ export const ColorPicker = (props: ColorPickerProps) => {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 1 }}>
         {defaultKeys.length > 0 && (
           <Box>
-            <Typography variant="caption" sx={{ px: 0.5, color: 'text.primary' }}>Default</Typography>
+            <Typography variant="caption" sx={{ px: 0.5, color: 'text.primary' }}>{t("colorPicker.default")}</Typography>
             {renderGroup(defaultKeys)}
           </Box>
         )}
 
         {exageratedKeys.length > 0 && (
           <Box>
-            <Typography variant="caption" sx={{ px: 0.5, color: 'text.primary' }}>Primary</Typography>
+            <Typography variant="caption" sx={{ px: 0.5, color: 'text.primary' }}>{t("colorPicker.primary")}</Typography>
             {renderGroup(exageratedKeys)}
           </Box>
         )}
 
         {generatedKeys.length > 0 && (
           <Box>
-            <Typography variant="caption" sx={{ px: 0.5, color: 'text.primary' }}>Generated</Typography>
+            <Typography variant="caption" sx={{ px: 0.5, color: 'text.primary' }}>{t("colorPicker.generated")}</Typography>
             {renderGroup(generatedKeys)}
           </Box>
         )}
 
         {negativeKeys.length > 0 && (
           <Box>
-            <Typography variant="caption" sx={{ px: 0.5, color: 'text.primary' }}>Negative</Typography>
+            <Typography variant="caption" sx={{ px: 0.5, color: 'text.primary' }}>{t("colorPicker.negative")}</Typography>
             {renderGroup(negativeKeys)}
           </Box>
         )}

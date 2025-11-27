@@ -4,5 +4,4 @@
   border-radius: 5px;
   background-color: var(--mui-palette-background-900);
   height: 100%;
-  width: calc(100% - 2rem);
 }
