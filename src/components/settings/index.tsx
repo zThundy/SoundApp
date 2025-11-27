@@ -3,6 +3,26 @@ import { Box, Button, Grid, TextField, Typography, Select, MenuItem, Stack } fro
 import { TranslationContext } from '@/i18n/TranslationProvider'
 
 import style from './settings.module.css'
+import { styled } from '@mui/system'
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  backgroundColor: (theme.palette as any).background["850"],
+  padding: theme.spacing(2.2),
+  borderRadius: theme.shape.borderRadius,
+  justifyContent: "space-between",
+  alignContent: "center",
+  alignItems: "center",
+  display: "flex",
+  flexDirection: "row",
+  maxHeight: "fit-content",
+  width: "100%",
+  height: "100%",
+  transition: "background-color .2s ease-in-out",
+
+  ":hover": {
+    backgroundColor: (theme.palette as any).background["800"],
+  }
+}));
 
 export default function Settings() {
   const { t, language, setLanguage, availableLanguages } = useContext(TranslationContext)
@@ -62,9 +82,9 @@ export default function Settings() {
   }
 
   return (
-    <Box p={3} className={style.container}>
+    <Box p={3}>
       <Typography variant="h5" gutterBottom>{t('settings.title')}</Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} className={style.container} p={2}>
         <Grid size={{ xs: 12, md: 6 }}>
           <TextField
             label={t('settings.portLabel')}
@@ -75,28 +95,31 @@ export default function Settings() {
             fullWidth
           />
         </Grid>
+
         <Grid size={{ xs: 12, md: 6 }} display="flex" alignItems="center" gap={2}>
           <Button variant="contained" color="primary" onClick={savePort} disabled={loading}>{t('settings.savePort')}</Button>
           <Button variant="outlined" color="secondary" onClick={restartServer} disabled={loading}>{t('settings.restartServer')}</Button>
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }} display="flex" alignItems="center" gap={2}>
-          <Typography variant="subtitle1" sx={{ mr: 2 }}>{t('settings.language') || 'Language'}</Typography>
-          <Select
-            value={language}
-            onChange={(e) => setLanguage(String(e.target.value))}
-            size="small"
-            sx={{ minWidth: 160 }}
-          >
-            {availableLanguages.map((lang) => (
-              <MenuItem key={lang.code} value={lang.code}>
-                <Stack direction="row" alignItems="center">
-                  <img src={`/flags/${lang.code}.png`} alt={lang.label} style={{ width: 24, height: 24, marginRight: 8 }} />
-                  {lang.label}
-                </Stack>
-              </MenuItem>
-            ))}
-          </Select>
+          <StyledBox>
+            <Typography variant="subtitle1" sx={{ mr: 2 }}>{t('settings.language') || 'Language'}</Typography>
+            <Select
+              value={language}
+              onChange={(e) => setLanguage(String(e.target.value))}
+              size="small"
+              sx={{ minWidth: 160 }}
+            >
+              {availableLanguages.map((lang) => (
+                <MenuItem key={lang.code} value={lang.code}>
+                  <Stack direction="row" alignItems="center">
+                    <img src={`/flags/${lang.code}.png`} alt={lang.label} style={{ width: 24, height: 24, marginRight: 8 }} />
+                    {lang.label}
+                  </Stack>
+                </MenuItem>
+              ))}
+            </Select>
+          </StyledBox>
         </Grid>
 
         {message && (

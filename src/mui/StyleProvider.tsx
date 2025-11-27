@@ -129,7 +129,7 @@ const theme = createTheme({
           borderRadius: theme.shape.borderRadius,
           // orient menu horizontally
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'column',
           padding: 0,
           // max 10 columns
           flexWrap: 'wrap',
@@ -154,7 +154,15 @@ const theme = createTheme({
         input: ({ theme }) => ({
         }),
       },
-    }
+    },
+    MuiList: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          backgroundColor: (theme.palette as any).background["900"],
+          flexDirection: 'column',
+        }),
+      }
+    },
   },
 })
 
