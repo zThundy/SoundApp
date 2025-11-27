@@ -58,6 +58,29 @@ contextBridge.exposeInMainWorld('alerts', {
   }
 })
 
+/*
+window.fileManager.save(context, path, content)
+window.fileManager.read(context, path, asText?)
+window.fileManager.delete(context, path)
+window.fileManager.exists(context, path)
+*/
+
+// File management API for saving/reading files in userData
+contextBridge.exposeInMainWorld('fileManager', {
+  save(context: string, relativePath: string, content: string | Buffer) {
+    return ipcRenderer.invoke('file:save', context, relativePath, content)
+  },
+  read(context: string, relativePath: string, asText: boolean = true) {
+    return ipcRenderer.invoke('file:read', context, relativePath, asText)
+  },
+  delete(context: string, relativePath: string) {
+    return ipcRenderer.invoke('file:delete', context, relativePath)
+  },
+  exists(context: string, relativePath: string) {
+    return ipcRenderer.invoke('file:exists', context, relativePath)
+  }
+})
+
 // --------- Preload scripts loading ---------
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise(resolve => {
