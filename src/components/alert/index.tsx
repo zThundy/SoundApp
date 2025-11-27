@@ -30,7 +30,12 @@ import style from "./alert.module.css"
 
 declare global {
   interface Window {
-    alerts?: { broadcast: (payload: any) => Promise<any> };
+    alerts: {
+      broadcast(payload: any): Promise<{ ok: boolean; error?: string }>;
+      getPort(): Promise<{ port: number }>;
+      setPort(port: number): Promise<{ ok: boolean; port?: number; requiresRestart?: boolean; error?: string }>;
+      restart(): Promise<{ ok: boolean; port?: number; error?: string }>;
+    };
   }
 }
 
