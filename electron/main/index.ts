@@ -6,6 +6,7 @@ import { update } from './update'
 import { startAlertServer } from './alertServer'
 import SafeStorageWrapper from './safeStorageWrapper'
 import { registerAllIPCHandlers } from './ipc'
+import windowStateManager from './windowStateManager'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 process.env.APP_ROOT = path.join(__dirname, '../..')
@@ -37,11 +38,15 @@ const preload = path.join(__dirname, '../preload/index.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
 async function createWindow() {
+  const savedState = await windowStateManager.loadState();
+
   win = new BrowserWindow({
     title: 'Window',
     icon: path.join(process.env.VITE_PUBLIC, 'logo.png'),
-    width: 1600,
-    height: 900,
+    width: savedState.width,
+    height: savedState.height,
+    x: savedState.x,
+    y: savedState.y,
     minWidth: 900,
     minHeight: 550,
     // hide titlebar
@@ -56,6 +61,9 @@ async function createWindow() {
       // contextIsolation: false,
     },
   })
+
+  windowStateManager.applyState(win);
+  windowStateManager.track(win);
 
   if (VITE_DEV_SERVER_URL) { // #298
     win.loadURL(VITE_DEV_SERVER_URL)
