@@ -97,6 +97,10 @@ class WindowStateManager {
         clearTimeout(this.saveTimeout);
       }
       this.saveState();
+
+      // process exit
+      this.window = null;
+      process.exit(0);
     });
 
     console.log('[WindowStateManager] Tracking attivo per la finestra');
