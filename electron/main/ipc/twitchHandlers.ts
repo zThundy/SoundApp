@@ -6,8 +6,46 @@ import {
   getCustomRewards,
   updateCustomReward
 } from '../twitchWorker'
+import { TwitchEventListener } from '../twitchEventListener'
 
-export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null) {
+let twitchEventListener: TwitchEventListener | null = null
+const clientId = '64aeehn5qo2902i5c4gvz41yjqd9h2'
+
+// Getter per il listener condiviso
+export const getTwitchEventListener = () => twitchEventListener
+
+// Funzione per connettere EventSub se il token esiste
+export const connectEventSubIfPossible = async (safeStore: SafeStorageWrapper | null, mainWindow: BrowserWindow | null) => {
+  console.log("[Twitch] Attempting to connect to EventSub if possible...")
+  if (!mainWindow || twitchEventListener?.isConnected()) return console.log("[Twitch] Already connected or no main window.")
+
+  try {
+    const accessToken = await safeStore?.get('twitchAccessToken')
+    let broadcasterId = await safeStore?.get('broadcasterId')
+
+    if (!accessToken) return
+
+    // Se non c'è il broadcaster ID, recuperalo
+    if (!broadcasterId) {
+      broadcasterId = await getBroadcasterId(accessToken)
+      safeStore?.set('broadcasterId', broadcasterId)
+    }
+
+    // Connetti al listener
+    if (!twitchEventListener) {
+      twitchEventListener = new TwitchEventListener(mainWindow)
+    }
+
+    await twitchEventListener.connect(accessToken, broadcasterId, clientId)
+    console.log('Twitch EventSub connected')
+  } catch (error) {
+    console.error('Failed to connect to Twitch EventSub:', error)
+  }
+}
+
+export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mainWindow: BrowserWindow | null) {
+  // Tenta la connessione all'avvio se il token esiste già
+  connectEventSubIfPossible(safeStore, mainWindow)
   ipcMain.handle('oauth:start-twitch', (_evt) => {
     return new Promise<void>((resolve, reject) => {
       const authWindow = new BrowserWindow({
@@ -25,6 +63,7 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null) {
         "channel:read:redemptions",
         "channel:manage:redemptions",
         "user:read:chat",
+        "moderator:read:chatters",
         "chat:read",
         "chat:edit"
       ].join(' ')
@@ -57,6 +96,9 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null) {
         if (accessToken && returnedState === stateString) {
           safeStore?.set('twitchAccessToken', accessToken)
           authWindow.close()
+          
+          // Connetti dopo il login
+          connectEventSubIfPossible(safeStore, mainWindow)
           resolve()
         }
       })
@@ -68,7 +110,37 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null) {
   })
 
   ipcMain.handle("oauth:logout-twitch", async () => {
+    // Disconnetti il listener
+    if (twitchEventListener) {
+      twitchEventListener.disconnect()
+      twitchEventListener = null
+    }
+    
     safeStore?.remove('twitchAccessToken')
+    safeStore?.remove('broadcasterId')
+  })
+
+  // Handler esplicito per connettere EventSub (utile per riconnessioni manuali)
+  ipcMain.handle('twitch-events:connect', async () => {
+    try {
+      await connectEventSubIfPossible(safeStore, mainWindow)
+      return { success: true }
+    } catch (error: any) {
+      return { success: false, error: error.message }
+    }
+  })
+
+  // Handler per disconnettere EventSub
+  ipcMain.handle('twitch-events:disconnect', async () => {
+    try {
+      if (twitchEventListener) {
+        twitchEventListener.disconnect()
+        twitchEventListener = null
+      }
+      return { success: true }
+    } catch (error: any) {
+      return { success: false, error: error.message }
+    }
   })
 
   ipcMain.handle("twitch:get-all-redemptions", async () => {

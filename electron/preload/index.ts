@@ -55,6 +55,12 @@ contextBridge.exposeInMainWorld('alerts', {
   },
   restart() {
     return ipcRenderer.invoke('alerts:restart')
+  },
+  saveTemplate(template: { id: string; imageDataUrl?: string; text: string; duration: number }) {
+    return ipcRenderer.invoke('alerts:save-template', template)
+  },
+  loadTemplate(templateId: string) {
+    return ipcRenderer.invoke('alerts:load-template', templateId)
   }
 })
 
@@ -88,6 +94,42 @@ contextBridge.exposeInMainWorld('languageManager', {
   },
   setLanguage(language: string) {
     return ipcRenderer.invoke('language:set', language)
+  }
+})
+
+// Twitch Events API for real-time chat and redemptions
+contextBridge.exposeInMainWorld('twitchEvents', {
+  connect(accessToken: string, broadcasterId: string, clientId: string) {
+    return ipcRenderer.invoke('twitch-events:connect', { accessToken, broadcasterId, clientId })
+  },
+  disconnect() {
+    return ipcRenderer.invoke('twitch-events:disconnect')
+  },
+  isConnected() {
+    return ipcRenderer.invoke('twitch-events:is-connected')
+  },
+  // Ottieni i messaggi dalla cache
+  getCachedMessages() {
+    return ipcRenderer.invoke('twitch-events:get-cached-messages')
+  },
+  // Ottieni i redeem dalla cache
+  getCachedRedemptions() {
+    return ipcRenderer.invoke('twitch-events:get-cached-redemptions')
+  },
+  // Listener per messaggi chat
+  onChatMessage(callback: (message: any) => void) {
+    ipcRenderer.on('twitch:chat-message', (_event, message) => callback(message))
+  },
+  // Listener per redeem
+  onRewardRedeemed(callback: (redemption: any) => void) {
+    ipcRenderer.on('twitch:reward-redeemed', (_event, redemption) => callback(redemption))
+  },
+  // Rimuovi listener
+  removeChatMessageListener() {
+    ipcRenderer.removeAllListeners('twitch:chat-message')
+  },
+  removeRewardRedeemedListener() {
+    ipcRenderer.removeAllListeners('twitch:reward-redeemed')
   }
 })
 

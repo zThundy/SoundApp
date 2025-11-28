@@ -15,6 +15,7 @@
   "sidebar.settings": "Paramètres",
   "sidebar.alert": "Alerte",
   "sidebar.logout": "Déconnexion",
+  "sidebar.chat": "Chat",
 
   "update.cancel": "Annuler",
   "update.update": "Mettre à jour",
@@ -60,7 +61,7 @@
   "alert.comingSoon": "Bientôt disponible...",
   "alert.textFieldLabel": "Texte",
   "alert.durationMs": "Durée (ms)",
-  "alert.sendTemplate": "Tester le modèle",
+  "alert.sendTemplate": "Enregistrer et tester le modèle",
   "alert.selectImage": "Sélectionner une image",
   "alert.preview": "Aperçu de l’alerte",
   "alert.openInBrowser": "Ouvrir dans le navigateur",

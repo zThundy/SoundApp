@@ -10,10 +10,12 @@
   "settings.restartFailed": "Neustart fehlgeschlagen",
   "settings.serverRestarted": "Server neu gestartet: {port}",
   "settings.error": "Fehler",
+  
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Einstellungen",
   "sidebar.alert": "Alert",
   "sidebar.logout": "Abmelden",
+  "sidebar.chat": "Chat",
 
   "update.cancel": "Abbrechen",
   "update.update": "Aktualisieren",
@@ -58,7 +60,7 @@
   "alert.customHtmlCssJs": "Benutzerdefiniertes HTML/CSS/JS",
   "alert.comingSoon": "Demnächst verfügbar...",
   "alert.textFieldLabel": "Text",
-  "alert.sendTemplate": "Vorlage testen",
+  "alert.sendTemplate": "Vorlage speichern und testen",
   "alert.selectImage": "Bild auswählen",
   "alert.preview": "Alert-Vorschau",
   "alert.openInBrowser": "Im Browser öffnen",

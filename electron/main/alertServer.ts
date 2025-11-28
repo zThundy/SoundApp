@@ -172,26 +172,55 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
         es.onmessage = (ev) => {
             try {
                 const data = JSON.parse(ev.data);
+                console.log('Received alert data:', data);
                 if (data.type === 'alert') {
-                    const node = document.createElement('div');
-                    node.className = 'alert';
-                    node.textContent = data.text || 'Alert';
-                    document.getElementById('container').appendChild(node);
-                    setTimeout(() => node.remove(), 6000);
-                } else if (data.type === 'imageTemplate') {
-                    const wrap = document.createElement('div');
-                    wrap.className = 'fadeImageWrap';
-                    wrap.style.animation = 'fade ' + ((data.duration || 6000) / 1000) + 's cubic-bezier(0.3, 0.6, 0.3, 1) forwards';
-                    const img = document.createElement('img');
-                    if (!data.imageDataUrl) data.imageDataUrl = "logo.png";
+                  const node = document.createElement('div');
+                  node.className = 'alert';
+                  node.textContent = data.text || 'Alert';
+                  document.getElementById('container').appendChild(node);
+                  setTimeout(() => node.remove(), 6000);
+                } else if (data.type === "twitch-redeem") {
+                  const wrap = document.createElement('div');
+                  wrap.className = 'fadeImageWrap';
+                  wrap.style.animation = 'fade ' + ((data.duration || 6000) / 1000) + 's cubic-bezier(0.3, 0.6, 0.3, 1) forwards';
+                  const img = document.createElement('img');
+                  // Use imageDataUrl from template if available, otherwise use default
+                  if (data.imageDataUrl) {
                     img.src = data.imageDataUrl;
-                    const caption = document.createElement('div');
-                    caption.className = 'caption';
-                    caption.textContent = data.text || '';
-                    wrap.appendChild(img);
-                    wrap.appendChild(caption);
-                    document.getElementById('container').appendChild(wrap);
-                    setTimeout(() => wrap.remove(), (data.duration || 6000));
+                  } else if (data.image?.base64) {
+                    img.src = 'data:image/png;base64,' + data.image.base64;
+                  } else {
+                    img.src = "logo.png";
+                  }
+                  const caption = document.createElement('div');
+                  caption.className = 'caption';
+                  caption.textContent = data.text || '';
+                  wrap.appendChild(img);
+                  wrap.appendChild(caption);
+                  document.getElementById('container').appendChild(wrap);
+                  
+                  // Play audio if present
+                  if (data.audio?.base64) {
+                    const audio = new Audio('data:audio/mpeg;base64,' + data.audio.base64);
+                    audio.volume = data.audio.volume || 1.0;
+                    audio.play().catch(e => console.error('Audio playback failed', e));
+                  }
+                  
+                  setTimeout(() => wrap.remove(), (data.duration || 6000));
+                } else if (data.type === 'imageTemplate') {
+                  const wrap = document.createElement('div');
+                  wrap.className = 'fadeImageWrap';
+                  wrap.style.animation = 'fade ' + ((data.duration || 6000) / 1000) + 's cubic-bezier(0.3, 0.6, 0.3, 1) forwards';
+                  const img = document.createElement('img');
+                  if (!data.imageDataUrl) data.imageDataUrl = "logo.png";
+                  img.src = data.imageDataUrl;
+                  const caption = document.createElement('div');
+                  caption.className = 'caption';
+                  caption.textContent = data.text || '';
+                  wrap.appendChild(img);
+                  wrap.appendChild(caption);
+                  document.getElementById('container').appendChild(wrap);
+                  setTimeout(() => wrap.remove(), (data.duration || 6000));
                 } else if (data.type === 'raw') {
                     const wrapper = document.createElement('div');
                     wrapper.style.position = 'absolute';
@@ -237,6 +266,8 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
     });
 
     function broadcast(payload: unknown) {
+      console.log('[AlertServer] Broadcasting payload to', clients.length, 'clients');
+      console.log('[AlertServer] Payload:', payload);
       const dataStr = JSON.stringify(payload);
       for (const c of clients) {
         c.res.write(`data: ${dataStr}\n\n`);

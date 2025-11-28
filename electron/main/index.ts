@@ -2,11 +2,13 @@ import { app, BrowserWindow, shell } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
+
 import { update } from './update'
 import { startAlertServer } from './alertServer'
 import SafeStorageWrapper from './safeStorageWrapper'
 import { registerAllIPCHandlers } from './ipc'
 import windowStateManager from './windowStateManager'
+import { connectEventSubIfPossible } from './ipc/twitchHandlers'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 process.env.APP_ROOT = path.join(__dirname, '../..')
@@ -77,6 +79,8 @@ async function createWindow() {
   // Test actively push message to the Electron-Renderer
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', new Date().toLocaleString())
+    // Try to connect Twitch EventSub on window load
+    connectEventSubIfPossible(safeStore, win)
   })
 
   // Make all links open with the browser, not with the application

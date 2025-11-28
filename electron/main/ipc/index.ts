@@ -1,12 +1,16 @@
 import { BrowserWindow } from 'electron'
 import SafeStorageWrapper from '../safeStorageWrapper'
+
 import { registerWindowHandlers } from './windowHandlers'
 import { registerSafeStoreHandlers } from './safeStoreHandlers'
-import { registerTwitchHandlers } from './twitchHandlers'
+import { registerTwitchHandlers, getTwitchEventListener } from './twitchHandlers'
 import { registerAlertHandlers } from './alertHandlers'
 import { registerFileHandlers } from './fileHandlers'
 import { registerMiscHandlers } from './miscHandlers'
 import { registerLanguageHandlers } from './languageHandlers'
+import { registerTwitchEventHandlers } from './twitchEventHandlers'
+import { RedeemProcessor } from '../redeemProcessor'
+import { setRedeemProcessor } from '../redeemRegistry'
 
 type AlertServer = {
   stop: () => Promise<void>
@@ -29,7 +33,7 @@ export interface IPCContext {
 export function registerAllIPCHandlers(context: IPCContext) {
   registerWindowHandlers(context.getMainWindow)
   registerSafeStoreHandlers(context.safeStore)
-  registerTwitchHandlers(context.safeStore)
+  registerTwitchHandlers(context.safeStore, context.getMainWindow())
   registerAlertHandlers(
     context.safeStore,
     context.getAlertServer,
@@ -45,4 +49,9 @@ export function registerAllIPCHandlers(context: IPCContext) {
     context.preload
   )
   registerLanguageHandlers()
+  registerTwitchEventHandlers(getTwitchEventListener)
+
+  // Initialize RedeemProcessor with access to AlertServer
+  const rp = new RedeemProcessor(context.getAlertServer)
+  setRedeemProcessor(rp)
 }

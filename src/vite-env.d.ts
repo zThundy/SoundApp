@@ -17,6 +17,8 @@ interface Window {
     getPort(): Promise<{ port: number }>
     setPort(port: number): Promise<{ ok: boolean; port?: number; requiresRestart?: boolean; error?: string }>
     restart(): Promise<{ ok: boolean; port?: number; error?: string }>
+    loadTemplate(templateId: string): Promise<{ ok: boolean; template?: { id: string; imageDataUrl?: string; text: string; duration: number } | null; error?: string }>;
+    saveTemplate(template: { id: string; imageDataUrl?: string; text: string; duration: number }): Promise<{ ok: boolean; error?: string }>;
   }
 
   fileManager: {
@@ -25,4 +27,44 @@ interface Window {
     delete(context: string, relativePath: string): Promise<{ ok: boolean; error?: string }>
     exists(context: string, relativePath: string): Promise<{ ok: boolean; exists?: boolean; error?: string }>
   }
+
+  languageManager: {
+    getLanguage(): Promise<string>
+    setLanguage(language: string): Promise<boolean>
+  }
+
+  twitchEvents: {
+    connect(accessToken: string, broadcasterId: string, clientId: string): Promise<{ success: boolean; error?: string }>
+    disconnect(): Promise<{ success: boolean; error?: string }>
+    isConnected(): Promise<{ connected: boolean }>
+    getCachedMessages(): Promise<{ messages: ChatMessage[] }>
+    getCachedRedemptions(): Promise<{ redemptions: RewardRedemption[] }>
+    onChatMessage(callback: (message: ChatMessage) => void): void
+    onRewardRedeemed(callback: (redemption: RewardRedemption) => void): void
+    removeChatMessageListener(): void
+    removeRewardRedeemedListener(): void
+  }
+}
+
+interface ChatMessage {
+  userId: string
+  username: string
+  displayName: string
+  message: string
+  timestamp: Date
+  color?: string
+  badges?: string[]
+}
+
+interface RewardRedemption {
+  id: string
+  userId: string
+  username: string
+  userDisplayName: string
+  rewardId: string
+  rewardTitle: string
+  rewardCost: number
+  userInput?: string
+  timestamp: Date
+  status: 'unfulfilled' | 'fulfilled' | 'canceled'
 }

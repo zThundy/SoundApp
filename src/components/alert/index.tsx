@@ -30,17 +30,6 @@ import style from "./alert.module.css"
 
 import { TranslationContext } from '@/i18n/TranslationProvider';
 
-declare global {
-  interface Window {
-    alerts: {
-      broadcast(payload: any): Promise<{ ok: boolean; error?: string }>;
-      getPort(): Promise<{ port: number }>;
-      setPort(port: number): Promise<{ ok: boolean; port?: number; requiresRestart?: boolean; error?: string }>;
-      restart(): Promise<{ ok: boolean; port?: number; error?: string }>;
-    };
-  }
-}
-
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
   padding: theme.spacing(2.2),
@@ -96,7 +85,45 @@ export default function AlertEditor() {
       setServerUrl(`http://localhost:${res?.port}`);
       checkServerHealth(`http://localhost:${res?.port}`);
     });
+
+    // Load default template
+    loadDefaultTemplate();
   }, []);
+
+  async function loadDefaultTemplate() {
+    try {
+      const res = await window.alerts?.loadTemplate('default');
+      if (res?.ok && res?.template) {
+        const template = res.template;
+        setImageText(template.text);
+        setImageDuration(template.duration);
+        // If template has imageDataUrl, we could restore it but File object can't be reconstructed easily
+        // For now we just restore text and duration
+        console.log('[Alert] Loaded default template');
+      }
+    } catch (err) {
+      console.error('[Alert] Failed to load default template:', err);
+    }
+  }
+
+  async function saveDefaultTemplate() {
+    try {
+      let imageDataUrl: string | undefined = undefined;
+      if (imageFile) {
+        imageDataUrl = await toDataUrl(imageFile);
+      }
+      const template = {
+        id: 'default',
+        imageDataUrl,
+        text: imageText,
+        duration: imageDuration,
+      };
+      await window.alerts?.saveTemplate(template);
+      console.log('[Alert] Saved default template');
+    } catch (err) {
+      console.error('[Alert] Failed to save default template:', err);
+    }
+  }
 
   // Health check: fetch the root page; if network fails or status !200 => error
   async function checkServerHealth(currentUrl: string) {
@@ -150,6 +177,11 @@ export default function AlertEditor() {
       const payload = { type: 'imageTemplate', imageDataUrl: image, text: imageText, duration: imageDuration };
       const res = await window.alerts?.broadcast(payload);
       setStatus(res?.ok ? t("common.sent") : t("common.error") + " " + res?.error);
+      
+      // Save as default template after successful send
+      if (res?.ok) {
+        await saveDefaultTemplate();
+      }
     } catch (e: any) { setStatus(t("common.error") + " " + e.message); }
     finally {
       setTimeout(() => {

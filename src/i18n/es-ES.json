@@ -15,6 +15,7 @@
   "sidebar.settings": "Configuración",
   "sidebar.alert": "Alerta",
   "sidebar.logout": "Cerrar sesión",
+  "sidebar.chat": "Chat",
 
   "update.cancel": "Cancelar",
   "update.update": "Actualizar",
@@ -60,7 +61,7 @@
   "alert.comingSoon": "Próximamente...",
   "alert.textFieldLabel": "Texto",
   "alert.durationMs": "Duración (ms)",
-  "alert.sendTemplate": "Probar plantilla",
+  "alert.sendTemplate": "Guardar y probar plantilla",
   "alert.selectImage": "Seleccionar imagen",
   "alert.preview": "Vista previa de alerta",
   "alert.openInBrowser": "Abrir en el navegador",

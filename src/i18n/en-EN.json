@@ -10,10 +10,12 @@
   "settings.serverRestarted": "Server restarted on port {port}",
   "settings.restartFailed": "Restart failed",
   "settings.error": "Error",
+  
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Settings",
   "sidebar.alert": "Alert",
   "sidebar.logout": "Log out",
+  "sidebar.chat": "Chat",
 
   "update.cancel": "Cancel",
   "update.update": "Update",
@@ -59,7 +61,7 @@
   "alert.comingSoon": "Coming soon...",
   "alert.textFieldLabel": "Text",
   "alert.durationMs": "Duration (ms)",
-  "alert.sendTemplate": "Test Template",
+  "alert.sendTemplate": "Save and Test Template",
   "alert.selectImage": "Select Image",
   "alert.preview": "Alert Preview",
   "alert.openInBrowser": "Open in browser",
