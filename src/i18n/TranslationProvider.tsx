@@ -31,14 +31,42 @@ const languageFiles: Record<string, () => Promise<any>> = {
 };
 
 export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState('en-EN');
+  const [language, setLanguageState] = useState('en-EN');
   const [translations, setTranslations] = useState<Translations>({});
 
+  // Carica la lingua salvata all'avvio
+  useEffect(() => {
+    const loadSavedLanguage = async () => {
+      try {
+        const result = await (window as any).languageManager?.getLanguage();
+        if (result?.language) {
+          setLanguageState(result.language);
+          console.log('[TranslationProvider] Lingua caricata:', result.language);
+        }
+      } catch (error) {
+        console.error('[TranslationProvider] Errore nel caricamento della lingua:', error);
+      }
+    };
+    loadSavedLanguage();
+  }, []);
+
+  // Carica le traduzioni quando cambia la lingua
   useEffect(() => {
     languageFiles[language]()
       .then((mod) => setTranslations(mod.default || mod))
       .catch(() => setTranslations({}));
   }, [language]);
+
+  // Funzione per cambiare lingua e salvarla
+  const setLanguage = useCallback(async (lang: string) => {
+    setLanguageState(lang);
+    try {
+      await (window as any).languageManager?.setLanguage(lang);
+      console.log('[TranslationProvider] Lingua salvata:', lang);
+    } catch (error) {
+      console.error('[TranslationProvider] Errore nel salvataggio della lingua:', error);
+    }
+  }, []);
 
   const t = useCallback(
     (key: string, args?: Record<string, any>) => {

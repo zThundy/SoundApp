@@ -81,6 +81,16 @@ contextBridge.exposeInMainWorld('fileManager', {
   }
 })
 
+// Language management API
+contextBridge.exposeInMainWorld('languageManager', {
+  getLanguage() {
+    return ipcRenderer.invoke('language:get')
+  },
+  setLanguage(language: string) {
+    return ipcRenderer.invoke('language:set', language)
+  }
+})
+
 // --------- Preload scripts loading ---------
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise(resolve => {

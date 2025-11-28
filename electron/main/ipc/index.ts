@@ -6,6 +6,7 @@ import { registerTwitchHandlers } from './twitchHandlers'
 import { registerAlertHandlers } from './alertHandlers'
 import { registerFileHandlers } from './fileHandlers'
 import { registerMiscHandlers } from './miscHandlers'
+import { registerLanguageHandlers } from './languageHandlers'
 
 type AlertServer = {
   stop: () => Promise<void>
@@ -43,4 +44,5 @@ export function registerAllIPCHandlers(context: IPCContext) {
     context.indexHtml,
     context.preload
   )
+  registerLanguageHandlers()
 }
