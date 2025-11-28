@@ -85,23 +85,44 @@ export default function Settings() {
     <Box p={3}>
       <Typography variant="h5" gutterBottom>{t('settings.title')}</Typography>
       <Grid container spacing={2} className={style.container} p={2}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <TextField
-            label={t('settings.portLabel')}
-            value={port}
-            onChange={(e) => setPort(e.target.value)}
-            type="number"
-            inputProps={{ min: 1, max: 65535 }}
-            fullWidth
-          />
-        </Grid>
+        <StyledBox>
+          <Grid size={{ lg: 12, md: 12 }}>
+            <TextField
+              label={t('settings.portLabel')}
+              value={port}
+              onChange={(e) => setPort(e.target.value)}
+              type="number"
+              inputProps={{ min: 1, max: 65535 }}
+              fullWidth
+            />
 
-        <Grid size={{ xs: 12, md: 6 }} display="flex" alignItems="center" gap={2}>
-          <Button variant="contained" color="primary" onClick={savePort} disabled={loading}>{t('settings.savePort')}</Button>
-          <Button variant="outlined" color="secondary" onClick={restartServer} disabled={loading}>{t('settings.restartServer')}</Button>
-        </Grid>
+            <Stack direction="row" spacing={2} mt={2}>
+              <Button
+                variant="contained"
+                color="primary" onClick={savePort}
+                disabled={loading}
+                style={{
+                  width: "100%",
+                }}
+              >
+                {t('settings.savePort')}
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={restartServer}
+                disabled={loading}
+                style={{
+                  width: "100%",
+                }}
+              >
+                {t('settings.restartServer')}
+              </Button>
+            </Stack>
+          </Grid>
+        </StyledBox>
 
-        <Grid size={{ xs: 12, md: 6 }} display="flex" alignItems="center" gap={2}>
+        <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2}>
           <StyledBox>
             <Typography variant="subtitle1" sx={{ mr: 2 }}>{t('settings.language') || 'Language'}</Typography>
             <Select

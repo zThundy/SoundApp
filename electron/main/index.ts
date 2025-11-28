@@ -66,6 +66,7 @@ async function createWindow() {
   windowStateManager.track(win);
 
   if (VITE_DEV_SERVER_URL) { // #298
+    console.log('VITE_DEV_SERVER_URL detected, opening devtools...')
     win.loadURL(VITE_DEV_SERVER_URL)
     // Open devTool if the app is not packaged in a new window
     win.webContents.openDevTools({ mode: 'detach' })

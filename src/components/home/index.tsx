@@ -18,11 +18,11 @@ export default function Home() {
 
   return (
     <Grid container className={style.mainContainer}>
-      <Grid size={{ xs: 1 }} className={style.sidebarContainer}>
+      <Grid size={{ lg: 1, md: 1.5 }} className={style.sidebarContainer}>
         <Sidebar setSelectedPage={setSelectedPageState} />
       </Grid>
 
-      <Grid size={{ xs: 11 }}>
+      <Grid size={{ lg: 11, md: 10.5 }}>
         {selectedPageState === "redeems" && <Reedems />}
         {selectedPageState === "alert" && <AlertEditor />}
         {selectedPageState === "settings" && <Settings />}
