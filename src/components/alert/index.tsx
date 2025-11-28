@@ -169,8 +169,8 @@ export default function AlertEditor() {
         </Tooltip>
       </Tabs>
 
-      <Grid container spacing={{ lg: 2, md: 6 }} >
-        <Grid size={{ lg: 8, md: 12 }}>
+      <Grid container spacing={{ lg: 2, md: 6 }} height="100%">
+        <Grid size={{ lg: 8, md: 12 }} height="100%">
           <Box mt={2} p={2} className={style.container}>
 
             {tab === 0 && (
@@ -194,8 +194,25 @@ export default function AlertEditor() {
                   />
                 </StyledBox>
                 <Stack direction="row" spacing={2} width={"100%"}>
-                  <Button variant="contained" disabled={sending} onClick={sendImageTemplate}>{t("alert.sendTemplate")}</Button>
-                  <Button component="label" variant="outlined" color="secondary">{t("alert.selectImage")}
+                  <Button
+                    variant="contained"
+                    disabled={sending}
+                    onClick={sendImageTemplate}
+                    style={{
+                      width: "100%",
+                    }}
+                  >
+                      {t("alert.sendTemplate")}
+                  </Button>
+                  <Button
+                    component="label"
+                    variant="outlined"
+                    color="secondary"
+                    style={{
+                      width: "100%",
+                    }}
+                  >
+                    {t("alert.selectImage")}
                     <input hidden type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} />
                   </Button>
                 </Stack>
@@ -222,13 +239,14 @@ export default function AlertEditor() {
           </Box>
         </Grid>
 
-        <Grid size={{ lg: 4, md: 12 }}>
+        <Grid size={{ lg: 4, md: 12 }} height="100%">
           <Stack
             spacing={2}
             className={style.container}
             p={2}
             mt={2}
             justifyContent={"space-between"}
+            height="100%"
           >
             <StyledBox>
               <Typography variant="h6">{t("alert.preview")}</Typography>
@@ -272,8 +290,8 @@ export default function AlertEditor() {
               </Paper>
             </StyledBox>
 
-            <StyledBox>
-              <Box sx={{ position: 'relative', width: '100%' }}>
+            <StyledBox sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+              <Box sx={{ position: 'relative', width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <Tooltip title={t("alert.openInBrowser")} placement="top" arrow>
                   <IconButton
                     aria-label="open-external"
@@ -296,7 +314,7 @@ export default function AlertEditor() {
                   ref={iframeRef}
                   title={t("alert.previewIframeTitle")}
                   src={serverUrl}
-                  style={{ width: '100%', height: '25rem', border: 'none' }}
+                  style={{ width: '100%', height: '100%', minHeight: '300px', border: 'none' }}
                 />
                 {iframeError && (
                   <Box
@@ -309,7 +327,7 @@ export default function AlertEditor() {
                       justifyContent: 'center',
                       gap: 1,
                       width: '100%',
-                      height: '25rem',
+                      height: '100%',
                       color: 'text.primary',
                       backgroundColor: 'rgba(0,0,0,0.7)'
                     }}
