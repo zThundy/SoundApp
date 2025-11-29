@@ -9,7 +9,6 @@ import { useLocation, useNavigate } from "react-router"
 
 export default function Login() {
   const { t } = useContext(TranslationContext)
-  const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {

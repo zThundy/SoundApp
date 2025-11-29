@@ -68,7 +68,6 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
         "chat:edit"
       ].join(' ')
 
-      const clientId = '64aeehn5qo2902i5c4gvz41yjqd9h2'
       const forceVerify = false
       const redirectUri = 'http://localhost/'
       const responseType = 'token'
