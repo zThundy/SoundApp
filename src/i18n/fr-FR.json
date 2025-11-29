@@ -68,6 +68,11 @@
   "alert.previewIframeTitle": "Iframe d’aperçu d’alerte",
   "alert.errorContactingServer": "Erreur lors de la connexion au serveur",
   "alert.tryRestartingServer": "Essayez de redémarrer le serveur puis réessayez.",
+  "alert.variableUsername": "Le nom d’utilisateur Twitch de l’utilisateur qui a déclenché l’alerte.",
+  "alert.variableUserDisplayName": "Le nom d’affichage Twitch de l’utilisateur qui a déclenché l’alerte.",
+  "alert.variableRewardTitle": "Le titre de la récompense personnalisée échangée.",
+  "alert.variableRewardCost": "Le coût de la récompense personnalisée échangée.",
+  "alert.variableUserInput": "L’entrée utilisateur fournie par l’utilisateur lors de l’échange de la récompense.",
 
   "redeems.list": "Liste des récompenses",
   "redeems.selected": "Récompense sélectionnée",

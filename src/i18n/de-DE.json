@@ -67,6 +67,11 @@
   "alert.previewIframeTitle": "Alert-Vorschau Iframe",
   "alert.errorContactingServer": "Fehler beim Kontaktieren des Servers",
   "alert.tryRestartingServer": "Versuchen Sie, den Server neu zu starten und es erneut.",
+  "alert.variableUsername": "Der Twitch-Benutzername des Nutzers, der den Alert ausgelöst hat.",
+  "alert.variableUserDisplayName": "Der Twitch-Anzeigename des Nutzers, der den Alert ausgelöst hat.",
+  "alert.variableRewardTitle": "Der Titel der eingelösten benutzerdefinierten Belohnung.",
+  "alert.variableRewardCost": "Die Kosten der eingelösten benutzerdefinierten Belohnung.",
+  "alert.variableUserInput": "Die vom Nutzer bei der Einlösung der Belohnung bereitgestellte Eingabe.",
 
   "redeems.list": "Belohnungsliste",
   "redeems.selected": "Ausgewählte Belohnung",

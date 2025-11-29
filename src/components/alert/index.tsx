@@ -22,6 +22,7 @@ import {
   Close,
   OpenInNew,
   ErrorOutline,
+  Info,
 } from '@mui/icons-material';
 
 import { styled } from '@mui/material/styles';
@@ -47,6 +48,18 @@ const StyledBox = styled(Box)(({ theme }) => ({
   ":hover": {
     backgroundColor: (theme.palette as any).background["800"],
   }
+}));
+
+const StyledVariable = styled(Typography)(({ theme }) => ({
+  backgroundColor: (theme.palette as any).background["700"],
+  padding: theme.spacing(1),
+  margin: theme.spacing(1),
+  borderRadius: theme.shape.borderRadius,
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  display: "flex",
+  gap: 10,
 }));
 
 export default function AlertEditor() {
@@ -180,7 +193,7 @@ export default function AlertEditor() {
       const payload = { type: 'imageTemplate', imageDataUrl: image, text: imageText, duration: imageDuration };
       const res = await window.alerts?.broadcast(payload);
       setStatus(res?.ok ? t("common.sent") : t("common.error") + " " + res?.error);
-      
+
       // Save as default template after successful send
       if (res?.ok) {
         await saveDefaultTemplate();
@@ -219,6 +232,7 @@ export default function AlertEditor() {
                     fullWidth
                   />
                 </StyledBox>
+
                 <StyledBox>
                   <TextField
                     label={t("alert.durationMs")}
@@ -228,6 +242,42 @@ export default function AlertEditor() {
                     fullWidth
                   />
                 </StyledBox>
+
+                <StyledBox>
+                  <Stack direction="row" flexWrap="wrap" justifyContent={"flex-start"}>
+                    <StyledVariable variant="body2">
+                      <strong>${'{username}'}</strong>
+                      <Tooltip title={t("alert.variableUsername")} placement="top" arrow style={{ cursor: "pointer" }}>
+                        <Info />
+                      </Tooltip>
+                    </StyledVariable>
+                    <StyledVariable variant="body2">
+                      <strong>${'{user_display_name}'}</strong>
+                      <Tooltip title={t("alert.variableUserDisplayName")} placement="top" arrow style={{ cursor: "pointer" }}>
+                        <Info />
+                      </Tooltip>
+                    </StyledVariable>
+                    <StyledVariable variant="body2">
+                      <strong>${'{reward_title}'}</strong>
+                      <Tooltip title={t("alert.variableRewardTitle")} placement="top" arrow style={{ cursor: "pointer" }}>
+                        <Info />
+                      </Tooltip>
+                    </StyledVariable>
+                    <StyledVariable variant="body2">
+                      <strong>${'{reward_cost}'}</strong>
+                      <Tooltip title={t("alert.variableRewardCost")} placement="top" arrow style={{ cursor: "pointer" }}>
+                        <Info />
+                      </Tooltip>
+                    </StyledVariable>
+                    <StyledVariable variant="body2">
+                      <strong>${'{user_input}'}</strong>
+                      <Tooltip title={t("alert.variableUserInput")} placement="top" arrow style={{ cursor: "pointer" }}>
+                        <Info />
+                      </Tooltip>
+                    </StyledVariable>
+                  </Stack>
+                </StyledBox>
+
                 <Stack direction="row" spacing={2} width={"100%"}>
                   <Button
                     variant="contained"
@@ -237,7 +287,7 @@ export default function AlertEditor() {
                       width: "100%",
                     }}
                   >
-                      {t("alert.sendTemplate")}
+                    {t("alert.sendTemplate")}
                   </Button>
                   <Button
                     component="label"

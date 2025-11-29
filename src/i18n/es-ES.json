@@ -68,6 +68,11 @@
   "alert.previewIframeTitle": "Iframe de vista previa de alerta",
   "alert.errorContactingServer": "Error al contactar con el servidor",
   "alert.tryRestartingServer": "Prueba a reiniciar el servidor e inténtalo de nuevo.",
+  "alert.variableUsername": "El nombre de usuario de Twitch del usuario que activó la alerta.",
+  "alert.variableUserDisplayName": "El nombre para mostrar de Twitch del usuario que activó la alerta.",
+  "alert.variableRewardTitle": "El título de la recompensa personalizada canjeada.",
+  "alert.variableRewardCost": "El coste de la recompensa personalizada canjeada.",
+  "alert.variableUserInput": "La entrada proporcionada por el usuario al canjear la recompensa.",
 
   "redeems.list": "Lista de recompensas",
   "redeems.selected": "Recompensa seleccionada",

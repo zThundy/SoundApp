@@ -68,6 +68,11 @@
   "alert.previewIframeTitle": "Anteprima Alert Iframe",
   "alert.errorContactingServer": "Errore nel contattare il server",
   "alert.tryRestartingServer": "Prova a riavviare il server e riprova.",
+  "alert.variableUsername": "Il nome utente Twitch dell'utente che ha attivato l'alert.",
+  "alert.variableUserDisplayName": "Il nome visualizzato Twitch dell'utente che ha attivato l'alert.",
+  "alert.variableRewardTitle": "Il titolo della ricompensa personalizzata riscattata.",
+  "alert.variableRewardCost": "Il costo della ricompensa personalizzata riscattata.",
+  "alert.variableUserInput": "L'input utente fornito dall'utente durante il riscatto della ricompensa.",
 
   "redeems.list": "Elenco Redeems",
   "redeems.selected": "Redeem Selezionato",

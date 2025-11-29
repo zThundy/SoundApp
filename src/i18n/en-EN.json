@@ -68,6 +68,11 @@
   "alert.previewIframeTitle": "Alert Preview Iframe",
   "alert.errorContactingServer": "Error contacting the server",
   "alert.tryRestartingServer": "Try restarting the server and try again.",
+  "alert.variableUsername": "The Twitch username of the user who triggered the alert.",
+  "alert.variableUserDisplayName": "The Twitch display name of the user who triggered the alert.",
+  "alert.variableRewardTitle": "The title of the custom reward redeemed.",
+  "alert.variableRewardCost": "The cost of the custom reward redeemed.",
+  "alert.variableUserInput": "The user input provided by the user when redeeming the reward.",
 
   "redeems.list": "Redeems List",
   "redeems.selected": "Selected Redeem",
