@@ -111,6 +111,9 @@ export default function AlertEditor() {
       let imageDataUrl: string | undefined = undefined;
       if (imageFile) {
         imageDataUrl = await toDataUrl(imageFile);
+      } else {
+        // add logo.png as default image
+        imageDataUrl = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
       }
       const template = {
         id: 'default',

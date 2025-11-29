@@ -222,25 +222,25 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
                   document.getElementById('container').appendChild(wrap);
                   setTimeout(() => wrap.remove(), (data.duration || 6000));
                 } else if (data.type === 'raw') {
-                    const wrapper = document.createElement('div');
-                    wrapper.style.position = 'absolute';
-                    wrapper.style.top = '0';
-                    wrapper.style.left = '0';
-                    wrapper.style.width = '100%';
-                    wrapper.style.height = '100%';
-                    let html = data.html || '';
-                    html = html.replace(/<script[\s\S]*?>[\s\S]*?<\\/script>/gi, '');
-                    wrapper.innerHTML = html;
-                    if (data.css) {
-                      const styleEl = document.createElement('style');
-                      styleEl.textContent = data.css;
-                      wrapper.appendChild(styleEl);
-                    }
-                    document.getElementById('container').appendChild(wrapper);
-                    if (data.js) {
-                      try { new Function(data.js)(); } catch (e) { console.error('Raw JS error', e); }
-                    }
-                    setTimeout(() => wrapper.remove(), data.duration || 10000);
+                  const wrapper = document.createElement('div');
+                  wrapper.style.position = 'absolute';
+                  wrapper.style.top = '0';
+                  wrapper.style.left = '0';
+                  wrapper.style.width = '100%';
+                  wrapper.style.height = '100%';
+                  let html = data.html || '';
+                  html = html.replace(/<script[\s\S]*?>[\s\S]*?<\\/script>/gi, '');
+                  wrapper.innerHTML = html;
+                  if (data.css) {
+                    const styleEl = document.createElement('style');
+                    styleEl.textContent = data.css;
+                    wrapper.appendChild(styleEl);
+                  }
+                  document.getElementById('container').appendChild(wrapper);
+                  if (data.js) {
+                    try { new Function(data.js)(); } catch (e) { console.error('Raw JS error', e); }
+                  }
+                  setTimeout(() => wrapper.remove(), data.duration || 10000);
                 }
             } catch (e) {
                 console.error('Bad alert payload', e, ev.data);
