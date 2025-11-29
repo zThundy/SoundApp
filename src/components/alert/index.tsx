@@ -245,31 +245,31 @@ export default function AlertEditor() {
 
                 <StyledBox>
                   <Stack direction="row" flexWrap="wrap" justifyContent={"flex-start"}>
-                    <StyledVariable variant="body2">
+                    <StyledVariable variant="body2" onClick={() => setImageText(prev => prev + '${username} ')} style={{ cursor: "pointer" }}>
                       <strong>${'{username}'}</strong>
                       <Tooltip title={t("alert.variableUsername")} placement="top" arrow style={{ cursor: "pointer" }}>
                         <Info />
                       </Tooltip>
                     </StyledVariable>
-                    <StyledVariable variant="body2">
+                    <StyledVariable variant="body2" onClick={() => setImageText(prev => prev + '${user_display_name} ')} style={{ cursor: "pointer" }}>
                       <strong>${'{user_display_name}'}</strong>
                       <Tooltip title={t("alert.variableUserDisplayName")} placement="top" arrow style={{ cursor: "pointer" }}>
                         <Info />
                       </Tooltip>
                     </StyledVariable>
-                    <StyledVariable variant="body2">
+                    <StyledVariable variant="body2" onClick={() => setImageText(prev => prev + '${reward_title} ')} style={{ cursor: "pointer" }}>
                       <strong>${'{reward_title}'}</strong>
                       <Tooltip title={t("alert.variableRewardTitle")} placement="top" arrow style={{ cursor: "pointer" }}>
                         <Info />
                       </Tooltip>
                     </StyledVariable>
-                    <StyledVariable variant="body2">
+                    <StyledVariable variant="body2" onClick={() => setImageText(prev => prev + '${reward_cost} ')} style={{ cursor: "pointer" }}>
                       <strong>${'{reward_cost}'}</strong>
                       <Tooltip title={t("alert.variableRewardCost")} placement="top" arrow style={{ cursor: "pointer" }}>
                         <Info />
                       </Tooltip>
                     </StyledVariable>
-                    <StyledVariable variant="body2">
+                    <StyledVariable variant="body2" onClick={() => setImageText(prev => prev + '${user_input} ')} style={{ cursor: "pointer" }}>
                       <strong>${'{user_input}'}</strong>
                       <Tooltip title={t("alert.variableUserInput")} placement="top" arrow style={{ cursor: "pointer" }}>
                         <Info />
