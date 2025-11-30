@@ -92,5 +92,15 @@
   "redeems.maxPerUserPerStream": "Max per user per stream",
   "redeems.maxPerUserPerStreamInfo": "The maximum number of redemptions allowed per user per stream. The minimum value is 1.",
   "redeems.globalCooldown": "Global Cooldown",
-  "redeems.globalCooldownInfo": "The global cooldown period for all redemptions. The minimum value is 1."
+  "redeems.globalCooldownInfo": "The global cooldown period for all redemptions. The minimum value is 1.",
+
+  "twitchChat.status": "Twitch Chat Status",
+  "twitchChat.connected": "Connected to Twitch chat.",
+  "twitchChat.disconnected": "Disconnected from Twitch chat.",
+  "twitchChat.recentRedeems": "Recent Redeems",
+  "twitchChat.noRedeemsYet": "No redeems yet...",
+  "twitchChat.userInput": "Input: {input}",
+  "twitchChat.redeemedAt": "Redeemed at: {time}",
+  "twitchChat.recentMessages": "Recent Messages",
+  "twitchChat.noMessagesYet": "No messages yet..."
 }

@@ -1,0 +1,14 @@
+.container {
+  background-color: var(--mui-palette-background-900);
+  border-radius: var(--mui-shape-borderRadius);
+  width: calc(100% - 1rem);
+  margin: 0 auto;
+  max-height: 100vh;
+}
+
+.listItem {
+  background-color: var(--mui-palette-background-800);
+  border-radius: var(--mui-shape-borderRadius);
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+}

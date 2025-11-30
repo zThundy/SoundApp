@@ -158,7 +158,7 @@ const theme = createTheme({
     MuiList: {
       styleOverrides: {
         root: ({ theme }) => ({
-          backgroundColor: (theme.palette as any).background["900"],
+          // backgroundColor: (theme.palette as any).background["900"],
           flexDirection: 'column',
         }),
       }

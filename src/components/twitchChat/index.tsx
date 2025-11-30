@@ -1,5 +1,18 @@
-import { useEffect, useState } from 'react';
-import { Box, Typography, Paper, List, ListItem, ListItemText, Chip, Stack } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
+import {
+  Grid,
+  Typography,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  Chip,
+  Stack
+} from '@mui/material';
+
+import style from "./events.module.css";
+import { styled } from '@mui/system';
+import { TranslationContext } from '@/i18n/TranslationProvider';
 
 interface ChatMessage {
   userId: string;
@@ -24,18 +37,30 @@ interface RewardRedemption {
   status: 'unfulfilled' | 'fulfilled' | 'canceled';
 }
 
+const StyledStack = styled(Stack)(({ theme }) => ({
+  maxHeight: 'calc(100vh - 15rem)',
+  overflow: 'auto',
+  backgroundColor: (theme.palette as any).background["850"],
+  padding: theme.spacing(1),
+  borderRadius: theme.shape.borderRadius,
+}));
+
 export default function TwitchChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [redemptions, setRedemptions] = useState<RewardRedemption[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const { t } = useContext(TranslationContext)
 
   useEffect(() => {
     // Carica la cache all'avvio
     const loadCache = async () => {
       try {
-        const { messages } = await window.twitchEvents.getCachedMessages();
+        let { messages } = await window.twitchEvents.getCachedMessages();
         const { redemptions } = await window.twitchEvents.getCachedRedemptions();
-        
+
+        // sort messages by timestamp descending
+        messages = messages.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+
         setMessages(messages || []);
         setRedemptions(redemptions || []);
         console.log(`Loaded ${messages?.length || 0} cached messages and ${redemptions?.length || 0} cached redemptions`);
@@ -76,56 +101,68 @@ export default function TwitchChat() {
     };
   }, []);
 
-  return (
-    <Box sx={{ p: 2 }}>
-      <Stack spacing={2}>
-        {/* Status */}
-        <Paper sx={{ p: 2 }}>
-          <Typography variant="h6">
-            Stato: {isConnected ? '🟢 Connesso' : '🔴 Disconnesso'}
-          </Typography>
-        </Paper>
+  // sort messages by timestamp descending
+  useEffect(() => {
+    setMessages(prev => [...prev].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()));
+  }, [messages]);
 
-        {/* Redemptions */}
-        <Paper sx={{ p: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Redeem Recenti
+  return (
+    <Grid container spacing={2} className={style.container} padding={2}>
+      <Grid size={{ lg: 12, md: 12 }}>
+        <StyledStack direction="row" spacing={2} alignItems={"center"} justifyContent={"space-beetween"} display={"flex"}>
+          <Typography variant="h6" width={"100%"} pl={3} pt={1} pb={1}>
+            {t("twitchChat.status")}
           </Typography>
+          <Typography variant="h6" width={"100%"} textAlign={"right"} pr={3} pt={1} pb={1}>
+            {isConnected ? t("twitchChat.connected") : t("twitchChat.disconnected")}
+          </Typography>
+        </StyledStack>
+      </Grid>
+
+      <Grid size={{ lg: 6, md: 6 }}>
+        <Typography variant="h6" gutterBottom>
+          {t("twitchChat.recentRedeems")}
+        </Typography>
+        <StyledStack>
           <List>
             {redemptions.length === 0 ? (
               <Typography variant="body2" color="text.secondary">
-                Nessun redeem ancora...
+                {t("twitchChat.noRedeemsYet")}
               </Typography>
             ) : (
               redemptions.map((redemption) => (
-                <ListItem key={redemption.id}>
+                <ListItem key={redemption.id} className={style.listItem}>
                   <ListItemText
                     primary={
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Typography variant="body1">
-                          {redemption.userDisplayName}
-                        </Typography>
-                        <Chip
-                          label={redemption.rewardTitle}
-                          size="small"
-                          color="primary"
-                        />
-                        <Chip
-                          label={`${redemption.rewardCost} punti`}
-                          size="small"
-                          variant="outlined"
-                        />
-                      </Stack>
+                      <Grid container direction="row" spacing={1} alignItems={"flex-start"} flexWrap={"wrap"}>
+                        <Grid size={{ lg: 6, md: 6 }}>
+                          <Typography variant="body1">
+                            {redemption.userDisplayName}
+                          </Typography>
+                        </Grid>
+                        <Grid size={{ lg: 6, md: 6 }} display="flex" gap={1} flexWrap={"wrap"} justifyContent={"flex-end"}>
+                          <Chip
+                            label={redemption.rewardTitle}
+                            size="small"
+                            color="primary"
+                          />
+                          <Chip
+                            label={`${redemption.rewardCost} punti`}
+                            size="small"
+                            variant="outlined"
+                          />
+                        </Grid>
+                      </Grid>
                     }
                     secondary={
                       <>
                         {redemption.userInput && (
                           <Typography variant="body2">
-                            Input: {redemption.userInput}
+                            {t("twitchChat.userInput", { input: redemption.userInput })}
                           </Typography>
                         )}
                         <Typography variant="caption" color="text.secondary">
-                          {new Date(redemption.timestamp).toLocaleTimeString()}
+                          {t("twitchChat.redeemedAt", { time: new Date(redemption.timestamp).toLocaleDateString() + ' ' + new Date(redemption.timestamp).toLocaleTimeString() })}
                         </Typography>
                       </>
                     }
@@ -134,21 +171,22 @@ export default function TwitchChat() {
               ))
             )}
           </List>
-        </Paper>
+        </StyledStack>
+      </Grid>
 
-        {/* Chat Messages */}
-        <Paper sx={{ p: 2, maxHeight: '400px', overflow: 'auto' }}>
-          <Typography variant="h6" gutterBottom>
-            Chat
-          </Typography>
+      <Grid size={{ lg: 6, md: 6 }}>
+        <Typography variant="h6" gutterBottom>
+          {t("twitchChat.recentMessages")}
+        </Typography>
+        <StyledStack>
           <List>
             {messages.length === 0 ? (
               <Typography variant="body2" color="text.secondary">
-                Nessun messaggio ancora...
+                {t("twitchChat.noMessagesYet")}
               </Typography>
             ) : (
               messages.map((msg, index) => (
-                <ListItem key={`${msg.userId}-${index}`}>
+                <ListItem key={`${msg.userId}-${index}`} className={style.listItem}>
                   <ListItemText
                     primary={
                       <Stack direction="row" spacing={1} alignItems="center">
@@ -174,8 +212,8 @@ export default function TwitchChat() {
               ))
             )}
           </List>
-        </Paper>
-      </Stack>
-    </Box>
+        </StyledStack>
+      </Grid>
+    </Grid>
   );
 }
