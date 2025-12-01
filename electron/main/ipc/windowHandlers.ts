@@ -28,4 +28,16 @@ export function registerWindowHandlers(getMainWindow: () => BrowserWindow | null
       return true
     }
   })
+
+  // Notify renderer on maximize/unmaximize
+  ipcMain.on('window:register-maximize-listener', () => {
+    const win = getMainWindow()
+    if (!win) return
+    win.on('maximize', () => {
+      win.webContents.send('window:is-maximized', true)
+    })
+    win.on('unmaximize', () => {
+      win.webContents.send('window:is-maximized', false)
+    })
+  })
 }

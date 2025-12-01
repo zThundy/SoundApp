@@ -23,6 +23,19 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // ...
 })
 
+contextBridge.exposeInMainWorld("windowManager", {
+  isMaximaized: () => ipcRenderer.invoke('window:is-maximized'),
+  onWindowMaximize: (callback: (isMaximized: boolean) => void) => {
+    ipcRenderer.send('window:register-maximize-listener');
+    ipcRenderer.on('window:is-maximized', (_event, isMaximized: boolean) => {
+      callback(isMaximized);
+    });
+  },
+  minimize: () => ipcRenderer.invoke('window:minimize'),
+  toggleMaximize: () => ipcRenderer.invoke('window:toggle-maximize'),
+  close: () => ipcRenderer.invoke('window:close'),
+});
+
 // Expose a small safeStore API that calls the main-process SafeStorageService
 contextBridge.exposeInMainWorld('safeStore', {
   setItem(key: string, value: string) {

@@ -44,6 +44,14 @@ interface Window {
     removeChatMessageListener(): void
     removeRewardRedeemedListener(): void
   }
+
+  windowManager: {
+    isMaximaized(): Promise<boolean>;
+    onWindowMaximize(callback: (isMaximized: boolean) => void): void;
+    minimize(): Promise<void>;
+    toggleMaximize(): Promise<boolean>;
+    close(): Promise<void>;
+  }
 }
 
 interface ChatMessage {

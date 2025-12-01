@@ -5,29 +5,31 @@ export default function TitleBar() {
   const [isMaximized, setIsMaximized] = useState(false)
 
   useEffect(() => {
-    // Query initial maximize state
-    ; (async () => {
+    (async () => {
       try {
-        const res = await window.ipcRenderer.invoke('window:is-maximized')
+        const res = await window.windowManager.isMaximaized()
         setIsMaximized(Boolean(res))
+        window.windowManager.onWindowMaximize((isMaximized: boolean): void => {
+          setIsMaximized(Boolean(isMaximized));
+        });
       } catch (e) {
-        // ignore if ipc not available (e.g., storybook / test)
+        // ignore
       }
     })()
   }, [])
 
-  const minimize = () => window.ipcRenderer?.invoke?.('window:minimize')
+  const minimize = () => window.windowManager.minimize()
 
   const toggleMaximize = async () => {
     try {
-      const nowMax = await window.ipcRenderer.invoke('window:toggle-maximize')
+      const nowMax = await window.windowManager.toggleMaximize()
       setIsMaximized(Boolean(nowMax))
     } catch (e) {
       // ignore
     }
   }
 
-  const closeWindow = () => window.ipcRenderer?.invoke?.('window:close')
+  const closeWindow = () => window.windowManager.close()
 
   return (
     <div className={style.titleBar}>
