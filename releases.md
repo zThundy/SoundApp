@@ -24,4 +24,4 @@
 - Added icon to build
 - Started working on some local tests
 
-## 0.1.1
+## 0.1.2
