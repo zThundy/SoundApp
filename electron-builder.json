@@ -30,11 +30,13 @@
     "artifactName": "Sound-App-Setup.${ext}"
   },
   "nsis": {
-    "oneClick": false,
+    "deleteAppDataOnUninstall": false,
+    "oneClick": true,
     "perMachine": false,
-    "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false
-  },
+    "allowToChangeInstallationDirectory": false,
+    "artifactName": "FlyITA-Setup.${ext}",
+    "differentialPackage": true
+},
   "publish": [
     {
       "provider": "github",
