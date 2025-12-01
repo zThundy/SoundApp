@@ -38,8 +38,8 @@
   "publish": [
     {
       "provider": "github",
-      "private": false,
-      "owner": "zThundy__",
+      "private": true,
+      "owner": "zThundy",
       "repo": "SoundApp",
       "releaseType": "release"
     }
