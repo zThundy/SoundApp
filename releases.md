@@ -25,6 +25,3 @@
 - Started working on some local tests
 
 ## 0.1.2
-
-
-## 0.1.2

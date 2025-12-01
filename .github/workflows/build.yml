@@ -119,6 +119,7 @@ jobs:
         run: |
           git fetch origin master
           git pull origin master --rebase
+          npm version patch --no-git-tag-version
           $nextVersion = (Get-Content -Path .\package.json | ConvertFrom-Json).version
           $releasesFile = "releases.md"
           $content = Get-Content -Path $releasesFile -Raw -Encoding UTF8
