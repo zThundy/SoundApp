@@ -1,4 +1,4 @@
-﻿
+
 ## 0.0.2
 
 - Test release
@@ -18,5 +18,8 @@
 
 - Added button in home page to add a new reward
 - Added security to README
+
+## 0.1.1
+
 
 ## 0.1.1
