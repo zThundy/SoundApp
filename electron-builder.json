@@ -28,7 +28,7 @@
       "portable"
     ],
     "artifactName": "Sound-App-Setup.${ext}",
-    "icon": "build/icon.ico"
+    "icon": "assets/icon.ico"
   },
   "nsis": {
     "deleteAppDataOnUninstall": false,
