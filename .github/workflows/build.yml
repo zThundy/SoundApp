@@ -131,8 +131,9 @@ jobs:
           git push
 
   update-readme:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build-and-release-windows
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
