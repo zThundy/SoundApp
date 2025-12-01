@@ -4,81 +4,81 @@ import { safeStorage } from "electron";
 import Store from 'electron-store';
 
 interface SafeStorageWrapper {
-    isEncryptionAvailable(): boolean;
-    setUsePlainTextEncryption(allow: boolean): void;
-    getSelectedStorageBackend(): string;
-    store(key: string, value: string): boolean;
-    set(key: string, value: string): boolean;
-    get(key: string): string | null;
-    remove(key: string): boolean;
-    has(key: string): boolean;
-    clear(): boolean;
+  isEncryptionAvailable(): boolean;
+  setUsePlainTextEncryption(allow: boolean): void;
+  getSelectedStorageBackend(): string;
+  store(key: string, value: string): boolean;
+  set(key: string, value: string): boolean;
+  get(key: string): string | null;
+  remove(key: string): boolean;
+  has(key: string): boolean;
+  clear(): boolean;
 }
 
 class SafeStorageWrapper {
-    private safeStorage: typeof safeStorage;
-    private storage: Store = new Store();
+  private safeStorage: typeof safeStorage;
+  private storage: Store = new Store();
 
-    constructor() {
-        this.safeStorage = safeStorage;
-    }
+  constructor() {
+    this.safeStorage = safeStorage;
+  }
 
-    isEncryptionAvailable(): boolean {
-        return this.safeStorage.isEncryptionAvailable();
-    }
+  isEncryptionAvailable(): boolean {
+    return this.safeStorage.isEncryptionAvailable();
+  }
 
-    setUsePlainTextEncryption(allow: boolean): void {
-        this.safeStorage.setUsePlainTextEncryption(allow);
-    }
+  setUsePlainTextEncryption(allow: boolean): void {
+    this.safeStorage.setUsePlainTextEncryption(allow);
+  }
 
-    getSelectedStorageBackend(): string {
-        return this.safeStorage.getSelectedStorageBackend();
-    }
+  getSelectedStorageBackend(): string {
+    return this.safeStorage.getSelectedStorageBackend();
+  }
 
-    set(key: string, value: string): boolean {
-        return this.store(key, value);
-    }
+  set(key: string, value: string): boolean {
+    return this.store(key, value);
+  }
 
-    store(key: string, value: string): boolean {
-        if (!this.isEncryptionAvailable()) return false;
-        const encrypted = this.safeStorage.encryptString(value);
-        console.log('Storing encrypted value for key:', key, encrypted);
-        const base64Encoded = encrypted.toString('base64');
-        (this.storage as any).set(key, base64Encoded);
-        console.log('Value stored successfully.', base64Encoded);
-        return true;
-    }
+  store(key: string, value: string): boolean {
+    if (!this.isEncryptionAvailable()) return false;
+    const encrypted = this.safeStorage.encryptString(value);
+    console.log('Storing encrypted value for key:', key, encrypted);
+    const base64Encoded = encrypted.toString('base64');
+    (this.storage as any).set(key, base64Encoded);
+    console.log('Value stored successfully.', base64Encoded);
+    return true;
+  }
 
-    get(key: string): string | null | undefined {
-        if (!this.isEncryptionAvailable()) return null;
-        // Retrieve the encrypted buffer from a file or database
-        const encryptedBuffer = (this.storage as any).get(key);
-        if (!encryptedBuffer) return null;
-        const buffer = encryptedBuffer ? Buffer.from(encryptedBuffer as string, 'base64') : null;
-        if (!buffer) return null;
-        const decrypted = this.safeStorage.decryptString(buffer);
-        return decrypted;
-    }
+  get(key: string): string | null | undefined {
+    if (!this.isEncryptionAvailable()) return null;
+    // Retrieve the encrypted buffer from a file or database
+    const encryptedBuffer = (this.storage as any).get(key);
+    if (!encryptedBuffer) return null;
+    const buffer = encryptedBuffer ? Buffer.from(encryptedBuffer as string, 'base64') : null;
+    if (!buffer) return null;
+    const decrypted = this.safeStorage.decryptString(buffer);
+    return decrypted;
+  }
 
-    remove(key: string): boolean {
-        (this.storage as any).delete(key);
-        return true;
-    }
+  remove(key: string): boolean {
+    (this.storage as any).delete(key);
+    return true;
+  }
 
-    has(key: string): boolean {
-        const value = (this.storage as any).get(key);
-        if (value === undefined || value === null) return false;
-        if (!(this.storage as any).has(key)) return false;
-        return true;
-    }
+  has(key: string): boolean {
+    const value = (this.storage as any).get(key);
+    if (value === undefined || value === null) return false;
+    if (!(this.storage as any).has(key)) return false;
+    return true;
+  }
 
-    clear(): boolean {
-        (this.storage as any).clear();
-        return true;
-    }
+  clear(): boolean {
+    (this.storage as any).clear();
+    return true;
+  }
 }
 
 export {
-    SafeStorageWrapper,
-    SafeStorageWrapper as default
+  SafeStorageWrapper,
+  SafeStorageWrapper as default
 }

@@ -4,17 +4,14 @@ import {
   getBroadcasterId,
   getTwitchRedemptions,
   getCustomRewards,
-  updateCustomReward
 } from '../twitchWorker'
 import { TwitchEventListener } from '../twitchEventListener'
 
 let twitchEventListener: TwitchEventListener | null = null
 const clientId = '64aeehn5qo2902i5c4gvz41yjqd9h2'
 
-// Getter per il listener condiviso
 export const getTwitchEventListener = () => twitchEventListener
 
-// Funzione per connettere EventSub se il token esiste
 export const connectEventSubIfPossible = async (safeStore: SafeStorageWrapper | null, mainWindow: BrowserWindow | null) => {
   console.log("[Twitch] Attempting to connect to EventSub if possible...")
   if (!mainWindow || twitchEventListener?.isConnected()) return console.log("[Twitch] Already connected or no main window.")
@@ -25,13 +22,11 @@ export const connectEventSubIfPossible = async (safeStore: SafeStorageWrapper | 
 
     if (!accessToken) return
 
-    // Se non c'è il broadcaster ID, recuperalo
     if (!broadcasterId) {
       broadcasterId = await getBroadcasterId(accessToken)
       safeStore?.set('broadcasterId', broadcasterId)
     }
 
-    // Connetti al listener
     if (!twitchEventListener) {
       twitchEventListener = new TwitchEventListener(mainWindow)
     }
@@ -44,7 +39,6 @@ export const connectEventSubIfPossible = async (safeStore: SafeStorageWrapper | 
 }
 
 export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mainWindow: BrowserWindow | null) {
-  // Tenta la connessione all'avvio se il token esiste già
   connectEventSubIfPossible(safeStore, mainWindow)
   ipcMain.handle('oauth:start-twitch', (_evt) => {
     return new Promise<void>((resolve, reject) => {
@@ -96,7 +90,6 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
           safeStore?.set('twitchAccessToken', accessToken)
           authWindow.close()
           
-          // Connetti dopo il login
           connectEventSubIfPossible(safeStore, mainWindow)
           resolve()
         }
@@ -109,7 +102,6 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
   })
 
   ipcMain.handle("oauth:logout-twitch", async () => {
-    // Disconnetti il listener
     if (twitchEventListener) {
       twitchEventListener.disconnect()
       twitchEventListener = null
@@ -119,7 +111,6 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
     safeStore?.remove('broadcasterId')
   })
 
-  // Handler esplicito per connettere EventSub (utile per riconnessioni manuali)
   ipcMain.handle('twitch-events:connect', async () => {
     try {
       await connectEventSubIfPossible(safeStore, mainWindow)
@@ -129,7 +120,6 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
     }
   })
 
-  // Handler per disconnettere EventSub
   ipcMain.handle('twitch-events:disconnect', async () => {
     try {
       if (twitchEventListener) {
@@ -157,8 +147,8 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
   })
 
   ipcMain.handle("twitch:update-reward", async (_evt, rewardId: string, settings: any) => {
-    const accessToken = await safeStore?.get('twitchAccessToken')
-    const broadcasterId = await getBroadcasterId(accessToken as string)
+    // const accessToken = await safeStore?.get('twitchAccessToken')
+    // const broadcasterId = await getBroadcasterId(accessToken as string)
     // const updatedReward = await updateCustomReward(accessToken as string, broadcasterId, rewardId, settings)
     // return updatedReward
     return false

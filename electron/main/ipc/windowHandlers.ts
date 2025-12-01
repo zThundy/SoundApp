@@ -1,7 +1,6 @@
 import { ipcMain, BrowserWindow } from 'electron'
 
 export function registerWindowHandlers(getMainWindow: () => BrowserWindow | null) {
-  // Window control handlers for the custom title bar
   ipcMain.handle('window:minimize', () => {
     const win = getMainWindow()
     win?.minimize()
@@ -29,7 +28,6 @@ export function registerWindowHandlers(getMainWindow: () => BrowserWindow | null
     }
   })
 
-  // Notify renderer on maximize/unmaximize
   ipcMain.on('window:register-maximize-listener', () => {
     const win = getMainWindow()
     if (!win) return

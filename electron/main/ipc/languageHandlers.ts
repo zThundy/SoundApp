@@ -11,7 +11,6 @@ interface LanguageConfig {
 const DEFAULT_LANGUAGE = 'en-EN';
 
 export function registerLanguageHandlers() {
-  // Ottieni la lingua salvata
   ipcMain.handle('language:get', async () => {
     try {
       const exists = await fileManager.fileExists(LANGUAGE_CONTEXT, LANGUAGE_FILE);
@@ -30,7 +29,6 @@ export function registerLanguageHandlers() {
     }
   });
 
-  // Salva la lingua selezionata
   ipcMain.handle('language:set', async (_event, language: string) => {
     try {
       const config: LanguageConfig = { language };

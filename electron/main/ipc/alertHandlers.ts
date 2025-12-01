@@ -83,7 +83,6 @@ export function registerAlertHandlers(
     }
   })
 
-  // Template management handlers
   ipcMain.handle('alerts:save-template', async (_evt, template: AlertTemplate) => {
     try {
       if (!template || !template.id) {

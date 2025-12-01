@@ -47,7 +47,6 @@ class TwitchEventListener {
   private reconnectDelay = 1000;
   private keepaliveTimer: NodeJS.Timeout | null = null;
   
-  // Cache per messaggi e redeem
   private chatMessages: ChatMessage[] = [];
   private rewardRedemptions: RewardRedemption[] = [];
   private readonly MAX_CACHE_SIZE = 50;
@@ -59,9 +58,6 @@ class TwitchEventListener {
     this.loadCache();
   }
 
-  /**
-   * Carica la cache dal file
-   */
   private async loadCache(): Promise<void> {
     try {
       const exists = await fileManager.fileExists(this.CACHE_CONTEXT, this.CACHE_FILE);
@@ -73,7 +69,6 @@ class TwitchEventListener {
       const data = await fileManager.readFile(this.CACHE_CONTEXT, this.CACHE_FILE);
       const cache: TwitchCache = JSON.parse(data.toString());
       
-      // Converti le stringhe timestamp in Date
       this.chatMessages = cache.messages.map(msg => ({
         ...msg,
         timestamp: new Date(msg.timestamp)
@@ -90,9 +85,6 @@ class TwitchEventListener {
     }
   }
 
-  /**
-   * Salva la cache su file
-   */
   private async saveCache(): Promise<void> {
     try {
       const cache: TwitchCache = {
@@ -107,25 +99,15 @@ class TwitchEventListener {
     }
   }
 
-  /**
-   * Ottiene i messaggi dalla cache
-   */
   getCachedMessages(): ChatMessage[] {
     return [...this.chatMessages];
   }
 
-  /**
-   * Ottiene i redeem dalla cache
-   */
   getCachedRedemptions(): RewardRedemption[] {
     return [...this.rewardRedemptions];
   }
 
-  /**
-   * Inizializza la connessione a Twitch EventSub WebSocket
-   */
   async connect(accessToken: string, broadcasterId: string, clientId: string): Promise<void> {
-    // Previeni connessioni multiple
     if (this.isConnected()) {
       console.log('[TwitchEventListener] Already connected, skipping connect');
       return;
@@ -142,9 +124,6 @@ class TwitchEventListener {
     }
   }
 
-  /**
-   * Connette il WebSocket a Twitch EventSub
-   */
   private async connectWebSocket(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
@@ -159,7 +138,6 @@ class TwitchEventListener {
           const message = JSON.parse(data.toString());
           await this.handleMessage(message);
           
-          // Resolve on session_welcome
           if (message.metadata?.message_type === 'session_welcome') {
             resolve();
           }
@@ -170,23 +148,19 @@ class TwitchEventListener {
 
       this.ws.on('error', (error) => {
         console.error('[TwitchEventListener] WebSocket error:', error);
-        // Non chiudere qui - l'evento 'close' verrà triggered automaticamente se necessario
       });
 
       this.ws.on('close', (code, reason) => {
         console.log(`[TwitchEventListener] WebSocket closed - Code: ${code}, Reason: ${reason.toString()}`);
         
-        // Pulisci il timer keepalive
         if (this.keepaliveTimer) {
           clearTimeout(this.keepaliveTimer);
           this.keepaliveTimer = null;
         }
         
-        // Riconnetti automaticamente solo se la connessione è stata chiusa inaspettatamente
         this.handleReconnect();
       });
 
-      // Timeout per la connessione
       setTimeout(() => {
         if (!this.sessionId) {
           reject(new Error('Connection timeout'));
@@ -195,9 +169,6 @@ class TwitchEventListener {
     });
   }
 
-  /**
-   * Gestisce i messaggi ricevuti dal WebSocket
-   */
   private async handleMessage(message: any): Promise<void> {
     const messageType = message.metadata?.message_type;
     console.log('[TwitchEventListener] Received message type:', messageType);
@@ -208,7 +179,6 @@ class TwitchEventListener {
         break;
 
       case 'session_keepalive':
-        // Keepalive received, reset timer
         this.resetKeepaliveTimer();
         break;
 
@@ -225,30 +195,21 @@ class TwitchEventListener {
     }
   }
 
-  /**
-   * Gestisce il messaggio di benvenuto e sottoscrive gli eventi
-   */
   private async handleSessionWelcome(message: any): Promise<void> {
     this.sessionId = message.payload.session.id;
     console.log('[TwitchEventListener] Welcome - Session ID:', this.sessionId);
 
-    // Avvia il timer per il keepalive
     this.resetKeepaliveTimer();
 
     if (this.config) {
-      // Sottoscrive gli eventi
       await this.subscribeToEvents();
     }
   }
 
-  /**
-   * Sottoscrive agli eventi di Twitch
-   */
   private async subscribeToEvents(): Promise<void> {
     if (!this.config || !this.sessionId) return;
 
     const events = [
-      // Evento per i redeem di punti canale
       {
         type: 'channel.channel_points_custom_reward_redemption.add',
         version: '1',
@@ -256,7 +217,6 @@ class TwitchEventListener {
           broadcaster_user_id: this.config.broadcasterId
         }
       },
-      // Evento per aggiornamenti dei redeem
       {
         type: 'channel.channel_points_custom_reward_redemption.update',
         version: '1',
@@ -264,7 +224,6 @@ class TwitchEventListener {
           broadcaster_user_id: this.config.broadcasterId
         }
       },
-      // Evento per i messaggi chat (richiede scope specifico)
       {
         type: 'channel.chat.message',
         version: '1',
@@ -284,9 +243,6 @@ class TwitchEventListener {
     }
   }
 
-  /**
-   * Sottoscrive a un singolo evento
-   */
   private async subscribeToEvent(event: any): Promise<void> {
     if (!this.config || !this.sessionId) return;
 
@@ -321,9 +277,6 @@ class TwitchEventListener {
     console.log(`Subscribed to ${event.type}`);
   }
 
-  /**
-   * Gestisce le notifiche degli eventi
-   */
   private async handleNotification(message: any): Promise<void> {
     const subscriptionType = message.metadata.subscription_type;
     const event = message.payload.event;
@@ -343,9 +296,6 @@ class TwitchEventListener {
     }
   }
 
-  /**
-   * Gestisce i redeem di punti canale
-   */
   private handleRewardRedemption(event: any): void {
     const redemption: RewardRedemption = {
       id: event.id,
@@ -362,7 +312,6 @@ class TwitchEventListener {
 
     console.log('Reward redeemed:', redemption);
 
-    // Process with local audio mapping and broadcast alert
     try {
       const processor = getRedeemProcessor()
       processor?.process(redemption)
@@ -370,24 +319,18 @@ class TwitchEventListener {
       console.error('[TwitchEventListener] Failed to process redemption locally:', e)
     }
 
-    // Aggiungi alla cache (mantieni solo gli ultimi MAX_CACHE_SIZE)
-    this.rewardRedemptions.unshift(redemption); // Aggiungi all'inizio per ordine cronologico inverso
+    this.rewardRedemptions.unshift(redemption);
     if (this.rewardRedemptions.length > this.MAX_CACHE_SIZE) {
       this.rewardRedemptions.pop();
     }
     
-    // Salva la cache
     this.saveCache();
 
-    // Invia al renderer
     if (this.mainWindow) {
       this.mainWindow.webContents.send('twitch:reward-redeemed', redemption);
     }
   }
 
-  /**
-   * Gestisce i messaggi della chat
-   */
   private handleChatMessage(event: any): void {
     const chatMessage: ChatMessage = {
       userId: event.chatter_user_id,
@@ -401,37 +344,24 @@ class TwitchEventListener {
 
     console.log('Chat message:', chatMessage);
 
-    // Aggiungi alla cache (mantieni solo gli ultimi MAX_CACHE_SIZE)
     this.chatMessages.push(chatMessage);
     if (this.chatMessages.length > this.MAX_CACHE_SIZE) {
       this.chatMessages.shift();
     }
     
-    // Salva la cache
     this.saveCache();
 
-    // Invia al renderer
     if (this.mainWindow) {
       this.mainWindow.webContents.send('twitch:chat-message', chatMessage);
     }
   }
 
-  /**
-   * Gestisce la riconnessione richiesta dal server
-   */
   private async handleSessionReconnect(message: any): Promise<void> {
     const reconnectUrl = message.payload.session.reconnect_url;
     console.log('[TwitchEventListener] Server requested reconnect to:', reconnectUrl);
-    
-    // Non chiudere manualmente - il server chiuderà la connessione e triggererà l'evento 'close'
-    // che gestirà automaticamente la riconnessione
   }
 
-  /**
-   * Gestisce la riconnessione automatica solo quando necessario
-   */
   private async handleReconnect(): Promise<void> {
-    // Non riconnettere se già connesso
     if (this.isConnected()) {
       console.log('[TwitchEventListener] Already connected, skipping reconnect');
       return;
@@ -450,35 +380,25 @@ class TwitchEventListener {
     setTimeout(async () => {
       try {
         await this.connectWebSocket();
-        this.reconnectAttempts = 0; // Reset on successful reconnection
+        this.reconnectAttempts = 0;
         console.log('[TwitchEventListener] Reconnected successfully');
       } catch (error) {
         console.error('[TwitchEventListener] Reconnection failed:', error);
-        // L'evento close verrà triggered e richiamerà handleReconnect
       }
     }, delay);
   }
 
-  /**
-   * Reset del timer keepalive
-   */
   private resetKeepaliveTimer(): void {
     if (this.keepaliveTimer) {
       clearTimeout(this.keepaliveTimer);
     }
     console.log('[TwitchEventListener] Keepalive timer reset');
 
-    // Twitch invia keepalive ogni ~10 secondi, aspetta 60 secondi prima di considerare la connessione morta
     this.keepaliveTimer = setTimeout(() => {
       console.warn('[TwitchEventListener] Keepalive timeout - connection appears dead');
-      // Non chiudere manualmente, lascia che sia il server a chiudere
-      // this.ws potrebbe già essere chiuso dal server
     }, 60000);
   }
 
-  /**
-   * Disconnette dal WebSocket (solo per logout esplicito)
-   */
   disconnect(): void {
     console.log('[TwitchEventListener] Disconnecting...');
     
@@ -488,7 +408,6 @@ class TwitchEventListener {
     }
 
     if (this.ws) {
-      // Rimuovi i listener per evitare riconnessioni automatiche
       this.ws.removeAllListeners();
       this.ws.close();
       this.ws = null;
@@ -499,9 +418,6 @@ class TwitchEventListener {
     this.reconnectAttempts = 0;
   }
 
-  /**
-   * Verifica se è connesso
-   */
   isConnected(): boolean {
     return this.ws !== null && this.ws.readyState === WebSocket.OPEN;
   }
