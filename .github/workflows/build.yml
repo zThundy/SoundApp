@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   build-and-release-windows:
-    runs-on: self-hosted
+    runs-on: windows-latest
 
     if: contains(github.event.head_commit.message, '[build]')
 
@@ -131,9 +131,9 @@ jobs:
           git push
 
   update-readme:
-    runs-on: self-hosted
+    runs-on: windows-latest
     needs: build-and-release-windows
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
