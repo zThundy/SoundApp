@@ -51,7 +51,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add package.json package-lock.json
-          git commit -m "chore: update dependencies and fix security vulnerabilities [automated]"
+          git commit -m "[automated] chore: update dependencies and fix security vulnerabilities"
           git push
       
       - name: Create issue if vulnerabilities remain
