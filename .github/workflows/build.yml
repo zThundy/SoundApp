@@ -84,7 +84,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.BUILD_SECRET }}
-          file: ./releases/${{ steps.extract_version.outputs.release_version }}/Stream Alerts.exe
+          file: releases/${{ steps.extract_version.outputs.release_version }}/Stream Alerts.exe
           asset_name: Stream Alerts.exe
           tag: ${{ steps.extract_version.outputs.release_version }}
           overwrite: true
@@ -95,7 +95,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.BUILD_SECRET }}
-          file: ./releases/${{ steps.extract_version.outputs.release_version }}/Stream Alerts.exe.blockmap
+          file: releases/${{ steps.extract_version.outputs.release_version }}/Stream Alerts.exe.blockmap
           asset_name: Stream Alerts.exe.blockmap
           tag: ${{ steps.extract_version.outputs.release_version }}
           overwrite: true
@@ -106,7 +106,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.BUILD_SECRET }}
-          file: ./releases/${{ steps.extract_version.outputs.release_version }}/builder-debug.yml
+          file: releases/${{ steps.extract_version.outputs.release_version }}/builder-debug.yml
           asset_name: builder-debug.yml
           tag: ${{ steps.extract_version.outputs.release_version }}
           overwrite: true
@@ -117,7 +117,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.BUILD_SECRET }}
-          file: ./releases/${{ steps.extract_version.outputs.release_version }}/latest.yml
+          file: releases/${{ steps.extract_version.outputs.release_version }}/latest.yml
           asset_name: latest.yml
           tag: ${{ steps.extract_version.outputs.release_version }}
           overwrite: true
