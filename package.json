@@ -1,6 +1,6 @@
 {
   "name": "stream-alerts",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "dist/main/index.js",
   "description": "An electron-based app for managing twitch stream sound alerts",
   "author": "zThundy__",
