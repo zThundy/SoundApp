@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
 
+import { initializeLogger, closeLogger } from './logger'
 import { update } from './update'
 import { startAlertServer } from './alertServer'
 import SafeStorageWrapper from './safeStorageWrapper'
@@ -12,6 +13,9 @@ import { connectEventSubIfPossible } from './ipc/twitchHandlers'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 process.env.APP_ROOT = path.join(__dirname, '../..')
+
+// Initialize logger as early as possible
+initializeLogger()
 
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 export const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
@@ -89,10 +93,13 @@ async function createWindow() {
       try {
         await win?.webContents.executeJavaScript('void 0'); // Ensure webContents is ready
         const { checkForUpdatesOnStartup } = await import('./update')
+        console.log("[update] Checking for updates on startup...");
         await checkForUpdatesOnStartup(win!)
       } catch (error) {
         console.error('Error during startup update check:', error)
       }
+    } else {
+      console.log('[update] Skipping update check on startup in development mode.');
     }
     
     // Show window after a small delay to ensure preload screen is visible
@@ -151,7 +158,10 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   win = null
-  if (process.platform !== 'darwin') app.quit()
+  if (process.platform !== 'darwin') {
+    closeLogger()
+    app.quit()
+  }
 })
 
 app.on('second-instance', () => {
@@ -169,4 +179,9 @@ app.on('activate', () => {
   } else {
     createWindow()
   }
+})
+
+app.on('before-quit', () => {
+  console.log('App is quitting...')
+  closeLogger()
 })

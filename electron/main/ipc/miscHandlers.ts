@@ -1,4 +1,5 @@
-import { ipcMain, BrowserWindow, shell } from 'electron'
+import { ipcMain, BrowserWindow, shell, app } from 'electron'
+import { getLogger } from '../logger'
 
 export function registerMiscHandlers(
   getMainWindow: () => BrowserWindow | null,
@@ -32,5 +33,51 @@ export function registerMiscHandlers(
     } catch (err: any) {
       return { ok: false, error: err?.message ?? 'Failed to open external link' }
     }
+  })
+
+  // Get log file paths
+  ipcMain.handle('logger:get-paths', () => {
+    const logger = getLogger()
+    if (!logger) {
+      return { ok: false, error: 'Logger not initialized' }
+    }
+    return {
+      ok: true,
+      logPath: logger.getLogFilePath(),
+      errorLogPath: logger.getErrorLogFilePath()
+    }
+  })
+
+  // Open log file in default editor
+  ipcMain.handle('logger:open-log', async () => {
+    const logger = getLogger()
+    if (!logger) {
+      return { ok: false, error: 'Logger not initialized' }
+    }
+    try {
+      await shell.openPath(logger.getLogFilePath())
+      return { ok: true }
+    } catch (err: any) {
+      return { ok: false, error: err?.message ?? 'Failed to open log file' }
+    }
+  })
+
+  // Open error log file in default editor
+  ipcMain.handle('logger:open-error-log', async () => {
+    const logger = getLogger()
+    if (!logger) {
+      return { ok: false, error: 'Logger not initialized' }
+    }
+    try {
+      await shell.openPath(logger.getErrorLogFilePath())
+      return { ok: true }
+    } catch (err: any) {
+      return { ok: false, error: err?.message ?? 'Failed to open error log file' }
+    }
+  })
+
+  // Get app version
+  ipcMain.handle('app:get-version', () => {
+    return { ok: true, version: app.getVersion() }
   })
 }
