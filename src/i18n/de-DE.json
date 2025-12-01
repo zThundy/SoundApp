@@ -95,5 +95,15 @@
   "redeems.maxPerUserPerStream": "Max. pro Nutzer und Stream",
   "redeems.maxPerUserPerStreamInfo": "Die maximale Anzahl an Einlösungen pro Nutzer und Stream. Der Mindestwert ist 1.",
   "redeems.globalCooldown": "Globaler Cooldown",
-  "redeems.globalCooldownInfo": "Die globale Abklingzeit für alle Einlösungen. Der Mindestwert ist 1."
+  "redeems.globalCooldownInfo": "Die globale Abklingzeit für alle Einlösungen. Der Mindestwert ist 1.",
+
+  "twitchChat.status": "Twitch-Chat-Status",
+  "twitchChat.connected": "Mit dem Twitch-Chat verbunden.",
+  "twitchChat.disconnected": "Vom Twitch-Chat getrennt.",
+  "twitchChat.recentRedeems": "Neueste Einlösungen",
+  "twitchChat.noRedeemsYet": "Noch keine Einlösungen...",
+  "twitchChat.userInput": "Eingabe: {input}",
+  "twitchChat.redeemedAt": "Eingelöst um: {time}",
+  "twitchChat.recentMessages": "Neueste Nachrichten",
+  "twitchChat.noMessagesYet": "Noch keine Nachrichten..."
 }

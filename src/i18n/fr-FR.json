@@ -96,5 +96,15 @@
   "redeems.maxPerUserPerStream": "Max par utilisateur et par stream",
   "redeems.maxPerUserPerStreamInfo": "Nombre maximal de validations autorisées par utilisateur et par stream. La valeur minimale est 1.",
   "redeems.globalCooldown": "Délai de récupération global",
-  "redeems.globalCooldownInfo": "Le délai de récupération global pour toutes les validations. La valeur minimale est 1."
+  "redeems.globalCooldownInfo": "Le délai de récupération global pour toutes les validations. La valeur minimale est 1.",
+
+  "twitchChat.status": "Statut du chat Twitch",
+  "twitchChat.connected": "Connecté au chat Twitch.",
+  "twitchChat.disconnected": "Déconnecté du chat Twitch.",
+  "twitchChat.recentRedeems": "Validations récentes",
+  "twitchChat.noRedeemsYet": "Aucune validation pour le moment...",
+  "twitchChat.userInput": "Entrée : {input}",
+  "twitchChat.redeemedAt": "Échangée à : {time}",
+  "twitchChat.recentMessages": "Messages récents",
+  "twitchChat.noMessagesYet": "Aucun message pour le moment..."
 }

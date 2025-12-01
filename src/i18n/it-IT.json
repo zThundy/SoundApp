@@ -96,5 +96,15 @@
   "redeems.maxPerUserPerStream": "Massimo per utente per stream",
   "redeems.maxPerUserPerStreamInfo": "Il numero massimo di riscatti consentiti per utente per stream live. Il valore minimo è 1.",
   "redeems.globalCooldown": "Cooldown globale",
-  "redeems.globalCooldownInfo": "Il periodo di cooldown globale per tutte le redemptions. Il valore minimo è 1."
+  "redeems.globalCooldownInfo": "Il periodo di cooldown globale per tutte le redemptions. Il valore minimo è 1.",
+
+  "twitchChat.status": "Stato chat Twitch",
+  "twitchChat.connected": "Connesso alla chat di Twitch.",
+  "twitchChat.disconnected": "Disconnesso dalla chat di Twitch.",
+  "twitchChat.recentRedeems": "Riscatti recenti",
+  "twitchChat.noRedeemsYet": "Ancora nessun riscatto...",
+  "twitchChat.userInput": "Input: {input}",
+  "twitchChat.redeemedAt": "Riscattato alle: {time}",
+  "twitchChat.recentMessages": "Messaggi recenti",
+  "twitchChat.noMessagesYet": "Ancora nessun messaggio..."
 }

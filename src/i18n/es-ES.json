@@ -96,5 +96,15 @@
   "redeems.maxPerUserPerStream": "Máx. por usuario y stream",
   "redeems.maxPerUserPerStreamInfo": "Número máximo de canjes permitidos por usuario y por stream. El valor mínimo es 1.",
   "redeems.globalCooldown": "Enfriamiento global",
-  "redeems.globalCooldownInfo": "El periodo de enfriamiento global para todos los canjes. El valor mínimo es 1."
+  "redeems.globalCooldownInfo": "El periodo de enfriamiento global para todos los canjes. El valor mínimo es 1.",
+
+  "twitchChat.status": "Estado del chat de Twitch",
+  "twitchChat.connected": "Conectado al chat de Twitch.",
+  "twitchChat.disconnected": "Desconectado del chat de Twitch.",
+  "twitchChat.recentRedeems": "Canjes recientes",
+  "twitchChat.noRedeemsYet": "Aún no hay canjes...",
+  "twitchChat.userInput": "Entrada: {input}",
+  "twitchChat.redeemedAt": "Canjeado a las: {time}",
+  "twitchChat.recentMessages": "Mensajes recientes",
+  "twitchChat.noMessagesYet": "Aún no hay mensajes..."
 }
