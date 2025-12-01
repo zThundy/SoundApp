@@ -28,13 +28,13 @@ jobs:
           node-version: 24
 
       - name: Install dependencies for the Electron app
-        shell: bash
+        shell: pwsh
         run: npm install
         # working-directory: ./electron
 
       - name: Build Electron App
         id: build_electron_app
-        shell: bash
+        shell: pwsh
         # working-directory: ./electron
         run: npm run build
 
