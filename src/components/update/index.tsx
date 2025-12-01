@@ -215,17 +215,6 @@ const UpdateRoutePage = () => {
                     {t('update.newVersionAvailable', { version: versionInfo?.newVersion || '' })}
                   </Typography>
 
-                  {!downloaded && (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      style={{ width: '100%' }}
-                      onClick={startManualDownload}
-                    >
-                      {t('update.update')}
-                    </Button>
-                  )}
-
                   {downloaded && (
                     <Button
                       variant="contained"
