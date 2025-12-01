@@ -1,7 +1,7 @@
 # SoundApp
 
 [![Build and Release](https://github.com/zThundy/SoundApp/actions/workflows/build.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/build.yml)
-[![Version - v0.0.6](https://img.shields.io/badge/Version-v0.0.6-2ea44f)](https://github.com/zThundy/SoundApp/releases)
+[![Version - v0.1.0](https://img.shields.io/badge/Version-v0.1.0-2ea44f)](https://github.com/zThundy/SoundApp/releases)
 
 An Electron application to manage alerts (and sounds) for Twitch streams.
 
