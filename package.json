@@ -10,13 +10,18 @@
       "VITE_DEV_SERVER_URL": "http://127.0.0.1:7777/"
     }
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zThundy/SoundApp.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
     "preview": "vite preview",
     "pretest": "vite build --mode=test",
-    "test": "vitest run"
+    "test": "vitest run",
+    "publish": "tsc && vite build && electron-builder --publish always"
   },
   "dependencies": {
     "@mui/icons-material": "^7.3.5",
