@@ -73,13 +73,6 @@ contextBridge.exposeInMainWorld('alerts', {
   }
 })
 
-/*
-window.fileManager.save(context, path, content)
-window.fileManager.read(context, path, asText?)
-window.fileManager.delete(context, path)
-window.fileManager.exists(context, path)
-*/
-
 // File management API for saving/reading files in userData
 contextBridge.exposeInMainWorld('fileManager', {
   save(context: string, relativePath: string, content: string | Buffer) {
@@ -202,35 +195,10 @@ function useLoading() {
   width: 100vw;
   height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   background: hsl(225, 40%, 10%); // --mui-palette-background-900
   z-index: 9;
-}
-.update-progress-container {
-  margin-top: 2rem;
-  width: 300px;
-  text-align: center;
-}
-.update-progress-text {
-  color: #fff;
-  font-size: 14px;
-  margin-bottom: 0.5rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-}
-.update-progress-bar {
-  width: 100%;
-  height: 6px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.update-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #4CAF50, #8BC34A);
-  transition: width 0.3s ease;
-  border-radius: 3px;
 }
     `
   const oStyle = document.createElement('style')
@@ -243,12 +211,6 @@ function useLoading() {
 <div class="${className}">
   <div>
     <img src="logo.png" alt="Loading" style="width:100%;height:100%;object-fit:contain;" />
-  </div>
-</div>
-<div class="update-progress-container" id="update-progress" style="display: none;">
-  <div class="update-progress-text" id="update-text">Checking for updates...</div>
-  <div class="update-progress-bar">
-    <div class="update-progress-fill" id="update-fill" style="width: 0%;"></div>
   </div>
 </div>
   `
@@ -268,67 +230,7 @@ function useLoading() {
 // ----------------------------------------------------------------------
 
 const { appendLoading, removeLoading } = useLoading()
-domReady().then(() => {
-  appendLoading()
-  
-  // Handle update events during preload - wait for DOM to be ready
-  if ((window as any).updater) {
-    // Wait a bit for elements to be attached to DOM
-    setTimeout(() => {
-      const progressContainer = document.getElementById('update-progress');
-      const progressText = document.getElementById('update-text');
-      const progressFill = document.getElementById('update-fill');
-      
-      (window as any).updater.onUpdateCheckStart(() => {
-        if (progressContainer && progressText) {
-          progressContainer.style.display = 'block';
-          progressText.textContent = 'Checking for updates...';
-        }
-      });
-      
-      (window as any).updater.onUpdateAvailable((info: any) => {
-        if (progressText) {
-          progressText.textContent = `Update available: v${info.version}`;
-        }
-      });
-      
-      (window as any).updater.onUpdateNotAvailable(() => {
-        if (progressContainer) {
-          progressContainer.style.display = 'none';
-        }
-      });
-      
-      (window as any).updater.onDownloadProgress((progress: any) => {
-        if (progressContainer && progressText && progressFill) {
-          progressContainer.style.display = 'block';
-          const percent = Math.round(progress.percent || 0);
-          progressText.textContent = `Downloading update: ${percent}%`;
-          progressFill.style.width = `${percent}%`;
-        }
-      });
-      
-      (window as any).updater.onUpdateDownloaded(() => {
-        if (progressText && progressFill) {
-          progressText.textContent = 'Update downloaded, installing...';
-          progressFill.style.width = '100%';
-          // Auto-install after a short delay
-          setTimeout(() => {
-            (window as any).updater.installUpdate();
-          }, 1000);
-        }
-      });
-      
-      (window as any).updater.onUpdateError((error: any) => {
-        if (progressContainer && progressText) {
-          progressText.textContent = 'Update check failed';
-          setTimeout(() => {
-            progressContainer.style.display = 'none';
-          }, 2000);
-        }
-      });
-    }, 100);
-  }
-})
+domReady().then(appendLoading)
 
 window.onmessage = (ev) => {
   ev.data.payload === 'removeLoading' && removeLoading()
