@@ -11,4 +11,53 @@
   border-radius: var(--mui-shape-borderRadius);
   padding: 0.5rem 1rem;
   margin-bottom: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.listItem:hover {
+  background-color: var(--mui-palette-background-700);
+}
+
+@keyframes connectedDot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+.connectedDot {
+  height: 10px;
+  width: 10px;
+  background-color: #4caf50; /* Green color */
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 0.5rem;
+  animation: connectedDot 2s infinite;
+}
+
+@keyframes disconnectedDot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+  }
+}
+
+.disconnectedDot {
+  height: 10px;
+  width: 10px;
+  background-color: #f44336; /* Red color */
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 0.5rem;
+  animation: disconnectedDot 2s infinite;
 }

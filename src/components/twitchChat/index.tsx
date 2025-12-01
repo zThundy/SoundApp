@@ -45,6 +45,30 @@ const StyledStack = styled(Stack)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
 }));
 
+const ConnectedDiv = ({ isConnected }: { isConnected: boolean }) => {
+  const { t } = useContext(TranslationContext)
+
+  if (isConnected) {
+    return (
+      <Stack direction="row" spacing={2} alignItems="center" width={"100%"} justifyContent={"flex-end"} pr={2} pt={1} pb={1}>
+        <div className={style.connectedDot} />
+        <Typography variant="h6">
+          {t("twitchChat.connected")}
+        </Typography>      
+      </Stack>
+    )
+  }
+  
+  return (
+    <Stack direction="row" spacing={2} alignItems="center" width={"100%"} justifyContent={"flex-end"} pr={2} pt={1} pb={1}>
+      <div className={style.disconnectedDot} />
+      <Typography variant="h6">
+        {t("twitchChat.disconnected")}
+      </Typography>      
+    </Stack>
+  )
+}
+
 export default function TwitchChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [redemptions, setRedemptions] = useState<RewardRedemption[]>([]);
@@ -59,8 +83,8 @@ export default function TwitchChat() {
 
         messages = messages.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
-        setMessages(messages || []);
-        setRedemptions(redemptions || []);
+        setMessages(messages ? messages.slice(0, 10) : []);
+        setRedemptions(redemptions ? redemptions.slice(0, 10) : []);
         console.log(`Loaded ${messages?.length || 0} cached messages and ${redemptions?.length || 0} cached redemptions`);
       } catch (error) {
         console.error('Error loading cache:', error);
@@ -81,11 +105,11 @@ export default function TwitchChat() {
     checkConnection();
 
     window.twitchEvents.onChatMessage((message: ChatMessage) => {
-      setMessages(prev => [...prev, message].slice(-50));
+      setMessages(prev => [...prev, message].slice(-10));
     });
 
     window.twitchEvents.onRewardRedeemed((redemption: RewardRedemption) => {
-      setRedemptions(prev => [redemption, ...prev].slice(0, 20));
+      setRedemptions(prev => [redemption, ...prev].slice(0, 10));
     });
 
     return () => {
@@ -105,9 +129,7 @@ export default function TwitchChat() {
           <Typography variant="h6" width={"100%"} pl={3} pt={1} pb={1}>
             {t("twitchChat.status")}
           </Typography>
-          <Typography variant="h6" width={"100%"} textAlign={"right"} pr={3} pt={1} pb={1}>
-            {isConnected ? t("twitchChat.connected") : t("twitchChat.disconnected")}
-          </Typography>
+          <ConnectedDiv isConnected={isConnected} />
         </StyledStack>
       </Grid>
 
@@ -181,7 +203,7 @@ export default function TwitchChat() {
                 <ListItem key={`${msg.userId}-${index}`} className={style.listItem}>
                   <ListItemText
                     primary={
-                      <Stack direction="row" spacing={1} alignItems="center">
+                      <Stack direction="row" spacing={1} alignItems={"flex-start"} justifyContent={"flex-start"}>
                         <Typography
                           variant="body2"
                           fontWeight="bold"
