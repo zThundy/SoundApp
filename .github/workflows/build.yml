@@ -21,100 +21,74 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BUILD_SECRET }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: '22'
+          cache: 'npm'
 
-      - name: Install dependencies for the Electron app
-        run: npm install
-        # working-directory: ./electron
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Build Electron App
-        id: build_electron_app
-        # working-directory: ./electron
-        run: npm run build
-
-      - name: Extract version from package.json
-        id: extract_version
+      - name: Read version from package.json
+        id: pkg
         run: |
-          $pkg_version = (Get-Content -Path .\package.json | ConvertFrom-Json).version
-          echo "Version: $pkg_version"
-          echo "release_version=$pkg_version" >> $ENV:GITHUB_OUTPUT
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Version: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Check if version is a pre-release
-        id: check_pre_release
-        run: |
-          $version = "${{ steps.extract_version.outputs.release_version }}"
-          echo "Version: $version"
-          $first_digit = $version.Split('.')[0]
-          $override = $true
-          if ($override -eq $true) {
-            echo "is_prerelease=false" >> $ENV:GITHUB_OUTPUT
-          } else {
-            if ($first_digit -ne '0') {
-              echo "is_prerelease=false" >> $ENV:GITHUB_OUTPUT
-            } else {
-              echo "is_prerelease=true" >> $ENV:GITHUB_OUTPUT
-            }
-          }
+      # - name: Extract version from package.json
+      #   id: extract_react_version
+      #   shell: pwsh
+      #   run: |
+      #     $pkg_version = (Get-Content -Path .\package.json | ConvertFrom-Json).version
+      #     echo "Version: $pkg_version"
+      #     echo "release_version=$pkg_version" >> $ENV:GITHUB_OUTPUT
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ steps.extract_version.outputs.release_version }}
-          release_name: Release v${{ steps.extract_version.outputs.release_version }}
-          draft: false
-          prerelease: ${{ steps.check_pre_release.outputs.is_prerelease }}
-          body: |
-            This is a new release of the Sound App.
-            - This release contains the latest version of the Sound App.
-
-      - name: Upload Executables
-        id: upload-executables
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.BUILD_SECRET }}
-          file: releases/${{ steps.extract_version.outputs.release_version }}/Stream Alerts.exe
-          asset_name: Stream Alerts.exe
-          tag: ${{ steps.extract_version.outputs.release_version }}
-          overwrite: true
-          make_latest: true
+      # - name: Create Git tag
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "github-actions[bot]@users.noreply.github.com"
+      #     git tag v${{ env.VERSION }}
+      #     git push origin v${{ env.VERSION }}
+      #   shell: bash
+      #   env:
+      #     VERSION: ${{ env.VERSION }}
+      #     GITHUB_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
       
-      - name: Upload blockmap
-        id: upload-blockmap
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.BUILD_SECRET }}
-          file: releases/${{ steps.extract_version.outputs.release_version }}/Stream Alerts.exe.blockmap
-          asset_name: Stream Alerts.exe.blockmap
-          tag: ${{ steps.extract_version.outputs.release_version }}
-          overwrite: true
-          make_latest: true
-        
-      - name: Upload builder debug
-        id: upload-builder-debug
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.BUILD_SECRET }}
-          file: releases/${{ steps.extract_version.outputs.release_version }}/builder-debug.yml
-          asset_name: builder-debug.yml
-          tag: ${{ steps.extract_version.outputs.release_version }}
-          overwrite: true
-          make_latest: true
+      - name: Extract changelogs
+        id: notes
+        run: |
+          $version = "${{ env.VERSION }}"
+          $changelogFile = "releases.md"
+          $changelogContent = Get-Content -Path $changelogFile -Raw
+          $versionHeader = "## $version"
+          $nextVersionHeader = "## "
+          $changelog = $changelogContent -split $versionHeader, 2 | Select-Object -Last 1
+          $changelog = $changelog -split $nextVersionHeader, 2 | Select-Object -First 1
+          echo "Changelog extracted"
+          echo $changelog
+          # write to temporary file
+          $outputFile = "releases.tmp.md"
+          $changelog | Out-File -FilePath $outputFile
+          # output to github action
+          echo "outputFile=$outputFile" >> $ENV:GITHUB_OUTPUT
 
-      - name: Upload latest.yml
-        id: upload-latest-yml
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.BUILD_SECRET }}
-          file: releases/${{ steps.extract_version.outputs.release_version }}/latest.yml
-          asset_name: latest.yml
-          tag: ${{ steps.extract_version.outputs.release_version }}
-          overwrite: true
-          make_latest: true
+      - name: Build and publish
+        run: |
+          npm run publish
+
+      - name: Bump package.json version (patch +0.0.1 for next dev)
+        run: |
+          npm version patch --no-git-tag-version
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "chore: bump version for next development" || echo "No changes to commit"
+          git push
 
   update-readme:
     runs-on: ubuntu-latest
@@ -132,7 +106,7 @@ jobs:
           script: |
             const fs = require('fs');
             const readme = fs.readFileSync('README.md', 'utf-8');
-            const newReadme = readme.replace(/v\d+\.\d+\.\d+/g, `v${{ steps.build-and-release-windows.outputs.release_version }}`);
+            const newReadme = readme.replace(/v\d+\.\d+\.\d+/g, `v${{ steps.build-and-release-windows.outputs.version }}`);
             fs.writeFileSync('README.md', newReadme);
             console.log('README updated');
 

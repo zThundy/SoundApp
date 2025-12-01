@@ -4,14 +4,14 @@
   "asar": true,
   "productName": "Stream Alerts",
   "directories": {
-    "output": "release/${version}"
+    "output": "release"
   },
   "files": [
     "dist-electron",
     "dist"
   ],
   "mac": {
-    "artifactName": "${productName}.${ext}",
+    "artifactName": "Sound-App-Setup.${ext}",
     "target": [
       "dmg",
       "zip"
@@ -27,7 +27,7 @@
       },
       "portable"
     ],
-    "artifactName": "${productName}.${ext}"
+    "artifactName": "Sound-App-Setup.${ext}"
   },
   "nsis": {
     "oneClick": false,
@@ -35,12 +35,16 @@
     "allowToChangeInstallationDirectory": true,
     "deleteAppDataOnUninstall": false
   },
-  "publish": {
-    "provider": "generic",
-    "channel": "latest",
-    "url": "https://github.com/electron-vite/electron-vite-react/releases/download/v0.9.9/"
-  },
+  "publish": [
+    {
+      "provider": "github",
+      "private": false,
+      "owner": "zThundy__",
+      "repo": "SoundApp",
+      "releaseType": "release"
+    }
+  ],
   "portable": {
-    "artifactName": "${productName}-Portable.${ext}"
+    "artifactName": "Sound-App-Portable.${ext}"
   }
 }
