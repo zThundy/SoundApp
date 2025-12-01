@@ -5,6 +5,7 @@
 
 ### Tests
 
+[![Audit Deps](https://github.com/zThundy/SoundApp/actions/workflows/update-dependencies.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/update-dependencies.yml)
 [![App Launch](https://github.com/zThundy/SoundApp/actions/workflows/test-app-launch.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/test-app-launch.yml)
 [![Login](https://github.com/zThundy/SoundApp/actions/workflows/test-login.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/test-login.yml)
 
