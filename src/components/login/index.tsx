@@ -38,7 +38,7 @@ export default function Login() {
           color="primary"
           sx={{ width: '100%', fontSize: 18, padding: '10px 0' }}
           startIcon={
-            <img src="/twitch.png" alt={t('login.twitchLogoAlt')} style={{
+            <img src="twitch.png" alt={t('login.twitchLogoAlt')} style={{
               width: 25,
               height: 25,
               paddingRight: 10,

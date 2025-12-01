@@ -134,7 +134,7 @@ export default function Settings() {
               {availableLanguages.map((lang) => (
                 <MenuItem key={lang.code} value={lang.code}>
                   <Stack direction="row" alignItems="center">
-                    <img src={`/flags/${lang.code}.png`} alt={lang.label} style={{ width: 24, height: 24, marginRight: 8 }} />
+                    <img src={`flags/${lang.code}.png`} alt={lang.label} style={{ width: 24, height: 24, marginRight: 8 }} />
                     {lang.label}
                   </Stack>
                 </MenuItem>
