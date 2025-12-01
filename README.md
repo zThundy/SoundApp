@@ -3,6 +3,11 @@
 [![Build and Release](https://github.com/zThundy/SoundApp/actions/workflows/build.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/build.yml)
 [![Version - v0.1.0](https://img.shields.io/badge/Version-v0.1.0-2ea44f)](https://github.com/zThundy/SoundApp/releases)
 
+### Tests
+
+[![App Launch](https://github.com/zThundy/SoundApp/actions/workflows/test-app-launch.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/test-app-launch.yml)
+[![Login](https://github.com/zThundy/SoundApp/actions/workflows/test-login.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/test-login.yml)
+
 An Electron application to manage alerts (and sounds) for Twitch streams.
 
 ![Application Screenshot](.github/screenshots/application.png)
@@ -23,9 +28,6 @@ http://localhost:4823/
 3. Enter the URL `http://localhost:4823/`.
 4. Set page dimension to either 1920x1080 or 1280x720 (not necessary but this will make the alert more visible).
 5. The page is initially blank. Alerts will appear in the center when sent from the app.
-
-### Security / Scope
-The server listens only on `127.0.0.1` and is therefore accessible only locally.
 
 ### Issues / ideas
 For issues or ideas: open an issue in the repository.
