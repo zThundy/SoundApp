@@ -120,8 +120,8 @@ jobs:
           $nextVersion = (Get-Content -Path .\package.json | ConvertFrom-Json).version
           $releasesFile = "releases.md"
           $content = Get-Content -Path $releasesFile -Raw -Encoding UTF8
-          $newSection = "`n## $nextVersion`n"
-          $updatedContent = $newSection + $content
+          $newSection = "`n`n## $nextVersion`n"
+          $updatedContent = $content + $newSection
           $updatedContent | Out-File -FilePath $releasesFile -Encoding UTF8 -NoNewline
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
