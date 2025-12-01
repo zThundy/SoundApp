@@ -31,6 +31,7 @@
 
 ## 0.1.3
 
+- Fixed repository permission
 - Added logger that logs stuff in Roaming\stream-alerts\logs
 - Complete rewrite of the updater logic
 - Added app version in settings
