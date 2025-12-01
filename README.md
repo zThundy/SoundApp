@@ -21,7 +21,8 @@ http://localhost:4823/
 1. Open OBS.
 2. Add a new source: Browser Source.
 3. Enter the URL `http://localhost:4823/`.
-4. The page is initially blank. Alerts will appear in the center when sent from the app.
+4. Set page dimension to either 1920x1080 or 1280x720 (not necessary but this will make the alert more visible).
+5. The page is initially blank. Alerts will appear in the center when sent from the app.
 
 ### Security / Scope
 The server listens only on `127.0.0.1` and is therefore accessible only locally.
@@ -44,3 +45,18 @@ From the menu (alerts page) you can create two types of alerts:
 	- Set the text (caption) displayed below.
 	- Duration (ms) indicates how long it remains visible (default 6000).
 	- Press "Send Image Template" to send.
+
+### Todo and FAQ
+TODO:
+  - Add logic for new button
+  - Add logic for edit of redeem to post to Twitch
+  - Work on async encription for credentials
+  - Issue where on first launch images and some functionalities don't work until the app is restarted
+
+FAQ:
+	- None for now :)
+
+### Security Notes
+1. The Twitch token is **locally stored and encrypted** in the elctron storage using the [Safe Storage API](https://www.electronjs.org/docs/latest/api/safe-storage)
+2. Comunication with Twitch is done by using the HTTPS protocol and WSS comunication.
+3. The web server for the alert is only accessible as a local connection (either with localhost or 192.168.1.1).
