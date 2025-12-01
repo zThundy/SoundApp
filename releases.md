@@ -14,7 +14,9 @@
 
 ## 0.0.5
 
-## 0.0.6
+## 0.1.0
 
+- Added button in home page to add a new reward
+- Added security to README
 
-## 0.0.7
+## 0.1.1
