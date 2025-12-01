@@ -62,7 +62,7 @@ jobs:
       - name: Extract changelogs
         id: notes
         run: |
-          $version = "${{ env.VERSION }}"
+          $version = "${{ steps.pkg.outputs.version }}"
           $changelogFile = "releases.md"
           $changelogContent = Get-Content -Path $changelogFile -Raw -Encoding UTF8
           $versionHeader = "## $version"
