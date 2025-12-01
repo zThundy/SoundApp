@@ -29,6 +29,13 @@
 - Working on automatic updater
 - Added loading on preload for updater
 
-### 0.1.3
+## 0.1.3
+
+- Added logger that logs stuff in Roaming\stream-alerts\logs
+- Complete rewrite of the updater logic
+- Added app version in settings
+- Complete restyle of updater components
+- Code cleanup
+- Styling touchup
 
 ## 0.1.4
