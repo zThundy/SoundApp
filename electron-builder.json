@@ -11,7 +11,7 @@
     "dist"
   ],
   "mac": {
-    "artifactName": "${productName}_${version}.${ext}",
+    "artifactName": "${productName}.${ext}",
     "target": [
       "dmg",
       "zip"
@@ -27,7 +27,7 @@
       },
       "portable"
     ],
-    "artifactName": "${productName}_${version}.${ext}"
+    "artifactName": "${productName}.${ext}"
   },
   "nsis": {
     "oneClick": false,
