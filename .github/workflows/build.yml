@@ -131,6 +131,7 @@ jobs:
             const readme = fs.readFileSync('README.md', 'utf-8');
             const newReadme = readme.replace(/v\d+\.\d+\.\d+/g, `v${{ steps.build-and-release-windows.outputs.version }}`);
             fs.writeFileSync('README.md', newReadme);
+            console.log("Got version: v${{ steps.build-and-release-windows.outputs.version }}");
             console.log('README updated');
 
       - name: Commit changes

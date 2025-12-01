@@ -34,7 +34,7 @@
     "oneClick": true,
     "perMachine": false,
     "allowToChangeInstallationDirectory": false,
-    "artifactName": "FlyITA-Setup.${ext}",
+    "artifactName": "Sound-App-Setup.${ext}",
     "differentialPackage": true
 },
   "publish": [
