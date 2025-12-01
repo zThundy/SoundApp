@@ -9,6 +9,7 @@ import type {
 const { autoUpdater } = createRequire(import.meta.url)('electron-updater');
 
 export function update(win: Electron.BrowserWindow) {
+  console.log("[update] Initializing updater...");
 
   // When set to false, the update download will be triggered through the API
   autoUpdater.autoDownload = false
@@ -18,28 +19,50 @@ export function update(win: Electron.BrowserWindow) {
   // start check
   autoUpdater.on('checking-for-update', function () { 
     win.webContents.send('updater:checking')
+    console.log("[update] Checking for update...");
   })
   // update available
   autoUpdater.on('update-available', (arg: UpdateInfo) => {
-    win.webContents.send('update-can-available', { update: true, version: app.getVersion(), newVersion: arg?.version })
+    const updateInfo = {
+      releaseNotes: arg?.releaseNotes,
+      releaseDate: arg?.releaseDate,
+      files: arg?.files,
+      update: true,
+      version: app.getVersion(),
+      newVersion: arg?.version
+    }
+    win.webContents.send('update-can-available', updateInfo)
     win.webContents.send('updater:available', { version: arg?.version })
     // Auto-download if update is available during preload
     autoUpdater.downloadUpdate()
+    console.log(`[update] Update available: ${arg?.version}`);
   })
   // update not available
   autoUpdater.on('update-not-available', (arg: UpdateInfo) => {
-    win.webContents.send('update-can-available', { update: false, version: app.getVersion(), newVersion: arg?.version })
+    const updateInfo = {
+      releaseNotes: arg?.releaseNotes,
+      releaseDate: arg?.releaseDate,
+      files: arg?.files,
+      update: false,
+      version: app.getVersion(),
+      newVersion: arg?.version
+    }
+    win.webContents.send('update-can-available', updateInfo)
     win.webContents.send('updater:not-available')
+    console.log("[update] No update available.");
   })
 
   // Download progress
   autoUpdater.on('download-progress', (progressInfo: ProgressInfo) => {
     win.webContents.send('updater:download-progress', progressInfo)
+    console.log(`[update] Download progress: ${progressInfo.percent.toFixed(2)}%`)
+    win.setProgressBar(progressInfo.percent / 100);
   })
 
   // Update downloaded
   autoUpdater.on('update-downloaded', (event: UpdateDownloadedEvent) => {
-    win.webContents.send('updater:downloaded')
+    win.webContents.send('updater:downloaded');
+    console.log("[update] Update downloaded and ready to install.");
   })
 
   // Error handling
@@ -49,6 +72,7 @@ export function update(win: Electron.BrowserWindow) {
 
   // Checking for updates
   ipcMain.handle('check-update', async () => {
+    console.log("[update] Checking for updates...");
     if (!app.isPackaged) {
       const error = new Error('The update feature is only available after the package.')
       return { message: error.message, error }
