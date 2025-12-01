@@ -10,6 +10,8 @@
   "settings.serverRestarted": "Server restarted on port {port}",
   "settings.restartFailed": "Restart failed",
   "settings.error": "Error",
+  "settings.loading": "Loading...",
+  "settings.version": "App Version",
   
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Settings",

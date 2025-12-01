@@ -10,6 +10,8 @@
   "settings.serverRestarted": "Serveur redémarré sur le port {port}",
   "settings.restartFailed": "Échec du redémarrage",
   "settings.error": "Erreur",
+  "settings.loading": "Chargement...",
+  "settings.version": "Version de l’application",
 
   "sidebar.redeems": "Récompenses",
   "sidebar.settings": "Paramètres",

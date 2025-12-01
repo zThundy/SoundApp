@@ -29,6 +29,7 @@ export default function Settings() {
   const [port, setPort] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string>('')
+  const [version, setVersion] = useState<string>('')
 
   useEffect(() => {
     let mounted = true;
@@ -40,7 +41,20 @@ export default function Settings() {
       if (!mounted) return
       setPort('4823')
     })
-    return () => { mounted = false }
+
+    // Get app version
+    window.ipcRenderer.invoke('app:get-version').then((res: any) => {
+      if (!mounted) return
+      if (res?.ok && res?.version) {
+        setVersion(res.version)
+      }
+    }).catch(() => {
+      // ignore
+    })
+
+    return () => {
+      mounted = false
+    }
   }, [])
 
   const savePort = async () => {
@@ -119,6 +133,10 @@ export default function Settings() {
                 {t('settings.restartServer')}
               </Button>
             </Stack>
+
+            {message && (
+              <Typography variant="body2">{message}</Typography>
+            )}
           </Grid>
         </StyledBox>
 
@@ -143,11 +161,12 @@ export default function Settings() {
           </StyledBox>
         </Grid>
 
-        {message && (
-          <Grid size={{ xs: 12 }}>
-            <Typography variant="body2">{message}</Typography>
-          </Grid>
-        )}
+        <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2} justifyContent={"space-between"}>
+          <StyledBox>
+            <Typography variant="subtitle1">{t('settings.version')}</Typography>
+            <Typography variant="body1">{version || t("settings.loading")}</Typography>
+          </StyledBox>
+        </Grid>
       </Grid>
     </Box>
   )

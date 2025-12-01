@@ -10,6 +10,8 @@
   "settings.serverRestarted": "Servidor reiniciado en el puerto {port}",
   "settings.restartFailed": "Error al reiniciar",
   "settings.error": "Error",
+  "settings.loading": "Cargando...",
+  "settings.version": "Versión de la aplicación",
 
   "sidebar.redeems": "Canjes",
   "sidebar.settings": "Configuración",
