@@ -28,19 +28,16 @@ jobs:
           node-version: 24
 
       - name: Install dependencies for the Electron app
-        shell: pwsh
         run: npm install
         # working-directory: ./electron
 
       - name: Build Electron App
         id: build_electron_app
-        shell: pwsh
         # working-directory: ./electron
         run: npm run build
 
       - name: Extract version from package.json
         id: extract_version
-        shell: pwsh
         run: |
           $pkg_version = (Get-Content -Path .\package.json | ConvertFrom-Json).version
           echo "Version: $pkg_version"
@@ -48,7 +45,6 @@ jobs:
 
       - name: Check if version is a pre-release
         id: check_pre_release
-        shell: pwsh
         run: |
           $version = "${{ steps.extract_version.outputs.release_version }}"
           echo "Version: $version"
