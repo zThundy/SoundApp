@@ -41,5 +41,6 @@
 
 ## 0.1.4
 
+- Added some missing translations
 
 ## 0.1.5
