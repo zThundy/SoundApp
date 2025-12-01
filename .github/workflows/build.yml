@@ -110,12 +110,14 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add package.json package-lock.json
+          git fetch origin master
           git pull origin master --rebase
           git commit -m "[automated] chore: bump version for next development"; if ($LASTEXITCODE -ne 0) { echo "No changes to commit" }
           git push
 
       - name: Add next version to releases.md
         run: |
+          git fetch origin master
           git pull origin master --rebase
           $nextVersion = (Get-Content -Path .\package.json | ConvertFrom-Json).version
           $releasesFile = "releases.md"
@@ -126,6 +128,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add releases.md
+          git fetch origin master
           git pull origin master --rebase
           git commit -m "[automated] chore: add next version to releases.md"; if ($LASTEXITCODE -ne 0) { echo "No changes to commit" }
           git push
@@ -164,6 +167,7 @@ jobs:
           git config --global user.name 'Automatic update'
           git config --global user.email 'actions@github.com'
           git remote set-url origin https://x-access-token:${{ secrets.BUILD_SECRET }}@github.com/${{ github.repository }}
+          git fetch origin ${{ github.head_ref }}
           git pull origin ${{ github.head_ref }}
           git commit -am "[automated] chore: updated version of readme"
           git push
