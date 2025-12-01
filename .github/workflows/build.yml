@@ -41,11 +41,11 @@ jobs:
         run: |
           npm run build
 
-      - name: Extract echo version from package.json
+      - name: Extract version from package.json
         id: extract_version
         shell: pwsh
         run: |
-          $pkg_version = (Get-Content -Path .\echo\package.json | ConvertFrom-Json).version
+          $pkg_version = (Get-Content -Path .\package.json | ConvertFrom-Json).version
           echo "Version: $pkg_version"
           echo "release_version=$pkg_version" >> $ENV:GITHUB_OUTPUT
 
