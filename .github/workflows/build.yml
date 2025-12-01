@@ -3,6 +3,7 @@ name: Build and Release for Windows
 on:
   push:
     branches:
+      - master
       - main
       - dev
 
