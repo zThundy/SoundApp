@@ -4,7 +4,6 @@ import { useLocation } from "react-router";
 import { Box, Grid, Stack, Typography, Button, styled } from "@mui/material";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 
-// StyledBox copied to match style from other components
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
   padding: theme.spacing(2.2),

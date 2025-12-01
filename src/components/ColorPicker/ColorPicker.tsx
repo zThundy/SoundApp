@@ -91,30 +91,25 @@ export const ColorPicker = (props: ColorPickerProps) => {
 
   const [localPalette, setLocalPalette] = useState<ColorPaletteType>(palette)
 
-  // when the incoming value changes, generate a small tonal palette based on it
   useEffect(() => {
     if (!props.previousValue) return
     try {
       const generated = generateShadesFromHex(props.previousValue, 7)
-      // also generate negatives (inverted colors) for the generated shades
       const negatives: ColorPaletteType = {}
       Object.keys(generated).forEach((k) => {
         try {
           negatives[`${k}-neg`] = invertHex(generated[k])
         } catch (e) {
-          // ignore inversion errors
+          // ignore
         }
       })
 
-      // merge generated shades and their negatives into local palette, preferring existing keys
       setLocalPalette((prev) => ({ ...prev, ...generated, ...negatives }))
     } catch (err) {
-      // invalid color value; ignore
       // console.warn('ColorPicker: failed to generate shades from', props.value, err)
     }
   }, [props.previousValue])
 
-  // sync when incoming palette prop changes
   useEffect(() => {
     if (props.palette) setLocalPalette(props.palette)
   }, [props.palette])
@@ -139,7 +134,6 @@ export const ColorPicker = (props: ColorPickerProps) => {
   const buildPaletteOptions = (paletteArg: ColorPaletteType): React.ReactNode => {
     const keys = Object.keys(paletteArg || {})
 
-    // categorize keys
     const generatedKeys = keys.filter((k) => k.startsWith('gen-') && !k.endsWith('-neg'))
     const negativeKeys = keys.filter((k) => k.endsWith('-neg'))
     const defaultKeys = keys.filter((k) => !k.startsWith('gen-') && !k.endsWith('-neg') && !k.startsWith('exp-'))
@@ -156,7 +150,6 @@ export const ColorPicker = (props: ColorPickerProps) => {
         />
       ))
 
-      // group into rows of 6 for compact display
       const rows = createGroupsOf(list, 6)
       return rows.map((row: React.ReactNode[], i: number) => (
         <Box

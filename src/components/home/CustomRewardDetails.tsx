@@ -58,12 +58,10 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
   const [audioResetKey, setAudioResetKey] = React.useState<number>(0);
   const [audioRelPath, setAudioRelPath] = React.useState<string | null>(null);
 
-  // sync local form state only when a different reward is selected (by id)
   React.useEffect(() => {
     if (!reward) {
       setForm(null)
       lastRewardId.current = null
-      // full reset for audio when reward becomes null
       if (audioUrl) URL.revokeObjectURL(audioUrl)
       setAudioUrl(null)
       setAudioFile(null)
@@ -73,15 +71,10 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
       return
     }
 
-    // avoid resyncing if the same reward id is passed again (prevents
-    // external updates like color change echoing back from main from
-    // overwriting in-progress edits). Only resync when the reward id
-    // actually changes.
     if (lastRewardId.current === reward.id) {
       return
     }
 
-    // reward changed: reset audio component state before loading new persisted settings
     if (audioUrl) URL.revokeObjectURL(audioUrl)
     setAudioUrl(null)
     setAudioFile(null)
@@ -99,7 +92,6 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
       is_paused: !!reward.is_paused,
       is_user_input_required: !!reward.is_user_input_required,
       should_redemptions_skip_request_queue: !!reward.should_redemptions_skip_request_queue,
-      // Flatten nested settings into explicit fields used by the form
       max_per_stream_enabled: !!(reward.max_per_stream_setting?.is_enabled),
       max_per_stream_value: reward.max_per_stream_setting?.max_per_stream ?? reward.max_per_stream ?? '',
       max_per_user_enabled: !!(reward.max_per_user_per_stream_setting?.is_enabled),
@@ -111,7 +103,6 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
     })
 
     setBackgroundColor(reward.background_color ?? '#000000');
-    // Try to load locally saved alert settings for this reward
     (async () => {
       try {
         const rewardId = reward.id;
@@ -129,7 +120,6 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
             const exists = await window.fileManager?.exists?.('alerts', settings.audioPath);
             if (exists?.ok && exists.exists) {
               console.log('Audio file exists:', settings.audioPath);
-              // construct a blob URL for preview: read file as buffer and create object URL
               const fileRead = await window.fileManager?.read?.('alerts', settings.audioPath, false);
               if (fileRead?.ok && fileRead.data) {
                 console.log('Read audio file for preview:', settings.audioPath);
@@ -149,7 +139,9 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
           setAudioResetKey(k => k + 1)
           setAudioRelPath(null);
         }
-      } catch { /* ignore */ }
+      } catch {
+        // ignore
+      }
     })();
   }, [reward])
 
@@ -167,7 +159,6 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
   }
 
   const handleSave = async () => {
-    // compose nested settings back into the Twitch shape
     const updated = {
       ...reward,
       ...form,
@@ -182,7 +173,6 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
       cost: Number(form.cost) || 0,
       background_color: backgroundColor,
     }
-    // try to persist via ipc if available
     if (window.ipcRenderer?.invoke) {
       try {
         await window.ipcRenderer.invoke('twitch:update-reward', updated)
@@ -191,10 +181,8 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
       }
     }
 
-    // Save local alert settings including audio
     try {
       const rewardId = reward.id as string;
-      // If a new audio file was selected, copy it into app data
       let storedAudioRelPath: string | null = audioRelPath;
       if (audioFile) {
         const ext = (audioFile.name.split('.').pop() || 'dat').toLowerCase();
@@ -219,9 +207,8 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
   }
 
   const handleCancel = () => {
-    // reset form to last saved state
     if (reward) {
-      lastRewardId.current = null // force resync
+      lastRewardId.current = null
       setForm(null)
       setBackgroundChanged(false);
       clearReward();
@@ -258,7 +245,6 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
 
         <StyledBox>
           <Grid size={{ lg: 12, md: 12 }}>
-            {/* Audio selector inside the empty styled box */}
             <AudioSelector
               key={audioResetKey + ':' + (reward?.id || 'none')}
               value={audioUrl}

@@ -34,7 +34,6 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [language, setLanguageState] = useState('en-EN');
   const [translations, setTranslations] = useState<Translations>({});
 
-  // Carica la lingua salvata all'avvio
   useEffect(() => {
     const loadSavedLanguage = async () => {
       try {
@@ -50,14 +49,12 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     loadSavedLanguage();
   }, []);
 
-  // Carica le traduzioni quando cambia la lingua
   useEffect(() => {
     languageFiles[language]()
       .then((mod) => setTranslations(mod.default || mod))
       .catch(() => setTranslations({}));
   }, [language]);
 
-  // Funzione per cambiare lingua e salvarla
   const setLanguage = useCallback(async (lang: string) => {
     setLanguageState(lang);
     try {

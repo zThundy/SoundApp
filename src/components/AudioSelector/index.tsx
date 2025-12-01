@@ -14,8 +14,8 @@ import styled from "@emotion/styled";
 import { TranslationContext } from "@/i18n/TranslationProvider";
 
 type Props = {
-  value?: string | null; // file URL
-  volume?: number; // 0..1
+  value?: string | null;
+  volume?: number;
   muted?: boolean;
   onChange?: (fileUrl: string | null, file?: File | null) => void;
   onVolumeChange?: (vol: number) => void;
@@ -57,12 +57,10 @@ export default function AudioSelector({ value, volume: volumeProp, muted: mutedP
   const [muted, setMuted] = React.useState(false);
   const [hoverVol, setHoverVol] = React.useState(false);
 
-  // Use a fixed media query: convert slider when viewport < 1200px
   const isBelow1200 = useMediaQuery("(max-width:1200px)");
 
   React.useEffect(() => {
     setSrc(value ?? null);
-    // If no value provided, hard-reset all runtime state
     if (!value) {
       const el = audioRef.current;
       if (el) {
@@ -99,7 +97,6 @@ export default function AudioSelector({ value, volume: volumeProp, muted: mutedP
   const handleFilePick = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const file = ev.target.files?.[0] ?? null;
     if (!file) return;
-    // accept only audio mime types
     if (!file.type.startsWith("audio/")) return;
     const url = URL.createObjectURL(file);
     setSrc(url);
@@ -119,7 +116,7 @@ export default function AudioSelector({ value, volume: volumeProp, muted: mutedP
         await el.play();
         setIsPlaying(true);
       } catch (e) {
-        // autoplay or play error
+        // ignore
       }
     }
   };

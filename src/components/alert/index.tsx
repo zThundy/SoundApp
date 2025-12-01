@@ -66,13 +66,11 @@ export default function AlertEditor() {
   const { t } = useContext(TranslationContext);
   const [serverUrl, setServerUrl] = useState('http://localhost:4823');
   const [tab, setTab] = useState(0);
-  // Raw editor state
   const [rawHtml, setRawHtml] = useState('<div style="font-size:4rem;font-weight:700;">Hello!</div>');
   const [rawCss, setRawCss] = useState('');
   const [rawJs, setRawJs] = useState('');
   const [rawDuration, setRawDuration] = useState(10000);
 
-  // Image template state
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageText, setImageText] = useState('${username} has redeemed ${reward_title}!');
   const [imageDuration, setImageDuration] = useState(6000);
@@ -92,14 +90,12 @@ export default function AlertEditor() {
   }, [copied]);
 
   useEffect(() => {
-    // Fetch the server port from the main process
     (window.alerts as any).getPort().then((res: any) => {
       if (!res?.port) return;
       setServerUrl(`http://localhost:${res?.port}`);
       checkServerHealth(`http://localhost:${res?.port}`);
     });
 
-    // Load default template
     loadDefaultTemplate();
   }, []);
 
@@ -110,8 +106,6 @@ export default function AlertEditor() {
         const template = res.template;
         setImageText(template.text);
         setImageDuration(template.duration);
-        // If template has imageDataUrl, we could restore it but File object can't be reconstructed easily
-        // For now we just restore text and duration
         console.log('[Alert] Loaded default template');
       }
     } catch (err) {
@@ -125,7 +119,6 @@ export default function AlertEditor() {
       if (imageFile) {
         imageDataUrl = await toDataUrl(imageFile);
       } else {
-        // add logo.png as default image
         imageDataUrl = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
       }
       const template = {
@@ -141,7 +134,6 @@ export default function AlertEditor() {
     }
   }
 
-  // Health check: fetch the root page; if network fails or status !200 => error
   async function checkServerHealth(currentUrl: string) {
     setChecking(true);
     setIframeError(false);
@@ -187,14 +179,12 @@ export default function AlertEditor() {
       if (imageFile) {
         image = await toDataUrl(imageFile);
       } else {
-        // add logo.png as default image
         image = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
       }
       const payload = { type: 'imageTemplate', imageDataUrl: image, text: imageText, duration: imageDuration };
       const res = await window.alerts?.broadcast(payload);
       setStatus(res?.ok ? t("common.sent") : t("common.error") + " " + res?.error);
 
-      // Save as default template after successful send
       if (res?.ok) {
         await saveDefaultTemplate();
       }
@@ -425,7 +415,6 @@ export default function AlertEditor() {
                       color="secondary"
                       sx={{ p: "8px 16px", fontSize: 15 }}
                       onClick={() => {
-                        // Simple re-check without touching iframe src (keeps current view)
                         checkServerHealth(serverUrl);
                       }}
                     >{checking ? t("update.checking") : t("common.ok")}</Button>

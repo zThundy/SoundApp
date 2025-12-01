@@ -52,13 +52,11 @@ export default function TwitchChat() {
   const { t } = useContext(TranslationContext)
 
   useEffect(() => {
-    // Carica la cache all'avvio
     const loadCache = async () => {
       try {
         let { messages } = await window.twitchEvents.getCachedMessages();
         const { redemptions } = await window.twitchEvents.getCachedRedemptions();
 
-        // sort messages by timestamp descending
         messages = messages.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
         setMessages(messages || []);
@@ -71,7 +69,6 @@ export default function TwitchChat() {
 
     loadCache();
 
-    // Verifica se è già connesso (connessione automatica al login)
     const checkConnection = async () => {
       try {
         const { connected } = await window.twitchEvents.isConnected();
@@ -83,25 +80,20 @@ export default function TwitchChat() {
 
     checkConnection();
 
-    // Ascolta i messaggi della chat
     window.twitchEvents.onChatMessage((message: ChatMessage) => {
-      setMessages(prev => [...prev, message].slice(-50)); // Mantieni solo gli ultimi 50 messaggi
+      setMessages(prev => [...prev, message].slice(-50));
     });
 
-    // Ascolta i redeem
     window.twitchEvents.onRewardRedeemed((redemption: RewardRedemption) => {
-      setRedemptions(prev => [redemption, ...prev].slice(0, 20)); // Mantieni solo gli ultimi 20 redeem
+      setRedemptions(prev => [redemption, ...prev].slice(0, 20));
     });
 
-    // Cleanup alla chiusura
     return () => {
       window.twitchEvents.removeChatMessageListener();
       window.twitchEvents.removeRewardRedeemedListener();
-      // Non disconnettere qui, la connessione persiste
     };
   }, []);
 
-  // sort messages by timestamp descending
   useEffect(() => {
     setMessages(prev => [...prev].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()));
   }, [messages]);

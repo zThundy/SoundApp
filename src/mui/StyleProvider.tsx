@@ -127,11 +127,9 @@ const theme = createTheme({
           backgroundColor: (theme.palette as any).background["800"],
           border: `1px solid ${(theme.palette as any).background["700"]}`,
           borderRadius: theme.shape.borderRadius,
-          // orient menu horizontally
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          // max 10 columns
           flexWrap: 'wrap',
           maxWidth: '20rem',
 
