@@ -139,17 +139,24 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      - name: Read version from package.json
+        id: pkg
+        run: |
+          $pkg_version = (Get-Content -Path .\package.json | ConvertFrom-Json).version
+          echo "Version: $pkg_version"
+          echo "version=$pkg_version" >> $ENV:GITHUB_OUTPUT
+
       - name: Update README
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.BUILD_SECRET }}
           script: |
+            console.log("Got version: v${{ steps.pkg.outputs.version }}");
             const fs = require('fs');
             const readme = fs.readFileSync('README.md', 'utf-8');
-            const newReadme = readme.replace(/v\d+\.\d+\.\d+/g, `v${{ steps.build-and-release-windows.outputs.version }}`);
+            const newReadme = readme.replace(/v\d+\.\d+\.\d+/g, `v${{ steps.pkg.outputs.version }}`);
             fs.writeFileSync('README.md', newReadme);
-            console.log("Got version: v${{ steps.build-and-release-windows.outputs.version }}");
-            console.log('README updated');
+            console.log('README updated with new version.');
 
       - name: Commit changes
         run: |
@@ -157,5 +164,5 @@ jobs:
           git config --global user.email 'actions@github.com'
           git remote set-url origin https://x-access-token:${{ secrets.BUILD_SECRET }}@github.com/${{ github.repository }}
           git pull origin ${{ github.head_ref }}
-          git commit -am "Updated version of readme"
+          git commit -am "[automated] chore: updated version of readme"
           git push
