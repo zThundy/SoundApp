@@ -26,6 +26,7 @@
 
 ## 0.1.2
 
-- 
+- Working on automatic updater
+- Added loading on preload for updater
 
 ### 0.1.3

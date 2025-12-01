@@ -16,14 +16,35 @@ export function update(win: Electron.BrowserWindow) {
   autoUpdater.allowDowngrade = false
 
   // start check
-  autoUpdater.on('checking-for-update', function () { })
+  autoUpdater.on('checking-for-update', function () { 
+    win.webContents.send('updater:checking')
+  })
   // update available
   autoUpdater.on('update-available', (arg: UpdateInfo) => {
     win.webContents.send('update-can-available', { update: true, version: app.getVersion(), newVersion: arg?.version })
+    win.webContents.send('updater:available', { version: arg?.version })
+    // Auto-download if update is available during preload
+    autoUpdater.downloadUpdate()
   })
   // update not available
   autoUpdater.on('update-not-available', (arg: UpdateInfo) => {
     win.webContents.send('update-can-available', { update: false, version: app.getVersion(), newVersion: arg?.version })
+    win.webContents.send('updater:not-available')
+  })
+
+  // Download progress
+  autoUpdater.on('download-progress', (progressInfo: ProgressInfo) => {
+    win.webContents.send('updater:download-progress', progressInfo)
+  })
+
+  // Update downloaded
+  autoUpdater.on('update-downloaded', (event: UpdateDownloadedEvent) => {
+    win.webContents.send('updater:downloaded')
+  })
+
+  // Error handling
+  autoUpdater.on('error', (error: Error) => {
+    win.webContents.send('updater:error', { message: error.message })
   })
 
   // Checking for updates
@@ -63,6 +84,26 @@ export function update(win: Electron.BrowserWindow) {
   ipcMain.handle('quit-and-install', () => {
     autoUpdater.quitAndInstall(false, true)
   })
+
+  // Install from preload updater
+  ipcMain.handle('updater:install', () => {
+    autoUpdater.quitAndInstall(false, true)
+  })
+}
+
+// Function to check for updates on startup (before window is shown)
+export async function checkForUpdatesOnStartup(win: Electron.BrowserWindow): Promise<boolean> {
+  if (!app.isPackaged) {
+    return false // Skip update check in development
+  }
+
+  try {
+    const result = await autoUpdater.checkForUpdates()
+    return result !== null && result.updateInfo.version !== app.getVersion()
+  } catch (error) {
+    console.error('Error checking for updates on startup:', error)
+    return false
+  }
 }
 
 function startDownload(

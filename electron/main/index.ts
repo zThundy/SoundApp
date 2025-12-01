@@ -53,6 +53,7 @@ async function createWindow() {
     minHeight: 550,
     // hide titlebar
     frame: false,
+    show: false, // Don't show window until update check is complete
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
@@ -67,6 +68,9 @@ async function createWindow() {
   windowStateManager.applyState(win);
   windowStateManager.track(win);
 
+  // Setup auto-updater before loading the window
+  update(win)
+
   if (VITE_DEV_SERVER_URL) { // #298
     console.log('VITE_DEV_SERVER_URL detected, opening devtools...')
     win.loadURL(VITE_DEV_SERVER_URL)
@@ -76,9 +80,26 @@ async function createWindow() {
     win.loadFile(indexHtml)
   }
 
-  // Test actively push message to the Electron-Renderer
-  win.webContents.on('did-finish-load', () => {
+  // Wait for the page to load, then check for updates
+  win.webContents.on('did-finish-load', async () => {
     win?.webContents.send('main-process-message', new Date().toLocaleString())
+    
+    // Check for updates on startup (only in production)
+    if (app.isPackaged) {
+      try {
+        await win?.webContents.executeJavaScript('void 0'); // Ensure webContents is ready
+        const { checkForUpdatesOnStartup } = await import('./update')
+        await checkForUpdatesOnStartup(win!)
+      } catch (error) {
+        console.error('Error during startup update check:', error)
+      }
+    }
+    
+    // Show window after a small delay to ensure preload screen is visible
+    setTimeout(() => {
+      win?.show()
+    }, 500)
+    
     // Try to connect Twitch EventSub on window load
     connectEventSubIfPossible(safeStore, win)
   })
@@ -88,9 +109,6 @@ async function createWindow() {
     if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
-
-  // Auto update
-  update(win)
 }
 
 app.whenReady().then(() => {

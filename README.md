@@ -55,6 +55,7 @@ TODO:
   - Add logic for edit of redeem to post to Twitch
   - Work on async encription for credentials
   - Issue where on first launch images and some functionalities don't work until the app is restarted
+	- Work on automatic updater
 
 FAQ:
 	- None for now :)
