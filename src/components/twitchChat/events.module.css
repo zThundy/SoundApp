@@ -37,6 +37,7 @@
   border-radius: 50%;
   display: inline-block;
   margin-left: 0.5rem;
+  cursor: pointer;
   animation: connectedDot 2s infinite;
 }
 
@@ -59,5 +60,6 @@
   border-radius: 50%;
   display: inline-block;
   margin-left: 0.5rem;
+  cursor: pointer;
   animation: disconnectedDot 2s infinite;
 }

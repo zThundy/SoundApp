@@ -268,29 +268,31 @@ export default function AlertEditor() {
                   </Stack>
                 </StyledBox>
 
-                <Stack direction="row" spacing={2} width={"100%"}>
-                  <Button
-                    variant="contained"
-                    disabled={sending}
-                    onClick={sendImageTemplate}
-                    style={{
-                      width: "100%",
-                    }}
-                  >
-                    {t("alert.sendTemplate")}
-                  </Button>
-                  <Button
-                    component="label"
-                    variant="outlined"
-                    color="secondary"
-                    style={{
-                      width: "100%",
-                    }}
-                  >
-                    {t("alert.selectImage")}
-                    <input hidden type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} />
-                  </Button>
-                </Stack>
+                <StyledBox>
+                  <Stack direction="row" spacing={2} width={"100%"}>
+                    <Button
+                      variant="contained"
+                      disabled={sending}
+                      onClick={sendImageTemplate}
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      {t("alert.sendTemplate")}
+                    </Button>
+                    <Button
+                      component="label"
+                      variant="outlined"
+                      color="secondary"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      {t("alert.selectImage")}
+                      <input hidden type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} />
+                    </Button>
+                  </Stack>
+                </StyledBox>
 
                 <Collapse in={sending}>
                   <Alert severity={status?.startsWith('Errore') ? 'error' : 'success'} style={{ width: "calc(100% - 20px)", padding: 10 }}>
