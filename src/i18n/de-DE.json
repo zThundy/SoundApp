@@ -75,6 +75,7 @@
 
   "redeems.list": "Belohnungsliste",
   "redeems.selected": "Ausgewählte Belohnung",
+  "redeems.addNewReward": "Neue Belohnung hinzufügen",
   "redeems.noRewardsSelected": "Keine benutzerdefinierte Belohnung ausgewählt.",
   "redeems.inStock": "Vorrätig",
   "redeems.inStockInfo": "Gibt an, ob die Belohnung vorrätig ist.",

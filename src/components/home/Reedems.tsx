@@ -5,7 +5,7 @@ import style from "./home.module.css"
 import CustomRewardDetails from "@/components/home/CustomRewardDetails"
 import CustomRewardsList from "@/components/home/CustomRewardsList"
 
-import { Grid } from "@mui/material"
+import { Grid, Stack, Button, Tooltip } from "@mui/material"
 
 import { TranslationContext } from "@/i18n/TranslationProvider"
 
@@ -23,7 +23,18 @@ export default function Reedems() {
 
         <Grid container spacing={1} flexDirection={"column"}>
           <Grid size={{ xs: 12 }} className={style.listTitle}>
-            <h2>{t("redeems.list")}</h2>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <h2>{t("redeems.list")}</h2>
+              <Tooltip title="Work in progress" placement="top" arrow>
+                <Button variant="contained" color="primary">
+                  {t("redeems.addNewReward")}
+                </Button>
+              </Tooltip>
+            </Stack>
           </Grid>
           <Grid size={{ xs: 12 }} className={style.listContainer}>
             <CustomRewardsList selectReward={_selectReward} />
@@ -33,9 +44,8 @@ export default function Reedems() {
       </Grid>
 
       <Grid size={{ xs: 6 }}>
-
         <Grid container spacing={1} flexDirection={"column"}>
-          <Grid size={{ xs: 12 }} className={style.listTitle}>
+          <Grid size={{ xs: 12 }} className={style.listTitle} textAlign={"right"}>
             <h2>{t("redeems.selected")}</h2>
           </Grid>
           <Grid size={{ xs: 12 }} className={style.listContainer}>

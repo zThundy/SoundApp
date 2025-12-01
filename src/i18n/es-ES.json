@@ -76,6 +76,7 @@
 
   "redeems.list": "Lista de recompensas",
   "redeems.selected": "Recompensa seleccionada",
+  "redeems.addNewReward": "Añadir nueva recompensa",
   "redeems.noRewardsSelected": "Ninguna recompensa personalizada seleccionada.",
   "redeems.inStock": "En stock",
   "redeems.inStockInfo": "Indica si la recompensa está en stock.",

@@ -76,6 +76,7 @@
 
   "redeems.list": "Elenco Redeems",
   "redeems.selected": "Redeem Selezionato",
+  "redeems.addNewReward": "Aggiungi nuova ricompensa",
   "redeems.noRewardsSelected": "Nessun custom reward selezionato.",
   "redeems.inStock": "In Stock",
   "redeems.inStockInfo": "Indica se la ricompensa è disponibile.",
