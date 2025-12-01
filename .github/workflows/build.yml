@@ -36,9 +36,9 @@ jobs:
       - name: Read version from package.json
         id: pkg
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "Version: $VERSION"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          $pkg_version = (Get-Content -Path .\package.json | ConvertFrom-Json).version
+          echo "Version: $pkg_version"
+          echo "version=$pkg_version" >> $ENV:GITHUB_OUTPUT
 
       # - name: Extract version from package.json
       #   id: extract_react_version
