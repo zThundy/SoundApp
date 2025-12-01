@@ -10,14 +10,13 @@ declare global {
       saveTemplate(template: { id: string; imageDataUrl?: string; text: string; duration: number }): Promise<{ ok: boolean; error?: string }>;
       loadTemplate(templateId: string): Promise<{ ok: boolean; template?: { id: string; imageDataUrl?: string; text: string; duration: number } | null; error?: string }>;
     };
-    updater: {
-      onUpdateCheckStart(callback: () => void): void;
-      onUpdateAvailable(callback: (info: { version: string }) => void): void;
-      onUpdateNotAvailable(callback: () => void): void;
-      onDownloadProgress(callback: (progress: { percent: number; bytesPerSecond: number; transferred: number; total: number }) => void): void;
-      onUpdateDownloaded(callback: () => void): void;
-      onUpdateError(callback: (error: { message: string }) => void): void;
-      installUpdate(): Promise<void>;
+
+    version: string;
+    appVersion: string;
+    ipcRenderer: {
+      invoke(channel: string, ...args: any[]): Promise<any>;
+      on(channel: string, listener: (event: any, ...args: any[]) => void): void;
+      off(channel: string, listener: (event: any, ...args: any[]) => void): void;
     };
   }
 }
