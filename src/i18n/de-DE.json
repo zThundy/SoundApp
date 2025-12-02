@@ -41,6 +41,7 @@
   "common.cost": "Kosten",
   "common.save": "Speichern",
   "common.enabled": "Aktiviert",
+  "common.delete": "Löschen",
 
   "colorPicker.default": "Standard",
   "colorPicker.primary": "Primär",
@@ -98,6 +99,8 @@
   "redeems.globalCooldownInfo": "Die globale Abklingzeit für alle Einlösungen. Der Mindestwert ist 1.",
   "redeems.notEditableWarning": "Twitch erlaubt es Ihnen nicht, Belohnungen zu bearbeiten, die nicht mit dieser App erstellt wurden",
   "redeems.editableWarning": "Sie können diese Belohnung bearbeiten, da sie mit dieser App erstellt wurde",
+  "redeems.deleteRewardTitle": "Belohnung löschen?",
+  "redeems.deleteRewardConfirmation": "Sind Sie sicher, dass Sie diese benutzerdefinierte Belohnung {rewardTitle} löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
 
   "twitchChat.status": "Twitch-Chat-Status",
   "twitchChat.connected": "Mit dem Twitch-Chat verbunden.",

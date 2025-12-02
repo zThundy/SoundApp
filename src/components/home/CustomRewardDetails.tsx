@@ -2,11 +2,12 @@
 import React, { useContext } from "react"
 
 import { Grid, styled, TextField, Checkbox, FormControlLabel, Button, Stack, Box, Avatar, Tooltip } from "@mui/material"
-import { ColorPicker } from '@/components/ColorPicker';
-import { Info } from "@mui/icons-material";
+import { Delete, Info } from "@mui/icons-material";
 
 import EmptyList from "@/components/home/EmptyList";
 import AudioSelector from "@/components/AudioSelector";
+import DeleteModal from "@/components/home/DeleteModal";
+import { ColorPicker } from '@/components/ColorPicker';
 
 import { TranslationContext } from "@/i18n/TranslationProvider"
 
@@ -57,6 +58,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
   const [audioMuted, setAudioMuted] = React.useState<boolean>(false);
   const [audioResetKey, setAudioResetKey] = React.useState<number>(0);
   const [audioRelPath, setAudioRelPath] = React.useState<string | null>(null);
+  const [isDeleteModalOpen, setDeleteModalOpen] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (!reward) {
@@ -259,8 +261,31 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
     }
   }
 
+  const handleDeleteConfirm = async () => {
+    if (reward && !reward.is_new) {
+      try {
+        await window.ipcRenderer?.invoke('twitch:delete-reward', reward.id);
+        setDeleteModalOpen(false);
+        handleCancel();
+      } catch (err) {
+        console.error('Failed to delete reward via IPC', err);
+      }
+    }
+  }
+
+  const handleDeleteClick = () => {
+    setDeleteModalOpen(true);
+  }
+
   return (
     <Box>
+      <DeleteModal 
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        rewardTitle={form.title}
+      />
+
       <Grid container spacing={1} justifyContent={"space-between"} >
 
         <StyledBox>
@@ -447,6 +472,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
             <Stack direction="row" spacing={2}>
               <Button variant="contained" color="primary" onClick={handleSave} fullWidth>{t("common.save")}</Button>
               <Button variant="outlined" color="secondary" onClick={handleCancel} fullWidth>{t("common.cancel")}</Button>
+              <Button variant="contained" color="error" onClick={handleDeleteClick} disabled={reward.is_new}><Delete /></Button>
             </Stack>
           </Grid>
         </StyledBox>

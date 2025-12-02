@@ -105,10 +105,28 @@ const createCustomReward = async (accessToken: string, broadcasterId: string, se
   return data;
 };
 
+const deleteCustomReward = async (accessToken: string, broadcasterId: string, rewardId: string) => {
+  const url = `https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=${broadcasterId}&id=${rewardId}`;
+  const headers = {
+    'Authorization': `Bearer ${accessToken}`,
+    'Client-Id': clientId
+  };
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers
+  });
+  if (!response.ok) {
+    console.error("Failed to delete custom reward:", await response.text());
+    throw new Error('Failed to delete custom reward: ' + response.statusText);
+  }
+  return;
+}
+
 export {
   getTwitchRedemptions,
   getBroadcasterId,
   getCustomRewards,
   updateCustomReward,
-  createCustomReward
+  createCustomReward,
+  deleteCustomReward
 };

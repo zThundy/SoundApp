@@ -41,6 +41,7 @@
   "common.cost": "Cost",
   "common.save": "Save",
   "common.enabled": "Enabled",
+  "common.delete": "Delete",
 
   "colorPicker.default": "Default",
   "colorPicker.primary": "Primary",
@@ -99,6 +100,8 @@
   "redeems.globalCooldownInfo": "The global cooldown period for all redemptions. The minimum value is 1.",
   "redeems.notEditableWarning": "Twitch won't let you edit rewards that were not created using this app",
   "redeems.editableWarning": "You can edit this reward because it was created using this app",
+  "redeems.deleteRewardTitle": "Delete reward?",
+  "redeems.deleteRewardConfirmation": "Are you sure you want to delete this custom reward {rewardTitle}? This action cannot be undone.",
 
   "twitchChat.status": "Twitch Chat Status",
   "twitchChat.connected": "Connected to Twitch chat.",

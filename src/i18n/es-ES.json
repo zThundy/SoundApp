@@ -41,6 +41,7 @@
   "common.cost": "Coste",
   "common.save": "Guardar",
   "common.enabled": "Activado",
+  "common.delete": "Eliminar",
 
   "colorPicker.default": "Predeterminado",
   "colorPicker.primary": "Primario",
@@ -99,6 +100,8 @@
   "redeems.globalCooldownInfo": "El periodo de enfriamiento global para todos los canjes. El valor mínimo es 1.",
   "redeems.notEditableWarning": "Twitch no te permite editar recompensas que no fueron creadas usando esta aplicación",
   "redeems.editableWarning": "Puedes editar esta recompensa porque fue creada usando esta aplicación",
+  "redeems.deleteRewardTitle": "¿Eliminar la recompensa?",
+  "redeems.deleteRewardConfirmation": "¿Estás seguro de que deseas eliminar esta recompensa personalizada {rewardTitle}? Esta acción no se puede deshacer.",
 
   "twitchChat.status": "Estado del chat de Twitch",
   "twitchChat.connected": "Conectado al chat de Twitch.",

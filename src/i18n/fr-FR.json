@@ -41,6 +41,7 @@
   "common.cost": "Coût",
   "common.save": "Enregistrer",
   "common.enabled": "Activé",
+  "common.delete": "Supprimer",
 
   "colorPicker.default": "Par défaut",
   "colorPicker.primary": "Primaire",
@@ -99,6 +100,8 @@
   "redeems.globalCooldownInfo": "Le délai de récupération global pour toutes les validations. La valeur minimale est 1.",
   "redeems.notEditableWarning": "Twitch ne vous permet pas de modifier les récompenses qui n'ont pas été créées avec cette application",
   "redeems.editableWarning": "Vous pouvez modifier cette récompense car elle a été créée avec cette application",
+  "redeems.deleteRewardTitle": "Supprimer la récompense?",
+  "redeems.deleteRewardConfirmation": "Êtes-vous sûr de vouloir supprimer cette récompense personnalisée {rewardTitle} ? Cette action est irréversible.",
 
   "twitchChat.status": "Statut du chat Twitch",
   "twitchChat.connected": "Connecté au chat Twitch.",
