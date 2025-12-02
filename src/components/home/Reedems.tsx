@@ -62,7 +62,11 @@ export default function Reedems() {
                 >
                   {t("redeems.addNewReward")}
                 </Button>
-                <Tooltip title="Work in progress: Refresh the rewards list from Twitch">
+                <Tooltip
+                  title="Work in progress: Refresh the rewards list from Twitch"
+                  placement="top"
+                  arrow
+                >
                   <Button
                     variant="outlined"
                     color="primary"
