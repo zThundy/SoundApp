@@ -101,7 +101,7 @@
   "redeems.maxPerStreamInfo": "The maximum number of redemptions allowed per live stream. The minimum value is 1.",
   "redeems.maxPerUserPerStream": "Max per user per stream",
   "redeems.maxPerUserPerStreamInfo": "The maximum number of redemptions allowed per user per stream. The minimum value is 1.",
-  "redeems.globalCooldown": "Global Cooldown",
+  "redeems.globalCooldown": "Global Cooldown (seconds)",
   "redeems.globalCooldownInfo": "The global cooldown period for all redemptions. The minimum value is 1.",
   "redeems.notEditableWarning": "Twitch won't let you edit rewards that were not created using this app. You can still add sound to this Twitch reward, but other settings must be changed on Twitch.",
   "redeems.editableWarning": "You can edit this reward because it was created using this app",
