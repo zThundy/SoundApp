@@ -45,5 +45,17 @@
 
 ## 0.1.5
 
+- Added logic to create button
+- Added logic to update reward
+- Created local saving of rewards to recognize if app created
+- Added delete button on custom redeem details
+- Added modal to confirm delete of custom redeem
+- Added notification provider
+- Added notification for redeem creation
+- Added notification for redeem modify
+- Added notification for redeem delete
+- Added refresh button to the redeem list
+- WIP: Automatic refresh list logic
+- WIP: Refresh button logic
 
 ## 0.1.6
