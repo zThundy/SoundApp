@@ -1,7 +1,7 @@
 # <img src="assets/icon.png" alt="drawing" width="30"/> SoundApp
 
 [![Build and Release](https://github.com/zThundy/SoundApp/actions/workflows/build.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/build.yml)
-[![Version - v0.1.4](https://img.shields.io/badge/Version-v0.1.4-2ea44f)](https://github.com/zThundy/SoundApp/releases)
+[![Version - v0.1.5](https://img.shields.io/badge/Version-v0.1.5-2ea44f)](https://github.com/zThundy/SoundApp/releases)
 
 ### Tests
 
