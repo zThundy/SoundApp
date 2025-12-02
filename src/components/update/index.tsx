@@ -2,6 +2,7 @@ import type { ProgressInfo } from 'electron-updater'
 
 import { useCallback, useEffect, useState, useContext } from 'react'
 import { TranslationContext } from '@/i18n/TranslationProvider'
+import { NotificationContext } from '@/context/NotificationProvider'
 
 import {
   Button,
@@ -41,6 +42,8 @@ const UpdateRoutePage = () => {
   const navigate = useNavigate()
 
   const { t } = useContext(TranslationContext)
+  const { error, success } = useContext(NotificationContext)
+
   const [checking, setChecking] = useState(true)
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [versionInfo, setVersionInfo] = useState<VersionInfo>()
@@ -89,6 +92,7 @@ const UpdateRoutePage = () => {
     setProgressInfo({ percent: 100 })
     setDownloaded(true)
     setChecking(false)
+    success(t('update.downloaded'))
   }, [])
 
   useEffect(() => {
@@ -150,7 +154,8 @@ const UpdateRoutePage = () => {
     (async () => {
       try {
         await window.ipcRenderer.invoke('check-update')
-      } catch (err) {
+      } catch (e: any) {
+        error(t('update.checkFailed'), (e as Error).message);
         // ignore
       }
     })()
@@ -169,14 +174,6 @@ const UpdateRoutePage = () => {
   const installNow = async () => {
     try {
       await window.ipcRenderer.invoke('quit-and-install')
-    } catch {
-      // ignore
-    }
-  }
-
-  const startManualDownload = async () => {
-    try {
-      await window.ipcRenderer.invoke('start-download')
     } catch {
       // ignore
     }

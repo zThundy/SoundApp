@@ -12,7 +12,9 @@ import {
 
 import style from "./events.module.css";
 import { styled } from '@mui/system';
+
 import { TranslationContext } from '@/i18n/TranslationProvider';
+import { NotificationContext } from '@/context/NotificationProvider';
 
 interface ChatMessage {
   userId: string;
@@ -74,6 +76,7 @@ export default function TwitchChat() {
   const [redemptions, setRedemptions] = useState<RewardRedemption[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const { t } = useContext(TranslationContext)
+  const { error } = useContext(NotificationContext)
 
   useEffect(() => {
     const loadCache = async () => {
@@ -86,8 +89,9 @@ export default function TwitchChat() {
         setMessages(messages ? messages.slice(0, 10) : []);
         setRedemptions(redemptions ? redemptions.slice(0, 10) : []);
         console.log(`Loaded ${messages?.length || 0} cached messages and ${redemptions?.length || 0} cached redemptions`);
-      } catch (error) {
-        console.error('Error loading cache:', error);
+      } catch (e: any) {
+        error(t("twitchChat.loadCacheFailed"), (e as Error).message);
+        console.error('Error loading cache:', e);
       }
     };
 
@@ -97,8 +101,9 @@ export default function TwitchChat() {
       try {
         const { connected } = await window.twitchEvents.isConnected();
         setIsConnected(connected);
-      } catch (error) {
-        console.error('Error checking connection:', error);
+      } catch (e: any) {
+        error(t("twitchChat.checkConnectionFailed"), (e as Error).message);
+        console.error('Error checking connection:', e);
       }
     };
 

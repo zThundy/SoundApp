@@ -227,7 +227,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
           success(t('redeems.rewardUpdated'));
         }
       } catch (err) {
-        error(t('redeems.saveFailed') + ': ' + (err as Error).message);
+        error(t('redeems.saveFailed'), (err as Error).message);
       }
     }
 
@@ -253,7 +253,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
       await window.fileManager?.save?.('alerts', `settings/${rewardId}.json`, JSON.stringify(settings, null, 2));
       success(t('redeems.settingsSaved'));
     } catch (err) {
-      error(t('redeems.settingsSaveFailed') + ': ' + (err as Error).message);
+      error(t('redeems.settingsSaveFailed'), (err as Error).message);
     }
   }
 
@@ -274,7 +274,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
         setDeleteModalOpen(false);
         handleCancel();
       } catch (err) {
-        error(t('redeems.deleteFailed') + ': ' + (err as Error).message);
+        error(t('redeems.deleteFailed'), (err as Error).message);
       }
     }
   }

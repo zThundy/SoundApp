@@ -1,17 +1,19 @@
 
 
 import { Grid, Tooltip } from '@mui/material'
-import { useContext } from 'react'
-import { TranslationContext } from '@/i18n/TranslationProvider'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import style from './sidebar.module.css'
 
 import { Settings, LogoutOutlined, Tv, VideoLibrary, ChatBubble } from '@mui/icons-material'
 import { useNavigate } from 'react-router'
 
+import { TranslationContext } from '@/i18n/TranslationProvider'
+import { NotificationContext } from '@/context/NotificationProvider'
+
 export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: string) => void }) {
   const { t } = useContext(TranslationContext)
+  const { error } = useContext(NotificationContext)
   const [currentView, setCurrentView] = useState<string>('redeems')
   const navigate = useNavigate()
 
@@ -21,6 +23,7 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
         navigate('/')
       })
       .catch((err) => {
+        error(t('sidebar.logoutFailed'), err.message);
         console.error('Error during logout:', err)
       })
   }

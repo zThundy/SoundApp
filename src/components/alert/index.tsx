@@ -170,9 +170,9 @@ export default function AlertEditor() {
       if (res?.ok) {
         success(t("common.sent"));
       } else {
-        error(t("common.error") + " " + res?.error);
+        error(t("common.error"), res?.error);
       }
-    } catch (e: any) { error(t("common.error") + " " + e.message); }
+    } catch (e: any) { error(t("common.error"), e.message); }
     finally { setSending(false); }
   }
 
@@ -190,13 +190,13 @@ export default function AlertEditor() {
       if (res?.ok) {
         success(t("common.sent"));
       } else {
-        error(t("common.error") + " " + res?.error);
+        error(t("common.error"), res?.error);
       }
 
       if (res?.ok) {
         await saveDefaultTemplate();
       }
-    } catch (e: any) { error(t("common.error") + " " + e.message); }
+    } catch (e: any) { error(t("common.error"), e.message); }
     finally {
       setTimeout(() => {
         setSending(false)

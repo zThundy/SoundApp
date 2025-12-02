@@ -71,11 +71,11 @@ export default function Settings() {
       if (res?.ok) {
         success(t('settings.portSaved', { port: pNum }))
       } else {
-        error(t('settings.saveFailed'))
-        throw new Error(res?.error || t('settings.saveFailed'))
+        error(t('settings.saveFailed'), res?.error || '')
+        throw new Error(t('settings.saveFailed'))
       }
     } catch (e: any) {
-      error(t('settings.error'))
+      error(t('settings.error'), e.message || '')
     } finally {
       setLoading(false)
     }
@@ -88,11 +88,11 @@ export default function Settings() {
       if (res?.ok) {
         success(t('settings.serverRestarted', { port: res.port }))
       } else {
-        error(t('settings.restartFailed'))
-        throw new Error(res?.error || t('settings.restartFailed'))
+        error(t('settings.restartFailed'), res?.error || '')
+        throw new Error(t('settings.restartFailed'))
       }
     } catch (e: any) {
-      error(t('settings.error'))
+      error(t('settings.error'), e.message || '')
     } finally {
       setLoading(false)
     }

@@ -1,14 +1,16 @@
 
-import { useEffect } from "react"
+import { useEffect, useContext } from "react"
 import style from "./login.module.css"
 
 import { Button } from "@mui/material"
-import { useContext } from 'react'
-import { TranslationContext } from '@/i18n/TranslationProvider'
 import { useLocation, useNavigate } from "react-router"
+
+import { TranslationContext } from '@/i18n/TranslationProvider'
+import { NotificationContext } from '@/context/NotificationProvider';
 
 export default function Login() {
   const { t } = useContext(TranslationContext)
+  const { error } = useContext(NotificationContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +28,7 @@ export default function Login() {
         navigate('/home');
       })
       .catch((err) => {
+        error(t('login.oauthFailed'), err.message);
         console.error('Error during Twitch OAuth:', err);
       })
   }

@@ -8,6 +8,7 @@ import { Warning, CheckBoxRounded } from "@mui/icons-material"
 
 import EmptyList from "@/components/home/EmptyList";
 import { TranslationContext } from "@/i18n/TranslationProvider"
+import { NotificationContext } from "@/context/NotificationProvider";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "rgba(0,0,0,0)",
@@ -36,6 +37,7 @@ const calculateImage = (reward: any) => {
 
 const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }: { selectReward: (reward: any) => void }) {
   const { t } = useContext(TranslationContext)
+  const { error } = useContext(NotificationContext);
   const [customRewards, setCustomRewards] = useState<Array<any>>([])
   const [manageableRewards, setManageableRewards] = useState<Set<string>>(new Set())
 
@@ -46,6 +48,7 @@ const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }
       })
       .catch((error) => {
         console.error('Error fetching custom rewards:', error)
+        error(t('redeems.fetchCustomRewardsFailed'), error.message);
       })
     
     window.ipcRenderer?.invoke("twitch:get-manageable-rewards")
@@ -54,6 +57,7 @@ const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }
       })
       .catch((error) => {
         console.error('Error fetching manageable rewards:', error)
+        error(t('redeems.fetchCustomRewardsFailed'), error.message);
       })
   }, [])
 
