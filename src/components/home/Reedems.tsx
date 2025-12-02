@@ -5,7 +5,7 @@ import style from "./home.module.css"
 import CustomRewardDetails from "@/components/home/CustomRewardDetails"
 import CustomRewardsList from "@/components/home/CustomRewardsList"
 
-import { Grid, Stack, Button, Tooltip } from "@mui/material"
+import { Grid, Stack, Button, Tooltip, Typography } from "@mui/material"
 
 import { TranslationContext } from "@/i18n/TranslationProvider"
 import { NotificationContext } from "@/context/NotificationProvider"
@@ -48,13 +48,19 @@ export default function Reedems() {
 
         <Grid container spacing={1} flexDirection={"column"}>
           <Grid size={{ lg: 12, md: 12 }} className={style.listTitle}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
+            <Grid
+              container
+              spacing={2}
+              justifyContent={"space-between"}
+              alignItems={"center"}
             >
-              <h2>{t("redeems.list")}</h2>
-              <Stack direction="row" spacing={1}>
+              <Grid size={{ lg: 6, md: 4 }} textAlign={"left"}>
+                <Typography variant="h5" fontWeight={"bold"} fontSize={{
+                  lg: "2rem",
+                  md: "1rem"
+                }}>{t("redeems.list")}</Typography>
+              </Grid>
+              <Grid size={{ lg: 6, md: 8 }} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -75,8 +81,8 @@ export default function Reedems() {
                     <Refresh />
                   </Button>
                 </Tooltip>
-              </Stack>
-            </Stack>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid size={{ lg: 12, md: 12 }} className={style.listContainer}>
             <CustomRewardsList selectReward={_selectReward} />
@@ -87,8 +93,14 @@ export default function Reedems() {
 
       <Grid size={{ lg: 6, md: 6 }}>
         <Grid container spacing={1} flexDirection={"column"}>
-          <Grid size={{ lg: 12, md: 12 }} className={style.listTitle} textAlign={"right"}>
-            <h2>{t("redeems.selected")}</h2>
+          <Grid size={{ lg: 12, md: 12 }} className={style.listTitle} textAlign={"right"} p={{
+            lg: 0,
+            md: 1.1
+          }}>
+            <Typography variant="h5" fontWeight={"bold"} fontSize={{
+              lg: "2rem",
+              md: "1rem"
+            }}>{t("redeems.selected")}</Typography>
           </Grid>
           <Grid size={{ lg: 12, md: 12 }} className={style.listContainer}>
             <CustomRewardDetails reward={selectedReward} clearReward={() => setSelectedReward(null)} />

@@ -84,21 +84,21 @@ const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }
 
               <Grid size={{ lg: 3, md: 6 }}>
                 <Grid container spacing={1} justifyContent={"flex-end"}>
-                  <Grid size={{ lg: 4 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Grid size={{ lg: 4, md: 3.5 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Item>{reward.cost}</Item>
                   </Grid>
-                  <Grid size={{ lg: 4 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                  <Grid size={{ lg: 4, md: 3.5 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                     <img src={calculateImage(reward)} alt="Reward" style={{ width: '32px', height: '32px' }} />
                   </Grid>
-                  <Grid size={{ lg: 4 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Grid size={{ lg: 4, md: 5 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {!isManageable && (
                       <Tooltip title={t("redeems.notEditableWarning")} placement="left" arrow>
-                        <Warning style={{ color: '#ff9800', backgroundColor: '#754600', padding: 5, borderRadius: 4 }} />
+                        <Warning style={{ color: '#ff9800', backgroundColor: '#754600', padding: 3, borderRadius: 4 }} className={style.warningIconPulse} />
                       </Tooltip>
                     )}
                     {isManageable && (
                       <Tooltip title={t("redeems.editableWarning")} placement="left" arrow>
-                        <CheckBoxRounded style={{ color: '#4caf50', backgroundColor: '#254d24', padding: 5, borderRadius: 4 }} />
+                        <CheckBoxRounded style={{ color: '#4caf50', backgroundColor: '#254d24', padding: 3, borderRadius: 4 }} />
                       </Tooltip>
                     )}
                   </Grid>
