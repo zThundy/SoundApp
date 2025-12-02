@@ -169,6 +169,69 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
     <div id="container"></div>
     <script>
         const es = new EventSource('/events');
+        
+        // Queue system for twitch-redeem alerts
+        const alertQueue = [];
+        let isProcessingAlert = false;
+        
+        async function processAlertQueue() {
+          if (isProcessingAlert || alertQueue.length === 0) return;
+          
+          isProcessingAlert = true;
+          const data = alertQueue.shift();
+          
+          return new Promise((resolve) => {
+            const wrap = document.createElement('div');
+            wrap.className = 'fadeImageWrap';
+            wrap.style.animation = 'fade ' + ((data.duration || 6000) / 1000) + 's cubic-bezier(0.3, 0.6, 0.3, 1) forwards';
+            const img = document.createElement('img');
+            // Use imageDataUrl from template if available, otherwise use default
+            if (data.imageDataUrl) {
+              img.src = data.imageDataUrl;
+            } else if (data.image?.base64) {
+              img.src = 'data:image/png;base64,' + data.image.base64;
+            } else {
+              img.src = "logo.png";
+            }
+            const caption = document.createElement('div');
+            caption.className = 'caption';
+            caption.textContent = data.text || '';
+            wrap.appendChild(img);
+            wrap.appendChild(caption);
+            document.getElementById('container').appendChild(wrap);
+            
+            // Play audio if present
+            let audioDuration = 0;
+            if (data.audio?.base64) {
+              const audio = new Audio('data:audio/mpeg;base64,' + data.audio.base64);
+              audio.volume = data.audio.volume || 1.0;
+              
+              // Get audio duration to wait for it
+              audio.addEventListener('loadedmetadata', () => {
+                audioDuration = audio.duration * 1000; // Convert to ms
+            
+                console.log('Audio duration (ms):', audioDuration);
+                const totalDuration = Math.max(data.duration || 6000, audioDuration);
+                console.log('Displaying alert for', totalDuration, 'ms');
+                
+                setTimeout(() => {
+                  wrap.remove();
+                  isProcessingAlert = false;
+                  resolve();
+                  // Process next alert in queue
+                  processAlertQueue();
+                }, totalDuration);
+              });
+              
+              audio.addEventListener('ended', () => {
+                console.log('Audio playback completed');
+              });
+              
+              audio.play().catch(e => console.error('Audio playback failed', e));
+            }
+          });
+        }
+        
         es.onmessage = (ev) => {
             try {
                 const data = JSON.parse(ev.data);
@@ -180,33 +243,9 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
                   document.getElementById('container').appendChild(node);
                   setTimeout(() => node.remove(), 6000);
                 } else if (data.type === "twitch-redeem") {
-                  const wrap = document.createElement('div');
-                  wrap.className = 'fadeImageWrap';
-                  wrap.style.animation = 'fade ' + ((data.duration || 6000) / 1000) + 's cubic-bezier(0.3, 0.6, 0.3, 1) forwards';
-                  const img = document.createElement('img');
-                  // Use imageDataUrl from template if available, otherwise use default
-                  if (data.imageDataUrl) {
-                    img.src = data.imageDataUrl;
-                  } else if (data.image?.base64) {
-                    img.src = 'data:image/png;base64,' + data.image.base64;
-                  } else {
-                    img.src = "logo.png";
-                  }
-                  const caption = document.createElement('div');
-                  caption.className = 'caption';
-                  caption.textContent = data.text || '';
-                  wrap.appendChild(img);
-                  wrap.appendChild(caption);
-                  document.getElementById('container').appendChild(wrap);
-                  
-                  // Play audio if present
-                  if (data.audio?.base64) {
-                    const audio = new Audio('data:audio/mpeg;base64,' + data.audio.base64);
-                    audio.volume = data.audio.volume || 1.0;
-                    audio.play().catch(e => console.error('Audio playback failed', e));
-                  }
-                  
-                  setTimeout(() => wrap.remove(), (data.duration || 6000));
+                  // Add to queue and process
+                  alertQueue.push(data);
+                  processAlertQueue();
                 } else if (data.type === 'imageTemplate') {
                   const wrap = document.createElement('div');
                   wrap.className = 'fadeImageWrap';
