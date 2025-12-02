@@ -60,5 +60,10 @@
 
 ## 0.1.6
 
+- General styling fixes and changes
+- Added description to error notification
+- Added translations
+- Added list refresh button logic
+- Added general list refresh logic
 
 ## 0.1.7
