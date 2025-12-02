@@ -12,7 +12,8 @@
   "settings.error": "Error",
   "settings.loading": "Loading...",
   "settings.version": "App Version",
-  
+  "settings.languageChanged": "Language changed successfully.",
+
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Settings",
   "sidebar.alert": "Alert",
@@ -102,6 +103,16 @@
   "redeems.editableWarning": "You can edit this reward because it was created using this app",
   "redeems.deleteRewardTitle": "Delete reward?",
   "redeems.deleteRewardConfirmation": "Are you sure you want to delete this custom reward {rewardTitle}? This action cannot be undone.",
+  "redeems.titleRequired": "Title is required to create a new reward",
+  "redeems.costRequired": "Cost must be a positive number to create a new reward",
+  "redeems.rewardCreated": "Reward created successfully on Twitch",
+  "redeems.rewardUpdated": "Reward updated successfully on Twitch",
+  "redeems.saveFailed": "Failed to save reward to Twitch",
+  "redeems.settingsSaved": "Local alert settings saved successfully",
+  "redeems.settingsSaveFailed": "Failed to save alert settings locally",
+  "redeems.rewardDeleted": "Reward deleted successfully from Twitch",
+  "redeems.deleteFailed": "Failed to delete reward from Twitch",
+  "redeems.startingNewReward": "You can edit the new reward now, then save it using the Save button on the bottom of the panel.",
 
   "twitchChat.status": "Twitch Chat Status",
   "twitchChat.connected": "Connected to Twitch chat.",
