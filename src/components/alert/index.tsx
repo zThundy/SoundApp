@@ -30,6 +30,7 @@ import { styled } from '@mui/material/styles';
 import style from "./alert.module.css"
 
 import { TranslationContext } from '@/i18n/TranslationProvider';
+import { NotificationContext } from '@/context/NotificationProvider';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
@@ -64,6 +65,8 @@ const StyledVariable = styled(Typography)(({ theme }) => ({
 
 export default function AlertEditor() {
   const { t } = useContext(TranslationContext);
+  const { success, error } = useContext(NotificationContext);
+
   const [serverUrl, setServerUrl] = useState('http://localhost:4823');
   const [tab, setTab] = useState(0);
   const [rawHtml, setRawHtml] = useState('<div style="font-size:4rem;font-weight:700;">Hello!</div>');
@@ -76,7 +79,6 @@ export default function AlertEditor() {
   const [imageDuration, setImageDuration] = useState(6000);
 
   const [sending, setSending] = useState(false);
-  const [status, setStatus] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [iframeError, setIframeError] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -162,18 +164,20 @@ export default function AlertEditor() {
 
   async function sendRaw() {
     setSending(true);
-    setStatus(null);
     try {
       const payload = { type: 'raw', html: rawHtml, css: rawCss, js: rawJs, duration: rawDuration };
       const res = await window.alerts?.broadcast(payload);
-      setStatus(res?.ok ? t("common.sent") : t("common.error") + " " + res?.error);
-    } catch (e: any) { setStatus(t("common.error") + " " + e.message); }
+      if (res?.ok) {
+        success(t("common.sent"));
+      } else {
+        error(t("common.error") + " " + res?.error);
+      }
+    } catch (e: any) { error(t("common.error") + " " + e.message); }
     finally { setSending(false); }
   }
 
   async function sendImageTemplate() {
     setSending(true);
-    setStatus(null);
     try {
       let image = null;
       if (imageFile) {
@@ -183,12 +187,16 @@ export default function AlertEditor() {
       }
       const payload = { type: 'imageTemplate', imageDataUrl: image, text: imageText, duration: imageDuration };
       const res = await window.alerts?.broadcast(payload);
-      setStatus(res?.ok ? t("common.sent") : t("common.error") + " " + res?.error);
+      if (res?.ok) {
+        success(t("common.sent"));
+      } else {
+        error(t("common.error") + " " + res?.error);
+      }
 
       if (res?.ok) {
         await saveDefaultTemplate();
       }
-    } catch (e: any) { setStatus(t("common.error") + " " + e.message); }
+    } catch (e: any) { error(t("common.error") + " " + e.message); }
     finally {
       setTimeout(() => {
         setSending(false)
@@ -293,12 +301,6 @@ export default function AlertEditor() {
                     </Button>
                   </Stack>
                 </StyledBox>
-
-                <Collapse in={sending}>
-                  <Alert severity={status?.startsWith('Errore') ? 'error' : 'success'} style={{ width: "calc(100% - 20px)", padding: 10 }}>
-                    {status}
-                  </Alert>
-                </Collapse>
               </Stack>
             )}
             {tab === 1 && (

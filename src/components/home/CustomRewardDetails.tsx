@@ -10,6 +10,7 @@ import DeleteModal from "@/components/home/DeleteModal";
 import { ColorPicker } from '@/components/ColorPicker';
 
 import { TranslationContext } from "@/i18n/TranslationProvider"
+import { NotificationContext } from "@/context/NotificationProvider"
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
@@ -47,6 +48,7 @@ const calculateImage = (reward: any) => {
 
 const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, clearReward }: { reward: any, clearReward: () => void }) {
   const { t } = useContext(TranslationContext);
+  const { success, error, info, warning } = useContext(NotificationContext);
   
   const [form, setForm] = React.useState<any>(null)
   const lastRewardId = React.useRef<string | null>(null)
@@ -111,24 +113,19 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
         const settingsPath = `settings/${rewardId}.json`;
         const res = await window.fileManager?.read?.('alerts', settingsPath, true);
         if (res?.ok && res.data) {
-          console.log('Loaded local alert settings for reward', rewardId, res.data);
           const settings = JSON.parse(res.data as string);
           if (settings.background_color) setBackgroundColor(settings.background_color);
           if (typeof settings.volume === 'number') setAudioVolume(settings.volume);
           if (typeof settings.muted === 'boolean') setAudioMuted(settings.muted);
           setAudioRelPath(settings.audioPath ?? null);
           if (settings.audioPath) {
-            console.log('Found audioPath in settings:', settings.audioPath);
             const exists = await window.fileManager?.exists?.('alerts', settings.audioPath);
             if (exists?.ok && exists.exists) {
-              console.log('Audio file exists:', settings.audioPath);
               const fileRead = await window.fileManager?.read?.('alerts', settings.audioPath, false);
               if (fileRead?.ok && fileRead.data) {
-                console.log('Read audio file for preview:', settings.audioPath);
                 const buf = fileRead.data as any as ArrayBuffer;
                 const blob = new Blob([buf]);
                 const url = URL.createObjectURL(blob);
-                console.log('Created object URL for audio preview:', url);
                 setAudioUrl(url);
               }
             }
@@ -182,8 +179,14 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
     if (window.ipcRenderer?.invoke) {
       try {
         if (reward.is_new) {
-          if (!updated.title || updated.title.trim().length === 0) return console.error('Title is required to create a new reward');
-          if (!updated.cost || isNaN(Number(updated.cost)) || Number(updated.cost) <= 0) return console.error('Cost must be a positive number to create a new reward');
+          if (!updated.title || updated.title.trim().length === 0) {
+            warning(t('redeems.titleRequired'));
+            return;
+          }
+          if (!updated.cost || isNaN(Number(updated.cost)) || Number(updated.cost) <= 0) {
+            warning(t('redeems.costRequired'));
+            return;
+          }
 
           const newReward = await window.ipcRenderer.invoke('twitch:create-reward', {
             title: updated.title,
@@ -201,8 +204,9 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
             is_paused: updated.is_paused,
             should_redemptions_skip_request_queue: updated.should_redemptions_skip_request_queue,
           })
-          console.log('Created new reward:', newReward);
-          reward.id = newReward.id;
+          success(t('redeems.rewardCreated'));
+          reward.id = newReward.data[0].id;
+          reward.is_new = false;
         } else {
           await window.ipcRenderer.invoke('twitch:update-reward', reward.id, {
             title: updated.title,
@@ -220,10 +224,10 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
             is_paused: updated.is_paused,
             should_redemptions_skip_request_queue: updated.should_redemptions_skip_request_queue,
           })
-          console.log('Updated reward:', reward.id);
+          success(t('redeems.rewardUpdated'));
         }
       } catch (err) {
-        console.error('Failed to update reward via IPC', err)
+        error(t('redeems.saveFailed') + ': ' + (err as Error).message);
       }
     }
 
@@ -247,8 +251,9 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
         updatedAt: Date.now(),
       };
       await window.fileManager?.save?.('alerts', `settings/${rewardId}.json`, JSON.stringify(settings, null, 2));
+      success(t('redeems.settingsSaved'));
     } catch (err) {
-      console.error('Failed to save local alert settings', err);
+      error(t('redeems.settingsSaveFailed') + ': ' + (err as Error).message);
     }
   }
 
@@ -265,10 +270,11 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
     if (reward && !reward.is_new) {
       try {
         await window.ipcRenderer?.invoke('twitch:delete-reward', reward.id);
+        success(t('redeems.rewardDeleted'));
         setDeleteModalOpen(false);
         handleCancel();
       } catch (err) {
-        console.error('Failed to delete reward via IPC', err);
+        error(t('redeems.deleteFailed') + ': ' + (err as Error).message);
       }
     }
   }

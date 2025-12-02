@@ -5,6 +5,7 @@ import theme from './mui/StyleProvider'
 
 import { ThemeProvider } from '@mui/material'
 import { TranslationProvider } from '@/i18n/TranslationProvider'
+import { NotificationProvider } from '@/context/NotificationProvider'
 
 import { HashRouter, Routes, Route, useNavigate } from 'react-router'
 
@@ -48,19 +49,21 @@ const UpdateNavigator = () => {
 function App() {
   return (
     <TranslationProvider>
-      <ThemeProvider theme={theme}>
-        <div className={style.appScroll}>
-          <HashRouter>
-            <UpdateNavigator />
-            <Routes>
-              <Route path="/" element={<Login />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/update" element={<UpdateRoutePage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </HashRouter>
-        </div>
-      </ThemeProvider>
+      <NotificationProvider>
+        <ThemeProvider theme={theme}>
+          <div className={style.appScroll}>
+            <HashRouter>
+              <UpdateNavigator />
+              <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/update" element={<UpdateRoutePage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </HashRouter>
+          </div>
+        </ThemeProvider>
+      </NotificationProvider>
     </TranslationProvider>
   )
 }

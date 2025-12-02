@@ -1,6 +1,8 @@
 import { useEffect, useState, useContext } from 'react'
 import { Box, Button, Grid, TextField, Typography, Select, MenuItem, Stack } from '@mui/material'
+
 import { TranslationContext } from '@/i18n/TranslationProvider'
+import { NotificationContext } from '@/context/NotificationProvider'
 
 import style from './settings.module.css'
 import { styled } from '@mui/system'
@@ -26,9 +28,9 @@ const StyledBox = styled(Box)(({ theme }) => ({
 
 export default function Settings() {
   const { t, language, setLanguage, availableLanguages } = useContext(TranslationContext)
+  const { success, error } = useContext(NotificationContext)
   const [port, setPort] = useState<string>('')
   const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState<string>('')
   const [version, setVersion] = useState<string>('')
 
   useEffect(() => {
@@ -59,20 +61,21 @@ export default function Settings() {
 
   const savePort = async () => {
     setLoading(true)
-    setMessage('')
     try {
       const pNum = Number(port)
       if (!Number.isFinite(pNum) || pNum <= 0 || pNum >= 65536) {
+        error(t('settings.invalidPort'))
         throw new Error(t('settings.invalidPort'))
       }
       const res = await (window.alerts as any).setPort(pNum)
       if (res?.ok) {
-        setMessage(t('settings.portSaved', { port: pNum }))
+        success(t('settings.portSaved', { port: pNum }))
       } else {
+        error(t('settings.saveFailed'))
         throw new Error(res?.error || t('settings.saveFailed'))
       }
     } catch (e: any) {
-      setMessage(e?.message || t('settings.error'))
+      error(t('settings.error'))
     } finally {
       setLoading(false)
     }
@@ -80,16 +83,16 @@ export default function Settings() {
 
   const restartServer = async () => {
     setLoading(true)
-    setMessage('')
     try {
       const res = await (window.alerts as any).restart()
       if (res?.ok) {
-        setMessage(t('settings.serverRestarted', { port: res.port }))
+        success(t('settings.serverRestarted', { port: res.port }))
       } else {
+        error(t('settings.restartFailed'))
         throw new Error(res?.error || t('settings.restartFailed'))
       }
     } catch (e: any) {
-      setMessage(e?.message || t('settings.error'))
+      error(t('settings.error'))
     } finally {
       setLoading(false)
     }
@@ -133,10 +136,6 @@ export default function Settings() {
                 {t('settings.restartServer')}
               </Button>
             </Stack>
-
-            {message && (
-              <Typography variant="body2">{message}</Typography>
-            )}
           </Grid>
         </StyledBox>
 
@@ -145,7 +144,10 @@ export default function Settings() {
             <Typography variant="subtitle1" sx={{ mr: 2 }}>{t('settings.language') || 'Language'}</Typography>
             <Select
               value={language}
-              onChange={(e) => setLanguage(String(e.target.value))}
+              onChange={(e) => {
+                setLanguage(String(e.target.value))
+                success(t('settings.languageChanged'))
+              }}
               size="small"
               sx={{ minWidth: 160 }}
             >
