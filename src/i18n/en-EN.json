@@ -19,6 +19,7 @@
   "sidebar.alert": "Alert",
   "sidebar.logout": "Log out",
   "sidebar.chat": "Chat",
+  "sidebar.logoutFailed": "Logout failed",
 
   "update.title": "App Updater",
   "update.checking": "Checking for updates...",
@@ -30,6 +31,8 @@
   "update.noUpdate": "You are using the latest version.",
   "update.goBack": "Go Back",
   "update.newVersionAvailable": "A new version is available: v{version}",
+  "update.downloaded": "Update downloaded successfully!",
+  "update.checkFailed": "Failed to check for updates",
 
   "common.cancel": "Cancel",
   "common.ok": "OK",
@@ -59,6 +62,7 @@
 
   "login.withTwitch": "Login with Twitch",
   "login.twitchLogoAlt": "Twitch Logo",
+  "login.oauthFailed": "OAuth failed",
 
   "alert.alert": "Alert Editor",
   "alert.imageTemplate": "Image Template",
@@ -99,7 +103,7 @@
   "redeems.maxPerUserPerStreamInfo": "The maximum number of redemptions allowed per user per stream. The minimum value is 1.",
   "redeems.globalCooldown": "Global Cooldown",
   "redeems.globalCooldownInfo": "The global cooldown period for all redemptions. The minimum value is 1.",
-  "redeems.notEditableWarning": "Twitch won't let you edit rewards that were not created using this app",
+  "redeems.notEditableWarning": "Twitch won't let you edit rewards that were not created using this app. You can still add sound to this Twitch reward, but other settings must be changed on Twitch.",
   "redeems.editableWarning": "You can edit this reward because it was created using this app",
   "redeems.deleteRewardTitle": "Delete reward?",
   "redeems.deleteRewardConfirmation": "Are you sure you want to delete this custom reward {rewardTitle}? This action cannot be undone.",
@@ -113,6 +117,7 @@
   "redeems.rewardDeleted": "Reward deleted successfully from Twitch",
   "redeems.deleteFailed": "Failed to delete reward from Twitch",
   "redeems.startingNewReward": "You can edit the new reward now, then save it using the Save button on the bottom of the panel.",
+  "redeems.fetchCustomRewardsFailed": "Error fetching custom rewards from Twitch",
 
   "twitchChat.status": "Twitch Chat Status",
   "twitchChat.connected": "Connected to Twitch chat.",
@@ -122,5 +127,7 @@
   "twitchChat.userInput": "Input: {input}",
   "twitchChat.redeemedAt": "Redeemed at: {time}",
   "twitchChat.recentMessages": "Recent Messages",
-  "twitchChat.noMessagesYet": "No messages yet..."
+  "twitchChat.noMessagesYet": "No messages yet...",
+  "twitchChat.loadCacheFailed": "Failed to load cached messages and redeems",
+  "twitchChat.checkConnectionFailed": "Failed to check Twitch chat connection status"
 }

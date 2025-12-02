@@ -19,6 +19,7 @@
   "sidebar.alert": "Alert",
   "sidebar.logout": "Esci",
   "sidebar.chat": "Chat",
+  "sidebar.logoutFailed": "Logout fallito",
   
   "update.title": "Aggiornamento App",
   "update.checking": "Verifica aggiornamenti...",
@@ -30,6 +31,8 @@
   "update.noUpdate": "Stai usando l'ultima versione.",
   "update.goBack": "Torna indietro",
   "update.newVersionAvailable": "È disponibile una nuova versione: v{version}",
+  "update.downloaded": "Aggiornamento scaricato con successo!",
+  "update.checkFailed": "Verifica aggiornamenti fallita",
 
   "common.cancel": "Annulla",
   "common.ok": "OK",
@@ -59,6 +62,7 @@
 
   "login.withTwitch": "Accedi con Twitch",
   "login.twitchLogoAlt": "Logo Twitch",
+  "login.oauthFailed": "OAuth non riuscito",
 
   "alert.alert": "Editor dell'Alert",
   "alert.imageTemplate": "Immagine Template",
@@ -99,7 +103,7 @@
   "redeems.maxPerUserPerStreamInfo": "Il numero massimo di riscatti consentiti per utente per stream live. Il valore minimo è 1.",
   "redeems.globalCooldown": "Cooldown globale",
   "redeems.globalCooldownInfo": "Il periodo di cooldown globale per tutte le redemptions. Il valore minimo è 1.",
-  "redeems.notEditableWarning": "Twitch non ti permette di modificare ricompense che non sono state create usando questa app",
+  "redeems.notEditableWarning": "Twitch non ti permette di modificare ricompense che non sono state create usando questa app. Puoi comunque aggiungere suono a questa ricompensa Twitch, ma altre impostazioni devono essere modificate su Twitch.",
   "redeems.editableWarning": "Puoi modificare questa ricompensa perché è stata creata usando questa app",
   "redeems.deleteRewardTitle": "Eliminare la ricompensa?",
   "redeems.deleteRewardConfirmation": "Sei sicuro di voler eliminare la ricompensa personalizzata {rewardTitle}? Questa azione non può essere annullata.",
@@ -113,6 +117,7 @@
   "redeems.rewardDeleted": "Ricompensa eliminata con successo da Twitch",
   "redeems.deleteFailed": "Eliminazione della ricompensa da Twitch non riuscita",
   "redeems.startingNewReward": "Puoi modificare la nuova ricompensa ora, quindi salvarla utilizzando il pulsante Salva in fondo al pannello.",
+  "redeems.fetchCustomRewardsFailed": "Recupero delle ricompense personalizzate da Twitch non riuscito",
 
   "twitchChat.status": "Stato chat Twitch",
   "twitchChat.connected": "Connesso alla chat di Twitch.",
@@ -122,5 +127,7 @@
   "twitchChat.userInput": "Input: {input}",
   "twitchChat.redeemedAt": "Riscattato alle: {time}",
   "twitchChat.recentMessages": "Messaggi recenti",
-  "twitchChat.noMessagesYet": "Ancora nessun messaggio..."
+  "twitchChat.noMessagesYet": "Ancora nessun messaggio...",
+  "twitchChat.loadCacheFailed": "Caricamento dei messaggi e dei riscatti memorizzati nella cache non riuscito",
+  "twitchChat.checkConnectionFailed": "Verifica dello stato di connessione della chat di Twitch non riuscita"
 }

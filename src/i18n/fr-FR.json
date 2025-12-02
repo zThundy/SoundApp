@@ -19,6 +19,7 @@
   "sidebar.alert": "Alerte",
   "sidebar.logout": "Déconnexion",
   "sidebar.chat": "Chat",
+  "sidebar.logoutFailed": "Échec de la déconnexion",
   
   "update.title": "Mise à jour de l’application",
   "update.checking": "Recherche de mises à jour...",
@@ -30,6 +31,8 @@
   "update.noUpdate": "Vous utilisez la dernière version.",
   "update.goBack": "Retourner",
   "update.newVersionAvailable": "Une nouvelle version est disponible : v{version}",
+  "update.downloaded": "Mise à jour téléchargée avec succès !",
+  "update.checkFailed": "Échec de la vérification des mises à jour",
 
   "common.cancel": "Annuler",
   "common.ok": "OK",
@@ -59,6 +62,7 @@
 
   "login.withTwitch": "Se connecter avec Twitch",
   "login.twitchLogoAlt": "Logo Twitch",
+  "login.oauthFailed": "Échec de l’authentification OAuth",
 
   "alert.alert": "Éditeur d’alertes",
   "alert.imageTemplate": "Modèle d’image",
@@ -99,7 +103,7 @@
   "redeems.maxPerUserPerStreamInfo": "Nombre maximal de validations autorisées par utilisateur et par stream. La valeur minimale est 1.",
   "redeems.globalCooldown": "Délai de récupération global",
   "redeems.globalCooldownInfo": "Le délai de récupération global pour toutes les validations. La valeur minimale est 1.",
-  "redeems.notEditableWarning": "Twitch ne vous permet pas de modifier les récompenses qui n'ont pas été créées avec cette application",
+  "redeems.notEditableWarning": "Twitch ne vous permet pas de modifier les récompenses qui n'ont pas été créées avec cette application. Vous pouvez toujours ajouter du son à cette récompense Twitch, mais les autres paramètres doivent être modifiés sur Twitch.",
   "redeems.editableWarning": "Vous pouvez modifier cette récompense car elle a été créée avec cette application",
   "redeems.deleteRewardTitle": "Supprimer la récompense?",
   "redeems.deleteRewardConfirmation": "Êtes-vous sûr de vouloir supprimer cette récompense personnalisée {rewardTitle} ? Cette action est irréversible.",
@@ -113,6 +117,7 @@
   "redeems.rewardDeleted": "Récompense supprimée avec succès de Twitch",
   "redeems.deleteFailed": "Échec de la suppression de la récompense de Twitch",
   "redeems.startingNewReward": "Vous pouvez maintenant modifier la nouvelle récompense, puis l’enregistrer en utilisant le bouton 'Enregistrer' en bas du panneau.",
+  "redeems.fetchCustomRewardsFailed": "Échec de la récupération des récompenses personnalisées depuis Twitch",
 
   "twitchChat.status": "Statut du chat Twitch",
   "twitchChat.connected": "Connecté au chat Twitch.",
@@ -122,5 +127,7 @@
   "twitchChat.userInput": "Entrée : {input}",
   "twitchChat.redeemedAt": "Échangée à : {time}",
   "twitchChat.recentMessages": "Messages récents",
-  "twitchChat.noMessagesYet": "Aucun message pour le moment..."
+  "twitchChat.noMessagesYet": "Aucun message pour le moment...",
+  "twitchChat.loadCacheFailed": "Échec du chargement des messages et validations en cache",
+  "twitchChat.checkConnectionFailed": "Échec de la vérification du statut de connexion du chat Twitch"
 }

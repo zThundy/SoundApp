@@ -19,6 +19,7 @@
   "sidebar.alert": "Alert",
   "sidebar.logout": "Abmelden",
   "sidebar.chat": "Chat",
+  "sidebar.logoutFailed": "Abmeldung fehlgeschlagen",
   
   "update.title": "App-Aktualisierer",
   "update.checking": "Suche nach Updates...",
@@ -30,6 +31,8 @@
   "update.noUpdate": "Sie verwenden die neueste Version.",
   "update.goBack": "Zurückgehen",
   "update.newVersionAvailable": "Eine neue Version ist verfügbar: v{version}",
+  "update.downloaded": "Update erfolgreich heruntergeladen!",
+  "update.checkFailed": "Fehler beim Überprüfen auf Updates",
 
   "common.cancel": "Abbrechen",
   "common.ok": "OK",
@@ -59,6 +62,7 @@
 
   "login.withTwitch": "Mit Twitch anmelden",
   "login.twitchLogoAlt": "Twitch-Logo",
+  "login.oauthFailed": "OAuth fehlgeschlagen",
 
   "alert.alert": "Alert-Editor",
   "alert.imageTemplate": "Bildvorlage",
@@ -98,7 +102,7 @@
   "redeems.maxPerUserPerStreamInfo": "Die maximale Anzahl an Einlösungen pro Nutzer und Stream. Der Mindestwert ist 1.",
   "redeems.globalCooldown": "Globaler Cooldown",
   "redeems.globalCooldownInfo": "Die globale Abklingzeit für alle Einlösungen. Der Mindestwert ist 1.",
-  "redeems.notEditableWarning": "Twitch erlaubt es Ihnen nicht, Belohnungen zu bearbeiten, die nicht mit dieser App erstellt wurden",
+  "redeems.notEditableWarning": "Twitch erlaubt es Ihnen nicht, Belohnungen zu bearbeiten, die nicht mit dieser App erstellt wurden. Sie können dieser Twitch-Belohnung weiterhin Sound hinzufügen, aber andere Einstellungen müssen auf Twitch geändert werden.",
   "redeems.editableWarning": "Sie können diese Belohnung bearbeiten, da sie mit dieser App erstellt wurde",
   "redeems.deleteRewardTitle": "Belohnung löschen?",
   "redeems.deleteRewardConfirmation": "Sind Sie sicher, dass Sie diese benutzerdefinierte Belohnung {rewardTitle} löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
@@ -112,6 +116,7 @@
   "redeems.rewardDeleted": "Belohnung erfolgreich von Twitch gelöscht",
   "redeems.deleteFailed": "Fehler beim Löschen der Belohnung von Twitch",
   "redeems.startingNewReward": "Sie können die neue Belohnung jetzt bearbeiten und sie dann mit der Schaltfläche 'Speichern' am unteren Rand des Panels speichern.",
+  "redeems.fetchCustomRewardsFailed": "Fehler beim Abrufen benutzerdefinierter Belohnungen von Twitch",
 
   "twitchChat.status": "Twitch-Chat-Status",
   "twitchChat.connected": "Mit dem Twitch-Chat verbunden.",
@@ -121,5 +126,7 @@
   "twitchChat.userInput": "Eingabe: {input}",
   "twitchChat.redeemedAt": "Eingelöst um: {time}",
   "twitchChat.recentMessages": "Neueste Nachrichten",
-  "twitchChat.noMessagesYet": "Noch keine Nachrichten..."
+  "twitchChat.noMessagesYet": "Noch keine Nachrichten...",
+  "twitchChat.loadCacheFailed": "Fehler beim Laden zwischengespeicherter Nachrichten und Einlösungen",
+  "twitchChat.checkConnectionFailed": "Fehler beim Überprüfen des Twitch-Chat-Verbindungsstatus"
 }
