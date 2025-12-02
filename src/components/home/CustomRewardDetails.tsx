@@ -46,7 +46,7 @@ const calculateImage = (reward: any) => {
   return ""
 }
 
-const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, clearReward }: { reward: any, clearReward: () => void }) {
+const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, clearReward, onRefreshRewards }: { reward: any, clearReward: () => void, onRefreshRewards?: () => void }) {
   const { t } = useContext(TranslationContext);
   const { success, error, info, warning } = useContext(NotificationContext);
   
@@ -205,8 +205,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
             should_redemptions_skip_request_queue: updated.should_redemptions_skip_request_queue,
           })
           success(t('redeems.rewardCreated'));
-          reward.id = newReward.data[0].id;
-          reward.is_new = false;
+          reward.id = newReward?.data?.[0]?.id;
         } else {
           await window.ipcRenderer.invoke('twitch:update-reward', reward.id, {
             title: updated.title,
@@ -255,6 +254,10 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
     } catch (err) {
       error(t('redeems.settingsSaveFailed'), (err as Error).message);
     }
+
+    // refresh and clear shit
+    if (reward.is_new) clearReward();
+    onRefreshRewards?.();
   }
 
   const handleCancel = () => {
@@ -273,6 +276,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
         success(t('redeems.rewardDeleted'));
         setDeleteModalOpen(false);
         handleCancel();
+        onRefreshRewards?.();
       } catch (err) {
         error(t('redeems.deleteFailed'), (err as Error).message);
       }
@@ -478,7 +482,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
             <Stack direction="row" spacing={2}>
               <Button variant="contained" color="primary" onClick={handleSave} fullWidth>{t("common.save")}</Button>
               <Button variant="outlined" color="secondary" onClick={handleCancel} fullWidth>{t("common.cancel")}</Button>
-              <Button variant="contained" color="error" onClick={handleDeleteClick} disabled={reward.is_new}><Delete /></Button>
+              <Button variant="contained" color="error" onClick={handleDeleteClick} disabled={reward?.is_new || false}><Delete /></Button>
             </Stack>
           </Grid>
         </StyledBox>

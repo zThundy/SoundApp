@@ -15,6 +15,11 @@ export default function Reedems() {
   const { t } = useContext(TranslationContext);
   const { info } = useContext(NotificationContext);
   const [selectedReward, setSelectedReward] = useState<any>(null)
+  const [refreshKey, setRefreshKey] = useState<number>(0)
+
+  const refreshRewards = () => {
+    setRefreshKey(k => k + 1)
+  }
 
   const _selectReward = (reward: any) => {
     setSelectedReward(reward)
@@ -68,24 +73,19 @@ export default function Reedems() {
                 >
                   {t("redeems.addNewReward")}
                 </Button>
-                <Tooltip
-                  title="Work in progress: Refresh the rewards list from Twitch"
-                  placement="top"
-                  arrow
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  style={{ marginLeft: 8 }}
+                  onClick={refreshRewards}
                 >
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    style={{ marginLeft: 8 }}
-                  >
-                    <Refresh />
-                  </Button>
-                </Tooltip>
+                  <Refresh />
+                </Button>
               </Grid>
             </Grid>
           </Grid>
           <Grid size={{ lg: 12, md: 12 }} className={style.listContainer}>
-            <CustomRewardsList selectReward={_selectReward} />
+            <CustomRewardsList selectReward={_selectReward} refreshKey={refreshKey} />
           </Grid>
         </Grid>
 
@@ -103,7 +103,7 @@ export default function Reedems() {
             }}>{t("redeems.selected")}</Typography>
           </Grid>
           <Grid size={{ lg: 12, md: 12 }} className={style.listContainer}>
-            <CustomRewardDetails reward={selectedReward} clearReward={() => setSelectedReward(null)} />
+            <CustomRewardDetails reward={selectedReward} clearReward={() => setSelectedReward(null)} onRefreshRewards={refreshRewards} />
           </Grid>
         </Grid>
 

@@ -35,31 +35,34 @@ const calculateImage = (reward: any) => {
   return ""
 }
 
-const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }: { selectReward: (reward: any) => void }) {
+const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward, refreshKey }: { selectReward: (reward: any) => void, refreshKey?: number }) {
   const { t } = useContext(TranslationContext)
   const { error } = useContext(NotificationContext);
   const [customRewards, setCustomRewards] = useState<Array<any>>([])
   const [manageableRewards, setManageableRewards] = useState<Set<string>>(new Set())
 
   useEffect(() => {
+    console.log("Refreshing custom rewards list from Twitch...")
+    setCustomRewards([])
+
     window.ipcRenderer?.invoke("twitch:get-all-rewards")
       .then((result) => {
         setCustomRewards(() => result?.data || [])
       })
-      .catch((error) => {
-        console.error('Error fetching custom rewards:', error)
-        error(t('redeems.fetchCustomRewardsFailed'), error.message);
+      .catch((e: any) => {
+        console.error('Error fetching custom rewards:', e)
+        error(t('redeems.fetchCustomRewardsFailed'), e.message);
       })
     
     window.ipcRenderer?.invoke("twitch:get-manageable-rewards")
       .then((result) => {
         setManageableRewards(new Set(result || []))
       })
-      .catch((error) => {
-        console.error('Error fetching manageable rewards:', error)
-        error(t('redeems.fetchCustomRewardsFailed'), error.message);
+      .catch((e: any) => {
+        console.error('Error fetching manageable rewards:', e)
+        error(t('redeems.fetchCustomRewardsFailed'), e.message);
       })
-  }, [])
+  }, [refreshKey])
 
   const sortedRewards = useMemo(() => {
     if (!customRewards || customRewards.length === 0) return []
