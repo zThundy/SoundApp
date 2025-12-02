@@ -5,7 +5,8 @@ import {
   getTwitchRedemptions,
   getCustomRewards,
   updateCustomReward,
-  createCustomReward
+  createCustomReward,
+  deleteCustomReward
 } from '../twitchWorker'
 import { TwitchEventListener } from '../twitchEventListener'
 import { RewardSettings } from '../twitchWorker'
@@ -203,6 +204,20 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
     }
     
     return newReward
+  })
+
+  ipcMain.handle("twitch:delete-reward", async (_evt, rewardId: string) => {
+    const accessToken = await safeStore?.get('twitchAccessToken')
+    const broadcasterId = await getBroadcasterId(accessToken as string)
+    await deleteCustomReward(accessToken as string, broadcasterId, rewardId)
+
+    // Remove the reward ID from the app created rewards tracking
+    const rewards = await loadAppCreatedRewards()
+    if (rewards.has(rewardId)) {
+      rewards.delete(rewardId)
+      await saveAppCreatedRewards(rewards)
+    }
+    return
   })
 
   ipcMain.handle("twitch:is-reward-manageable", async (_evt, rewardId: string) => {
