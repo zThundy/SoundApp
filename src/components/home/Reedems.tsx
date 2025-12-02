@@ -5,7 +5,7 @@ import style from "./home.module.css"
 import CustomRewardDetails from "@/components/home/CustomRewardDetails"
 import CustomRewardsList from "@/components/home/CustomRewardsList"
 
-import { Grid, Stack, Button, Box } from "@mui/material"
+import { Grid, Stack, Button, Tooltip } from "@mui/material"
 
 import { TranslationContext } from "@/i18n/TranslationProvider"
 import { NotificationContext } from "@/context/NotificationProvider"
@@ -62,13 +62,15 @@ export default function Reedems() {
                 >
                   {t("redeems.addNewReward")}
                 </Button>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  style={{ marginLeft: 8 }}
-                >
-                  <Refresh />  
-                </Button>
+                <Tooltip title="Work in progress: Refresh the rewards list from Twitch">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    style={{ marginLeft: 8 }}
+                  >
+                    <Refresh />
+                  </Button>
+                </Tooltip>
               </Stack>
             </Stack>
           </Grid>
