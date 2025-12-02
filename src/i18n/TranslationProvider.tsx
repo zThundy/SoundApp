@@ -1,5 +1,14 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 
+const availableLanguages = [
+  { code: 'en-EN', label: 'English' },
+  { code: 'it-IT', label: 'Italiano' },
+  { code: 'de-DE', label: 'Deutsch' },
+  { code: 'es-ES', label: 'Español' },
+  { code: 'fr-FR', label: 'Français' },
+  { code: 'pi-PI', label: "Pirate Speak" },
+];
+
 export type Translations = Record<string, string | ((args?: any) => string)>;
 
 export interface TranslationContextProps {
@@ -13,13 +22,7 @@ export const TranslationContext = createContext<TranslationContextProps>({
   t: (key) => key,
   language: 'en-EN',
   setLanguage: () => {},
-  availableLanguages: [
-    { code: 'en-EN', label: 'English' },
-    { code: 'it-IT', label: 'Italiano' },
-    { code: 'de-DE', label: 'Deutsch' },
-    { code: 'es-ES', label: 'Español' },
-    { code: 'fr-FR', label: 'Français' },
-  ],
+  availableLanguages: availableLanguages,
 });
 
 const languageFiles: Record<string, () => Promise<any>> = {
@@ -28,6 +31,7 @@ const languageFiles: Record<string, () => Promise<any>> = {
   'de-DE': () => import('./de-DE.json'),
   'es-ES': () => import('./es-ES.json'),
   'fr-FR': () => import('./fr-FR.json'),
+  'pi-PI': () => import('./pi-PI.json'),
 };
 
 export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -80,16 +84,8 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     [translations]
   );
 
-  const availableLanguages = [
-    { code: 'en-EN', label: 'English' },
-    { code: 'it-IT', label: 'Italiano' },
-    { code: 'de-DE', label: 'Deutsch' },
-    { code: 'es-ES', label: 'Español' },
-    { code: 'fr-FR', label: 'Français' },
-  ];
-
   return (
-    <TranslationContext.Provider value={{ t, language, setLanguage, availableLanguages }}>
+    <TranslationContext.Provider value={{ t, language, setLanguage, availableLanguages: availableLanguages }}>
       {children}
     </TranslationContext.Provider>
   );
