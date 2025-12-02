@@ -93,12 +93,12 @@ const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }
                   <Grid size={{ lg: 4 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {!isManageable && (
                       <Tooltip title={t("redeems.notEditableWarning")} placement="left" arrow>
-                        <Warning style={{ color: '#ff9800' }} />
+                        <Warning style={{ color: '#ff9800', backgroundColor: '#754600', padding: 5, borderRadius: 4 }} />
                       </Tooltip>
                     )}
                     {isManageable && (
                       <Tooltip title={t("redeems.editableWarning")} placement="left" arrow>
-                        <CheckBoxRounded style={{ color: '#4caf50' }} />
+                        <CheckBoxRounded style={{ color: '#4caf50', backgroundColor: '#254d24', padding: 5, borderRadius: 4 }} />
                       </Tooltip>
                     )}
                   </Grid>
