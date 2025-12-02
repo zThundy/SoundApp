@@ -68,5 +68,7 @@
 
 ## 0.1.7
 
+- Language modification
+- Added pirate language
 
 ## 0.1.8
