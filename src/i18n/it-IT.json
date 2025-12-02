@@ -97,6 +97,8 @@
   "redeems.maxPerUserPerStreamInfo": "Il numero massimo di riscatti consentiti per utente per stream live. Il valore minimo è 1.",
   "redeems.globalCooldown": "Cooldown globale",
   "redeems.globalCooldownInfo": "Il periodo di cooldown globale per tutte le redemptions. Il valore minimo è 1.",
+  "redeems.notEditableWarning": "Twitch non ti permette di modificare ricompense che non sono state create usando questa app",
+  "redeems.editableWarning": "Puoi modificare questa ricompensa perché è stata creata usando questa app",
 
   "twitchChat.status": "Stato chat Twitch",
   "twitchChat.connected": "Connesso alla chat di Twitch.",

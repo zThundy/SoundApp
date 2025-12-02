@@ -97,6 +97,8 @@
   "redeems.maxPerUserPerStreamInfo": "The maximum number of redemptions allowed per user per stream. The minimum value is 1.",
   "redeems.globalCooldown": "Global Cooldown",
   "redeems.globalCooldownInfo": "The global cooldown period for all redemptions. The minimum value is 1.",
+  "redeems.notEditableWarning": "Twitch won't let you edit rewards that were not created using this app",
+  "redeems.editableWarning": "You can edit this reward because it was created using this app",
 
   "twitchChat.status": "Twitch Chat Status",
   "twitchChat.connected": "Connected to Twitch chat.",

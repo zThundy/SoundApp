@@ -97,6 +97,8 @@
   "redeems.maxPerUserPerStreamInfo": "Nombre maximal de validations autorisées par utilisateur et par stream. La valeur minimale est 1.",
   "redeems.globalCooldown": "Délai de récupération global",
   "redeems.globalCooldownInfo": "Le délai de récupération global pour toutes les validations. La valeur minimale est 1.",
+  "redeems.notEditableWarning": "Twitch ne vous permet pas de modifier les récompenses qui n'ont pas été créées avec cette application",
+  "redeems.editableWarning": "Vous pouvez modifier cette récompense car elle a été créée avec cette application",
 
   "twitchChat.status": "Statut du chat Twitch",
   "twitchChat.connected": "Connecté au chat Twitch.",
