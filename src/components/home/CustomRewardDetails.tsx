@@ -170,12 +170,56 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
         is_enabled: !!form.max_per_user_enabled,
         max_per_user_per_stream: Number(form.max_per_user_value) || 0,
       },
+      global_cooldown_setting: {
+        is_enabled: !!form.global_cooldown_enabled,
+        global_cooldown_seconds: Number(form.global_cooldown) || 0,
+      },
       cost: Number(form.cost) || 0,
       background_color: backgroundColor,
     }
     if (window.ipcRenderer?.invoke) {
       try {
-        await window.ipcRenderer.invoke('twitch:update-reward', updated)
+        if (reward.is_new) {
+          if (!updated.title || updated.title.trim().length === 0) return console.error('Title is required to create a new reward');
+          if (!updated.cost || isNaN(Number(updated.cost)) || Number(updated.cost) <= 0) return console.error('Cost must be a positive number to create a new reward');
+
+          const newReward = await window.ipcRenderer.invoke('twitch:create-reward', {
+            title: updated.title,
+            prompt: updated.prompt,
+            cost: updated.cost,
+            background_color: updated.background_color,
+            is_enabled: updated.is_enabled,
+            is_user_input_required: updated.is_user_input_required,
+            is_max_per_stream_enabled: updated.max_per_stream_setting.is_enabled,
+            max_per_stream: updated.max_per_stream_setting.max_per_stream,
+            is_max_per_user_enabled: updated.max_per_user_per_stream_setting.is_enabled,
+            max_per_user_per_stream: updated.max_per_user_per_stream_setting.max_per_user_per_stream,
+            is_global_cooldown_enabled: updated.global_cooldown_setting.is_enabled,
+            global_cooldown_seconds: updated.global_cooldown_setting.global_cooldown_seconds,
+            is_paused: updated.is_paused,
+            should_redemptions_skip_request_queue: updated.should_redemptions_skip_request_queue,
+          })
+          console.log('Created new reward:', newReward);
+          reward.id = newReward.id;
+        } else {
+          await window.ipcRenderer.invoke('twitch:update-reward', reward.id, {
+            title: updated.title,
+            prompt: updated.prompt,
+            cost: updated.cost,
+            background_color: updated.background_color,
+            is_enabled: updated.is_enabled,
+            is_user_input_required: updated.is_user_input_required,
+            is_max_per_stream_enabled: updated.max_per_stream_setting.is_enabled,
+            max_per_stream: updated.max_per_stream_setting.max_per_stream,
+            is_max_per_user_enabled: updated.max_per_user_per_stream_setting.is_enabled,
+            max_per_user: updated.max_per_user_per_stream_setting.max_per_user_per_stream,
+            is_global_cooldown_enabled: updated.global_cooldown_setting.is_enabled,
+            global_cooldown_seconds: updated.global_cooldown_setting.global_cooldown_seconds,
+            is_paused: updated.is_paused,
+            should_redemptions_skip_request_queue: updated.should_redemptions_skip_request_queue,
+          })
+          console.log('Updated reward:', reward.id);
+        }
       } catch (err) {
         console.error('Failed to update reward via IPC', err)
       }

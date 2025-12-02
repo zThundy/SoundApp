@@ -1,11 +1,13 @@
 
-import React, { useEffect, useState, useMemo } from "react"
+import React, { useEffect, useState, useMemo, useContext } from "react"
 
 import style from "./home.module.css"
 
-import { styled, Paper, Grid } from "@mui/material"
+import { styled, Paper, Grid, Tooltip } from "@mui/material"
+import { Warning, CheckBoxRounded } from "@mui/icons-material"
 
 import EmptyList from "@/components/home/EmptyList";
+import { TranslationContext } from "@/i18n/TranslationProvider"
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "rgba(0,0,0,0)",
@@ -33,7 +35,9 @@ const calculateImage = (reward: any) => {
 }
 
 const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }: { selectReward: (reward: any) => void }) {
+  const { t } = useContext(TranslationContext)
   const [customRewards, setCustomRewards] = useState<Array<any>>([])
+  const [manageableRewards, setManageableRewards] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     window.ipcRenderer?.invoke("twitch:get-all-rewards")
@@ -42,6 +46,14 @@ const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }
       })
       .catch((error) => {
         console.error('Error fetching custom rewards:', error)
+      })
+    
+    window.ipcRenderer?.invoke("twitch:get-manageable-rewards")
+      .then((result) => {
+        setManageableRewards(new Set(result || []))
+      })
+      .catch((error) => {
+        console.error('Error fetching manageable rewards:', error)
       })
   }, [])
 
@@ -56,26 +68,42 @@ const CustomRewardsList = React.memo(function CustomRewardsList({ selectReward }
 
   return (
     <Grid container spacing={1} justifyContent={"flex-start"} alignItems={"flex-start"}>
-      {sortedRewards.map((reward) => (
-        <Grid size={{ xs: 12 }} key={reward.id} className={style.listItem} onClick={() => selectReward(reward)}>
-          <Grid container>
-            <Grid size={{ xs: 9 }}>
-              <Item>{reward.title}</Item>
-            </Grid>
+      {sortedRewards.map((reward) => {
+        const isManageable = manageableRewards.has(reward.id)
+        
+        return (
+          <Grid size={{ xs: 12 }} key={reward.id} className={style.listItem} onClick={() => selectReward(reward)}>
+            <Grid container spacing={2} justifyContent={"space-around"} alignItems={"center"} width={"100%"}>
+              <Grid size={{ lg: 9, md: 6 }}>
+                <Item>{reward.title}</Item>
+              </Grid>
 
-            <Grid size={{ xs: 3 }}>
-              <Grid container spacing={1}>
-                <Grid size={{ xs: 6 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Item>{reward.cost}</Item>
-                </Grid>
-                <Grid size={{ xs: 6 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <img src={calculateImage(reward)} alt="Reward" style={{ width: '32px', height: '32px' }} />
+              <Grid size={{ lg: 3, md: 6 }}>
+                <Grid container spacing={1} justifyContent={"flex-end"}>
+                  <Grid size={{ lg: 4 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Item>{reward.cost}</Item>
+                  </Grid>
+                  <Grid size={{ lg: 4 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                    <img src={calculateImage(reward)} alt="Reward" style={{ width: '32px', height: '32px' }} />
+                  </Grid>
+                  <Grid size={{ lg: 4 }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {!isManageable && (
+                      <Tooltip title={t("redeems.notEditableWarning")} placement="left" arrow>
+                        <Warning style={{ color: '#ff9800' }} />
+                      </Tooltip>
+                    )}
+                    {isManageable && (
+                      <Tooltip title={t("redeems.editableWarning")} placement="left" arrow>
+                        <CheckBoxRounded style={{ color: '#4caf50' }} />
+                      </Tooltip>
+                    )}
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      ))}
+        )
+      })}
     </Grid>
   )
 });
