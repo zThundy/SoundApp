@@ -73,5 +73,7 @@
 
 ## 0.1.8
 
+- Tooltip style changed
+- Added credits to the settings page
 
 ## 0.1.9
