@@ -78,5 +78,16 @@
 
 ## 0.1.9
 
+- Added twitch chat route
+- Changed webserver logic
+  + Alerts are now in /alerts
+  + Chat is in /chat
+  + /index shows a list of possible routes
+- Added custom css/html/js to chat box
+- Moved webserver html to static files
+- Added some translations
+- Changed tooltip styling (again)
+- Minor improvements
+- Styling changes
 
 ## 0.1.10
