@@ -161,6 +161,30 @@ const theme = createTheme({
         }),
       }
     },
+
+    MuiPopper: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          // backgroundColor: (theme.palette as any).background["800"],
+        }),
+      }
+    },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: ({ theme }) => ({
+          backgroundColor: (theme.palette as any).background["700"],
+          color: theme.palette.text.primary,
+          fontSize: '1rem',
+          borderRadius: theme.shape.borderRadius,
+          padding: '0.5rem 1rem',
+          border: `1px solid ${(theme.palette as any).background["600"]}`,
+          // arrow
+          "& .MuiTooltip-arrow": {
+            color: (theme.palette as any).background["700"],
+          },
+        }),
+      }
+    },
   },
 })
 
