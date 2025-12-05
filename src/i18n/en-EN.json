@@ -20,6 +20,7 @@
   "sidebar.alert": "Alert",
   "sidebar.logout": "Log out",
   "sidebar.chat": "Chat",
+  "sidebar.chatbox": "Chatbox: Work in progress...",
   "sidebar.logoutFailed": "Logout failed",
 
   "update.title": "App Updater",

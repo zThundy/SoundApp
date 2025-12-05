@@ -20,6 +20,7 @@
   "sidebar.alert": "Alerta",
   "sidebar.logout": "Cerrar sesión",
   "sidebar.chat": "Chat",
+  "sidebar.chatbox": "Chatbox: Trabajos en curso...",
   "sidebar.logoutFailed": "Error al cerrar sesión",
 
   "update.title": "Actualizador de la aplicación",

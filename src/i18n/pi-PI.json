@@ -20,6 +20,7 @@
   "sidebar.alert": "Signal Flare",
   "sidebar.logout": "Abandon ship",
   "sidebar.chat": "Crow's Nest",
+  "sidebar.chatbox": "Chatbox: Work in progress...",
   "sidebar.logoutFailed": "Can't abandon ship, arr!",
 
   "update.title": "Ship's Upgrade",

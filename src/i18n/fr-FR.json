@@ -20,6 +20,7 @@
   "sidebar.alert": "Alerte",
   "sidebar.logout": "Déconnexion",
   "sidebar.chat": "Chat",
+  "sidebar.chatbox": "Chatbox: Travaux en cours...",
   "sidebar.logoutFailed": "Échec de la déconnexion",
   
   "update.title": "Mise à jour de l’application",

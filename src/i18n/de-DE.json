@@ -20,6 +20,7 @@
   "sidebar.alert": "Alert",
   "sidebar.logout": "Abmelden",
   "sidebar.chat": "Chat",
+  "sidebar.chatbox": "Chatbox: In Arbeit...",
   "sidebar.logoutFailed": "Abmeldung fehlgeschlagen",
   
   "update.title": "App-Aktualisierer",

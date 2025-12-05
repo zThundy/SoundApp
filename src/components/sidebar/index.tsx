@@ -5,7 +5,7 @@ import { useContext, useState } from 'react'
 
 import style from './sidebar.module.css'
 
-import { Settings, LogoutOutlined, Tv, VideoLibrary, ChatBubble } from '@mui/icons-material'
+import { Settings, LogoutOutlined, Tv, VideoLibrary, ChatBubble, Forum } from '@mui/icons-material'
 import { useNavigate } from 'react-router'
 
 import { TranslationContext } from '@/i18n/TranslationProvider'
@@ -66,6 +66,16 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
 
           <Tooltip title={t('sidebar.alert')} placement="right">
             <Tv />
+          </Tooltip>
+
+        </Grid>
+        <Grid
+          size={{ xs: 12 }}
+          className={style.iconContainer + ' ' + (currentView === "chatbox" ? style.current : "")}
+        >
+
+          <Tooltip title={t('sidebar.chatbox')} placement="right">
+            <Forum />
           </Tooltip>
 
         </Grid>
