@@ -90,7 +90,9 @@
 - Minor improvements
 - Styling changes
 
-## 0.1.10
+## 0.2.0
 
+- Added missing translations
+- Version bump up
 
-## 0.1.11
+## 0.2.1
