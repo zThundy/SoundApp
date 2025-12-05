@@ -77,3 +77,6 @@
 - Added credits to the settings page
 
 ## 0.1.9
+
+
+## 0.1.10
