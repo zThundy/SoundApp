@@ -20,7 +20,7 @@
   "sidebar.alert": "Signal Flare",
   "sidebar.logout": "Abandon ship",
   "sidebar.chat": "Crow's Nest",
-  "sidebar.chatbox": "Chatbox: Work in progress...",
+  "sidebar.chatbox": "Chatbox",
   "sidebar.logoutFailed": "Can't abandon ship, arr!",
 
   "update.title": "Ship's Upgrade",
@@ -131,5 +131,6 @@
   "twitchChat.recentMessages": "Recent Parley",
   "twitchChat.noMessagesYet": "No parley yet, matey...",
   "twitchChat.loadCacheFailed": "Failed to load cached parley and booty claims",
-  "twitchChat.checkConnectionFailed": "Failed to check Twitch crow's nest connection status"
+  "twitchChat.checkConnectionFailed": "Failed to check Twitch crow's nest connection status",
+  "twitchChat.preview": "Chatbox Preview"
 }

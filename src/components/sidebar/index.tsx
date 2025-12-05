@@ -72,6 +72,7 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
         <Grid
           size={{ xs: 12 }}
           className={style.iconContainer + ' ' + (currentView === "chatbox" ? style.current : "")}
+          onClick={() => handleNavigation("chatbox")}
         >
 
           <Tooltip title={t('sidebar.chatbox')} placement="right">

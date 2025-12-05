@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import {
   Grid,
   Typography,
-  Paper,
   List,
   ListItem,
   ListItemText,
@@ -56,23 +55,24 @@ const ConnectedDiv = ({ isConnected }: { isConnected: boolean }) => {
         <div className={style.connectedDot} />
         <Typography variant="h6">
           {t("twitchChat.connected")}
-        </Typography>      
+        </Typography>
       </Stack>
     )
   }
-  
+
   return (
     <Stack direction="row" spacing={2} alignItems="center" width={"100%"} justifyContent={"flex-end"} pr={2} pt={1} pb={1}>
       <div className={style.disconnectedDot} />
       <Typography variant="h6">
         {t("twitchChat.disconnected")}
-      </Typography>      
+      </Typography>
     </Stack>
   )
 }
 
 export default function TwitchChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messagesToDisplay, setMessagesToDisplay] = useState<ChatMessage[]>([]);
   const [redemptions, setRedemptions] = useState<RewardRedemption[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const { t } = useContext(TranslationContext)
@@ -86,7 +86,8 @@ export default function TwitchChat() {
 
         messages = messages.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
-        setMessages(messages ? messages.slice(0, 10) : []);
+        setMessages(messages);
+        setMessagesToDisplay(messages ? messages.slice(0, 10) : []);
         setRedemptions(redemptions ? redemptions.slice(0, 10) : []);
         console.log(`Loaded ${messages?.length || 0} cached messages and ${redemptions?.length || 0} cached redemptions`);
       } catch (e: any) {
@@ -110,7 +111,8 @@ export default function TwitchChat() {
     checkConnection();
 
     window.twitchEvents.onChatMessage((message: ChatMessage) => {
-      setMessages(prev => [...prev, message].slice(-10));
+      setMessages(prev => [message, ...prev]);
+      setMessagesToDisplay(prev => [message, ...prev].slice(0, 10));
     });
 
     window.twitchEvents.onRewardRedeemed((redemption: RewardRedemption) => {
@@ -124,7 +126,7 @@ export default function TwitchChat() {
   }, []);
 
   useEffect(() => {
-    setMessages(prev => [...prev].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()));
+    setMessagesToDisplay(prev => [...prev].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()));
   }, [messages]);
 
   return (
@@ -199,12 +201,12 @@ export default function TwitchChat() {
         </Typography>
         <StyledStack>
           <List>
-            {messages.length === 0 ? (
+            {messagesToDisplay.length === 0 ? (
               <Typography variant="body2" color="text.secondary">
                 {t("twitchChat.noMessagesYet")}
               </Typography>
             ) : (
-              messages.map((msg, index) => (
+              messagesToDisplay.map((msg, index) => (
                 <ListItem key={`${msg.userId}-${index}`} className={style.listItem}>
                   <ListItemText
                     primary={

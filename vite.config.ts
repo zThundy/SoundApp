@@ -1,4 +1,4 @@
-import { rmSync } from 'node:fs'
+import { rmSync, cpSync } from 'node:fs'
 import path from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
@@ -21,6 +21,22 @@ export default defineConfig(({ command }) => {
     },
     plugins: [
       react(),
+      {
+        name: 'copy-pages',
+        apply: 'build',
+        enforce: 'post',
+        closeBundle() {
+          // Copy pages directory to dist/main after build
+          const src = path.join(__dirname, 'electron/pages');
+          const dest = path.join(__dirname, 'dist/main/pages');
+          try {
+            cpSync(src, dest, { recursive: true, force: true });
+            console.log('✓ Copied electron/pages to dist/main/pages');
+          } catch (err) {
+            console.error('Failed to copy pages directory:', err);
+          }
+        }
+      },
       electron({
         main: {
           // Shortcut of `build.lib.entry`

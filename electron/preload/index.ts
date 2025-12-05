@@ -73,6 +73,15 @@ contextBridge.exposeInMainWorld('alerts', {
   }
 })
 
+contextBridge.exposeInMainWorld('chat', {
+  saveHtml(html: string, css: string, js: string) {
+    return ipcRenderer.invoke('chat:save-html', html, css, js)
+  },
+  loadHtml() {
+    return ipcRenderer.invoke('chat:load-html')
+  }
+})
+
 // File management API for saving/reading files in userData
 contextBridge.exposeInMainWorld('fileManager', {
   save(context: string, relativePath: string, content: string | Buffer) {

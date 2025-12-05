@@ -67,7 +67,7 @@ export default function AlertEditor() {
   const { t } = useContext(TranslationContext);
   const { success, error } = useContext(NotificationContext);
 
-  const [serverUrl, setServerUrl] = useState('http://localhost:4823');
+  const [serverUrl, setServerUrl] = useState('http://localhost:4823/alerts');
   const [tab, setTab] = useState(0);
   const [rawHtml, setRawHtml] = useState('<div style="font-size:4rem;font-weight:700;">Hello!</div>');
   const [rawCss, setRawCss] = useState('');
@@ -94,7 +94,7 @@ export default function AlertEditor() {
   useEffect(() => {
     (window.alerts as any).getPort().then((res: any) => {
       if (!res?.port) return;
-      setServerUrl(`http://localhost:${res?.port}`);
+      setServerUrl(`http://localhost:${res?.port}/alerts`);
       checkServerHealth(`http://localhost:${res?.port}`);
     });
 
@@ -217,7 +217,7 @@ export default function AlertEditor() {
 
       <Grid container spacing={{ lg: 2, md: 6 }} height="100%">
         <Grid size={{ lg: 8, md: 12 }} height="100%">
-          <Box mt={2} p={2} className={style.container}>
+          <Box p={2} className={style.container}>
 
             {tab === 0 && (
               <Stack spacing={2}>

@@ -118,4 +118,46 @@ export function registerAlertHandlers(
       return { ok: false, error: err.message }
     }
   })
+
+  ipcMain.handle('chat:save-html', async (_evt, html: string, css: string, js: string) => {
+    try {
+      await fileManager.writeFile('chat', 'custom.html', html)
+      await fileManager.writeFile('chat', 'custom.css', css)
+      await fileManager.writeFile('chat', 'custom.js', js)
+      console.log('[ChatHandlers] Chat HTML/CSS/JS saved')
+      return { ok: true }
+    } catch (err: any) {
+      console.error('[ChatHandlers] Failed to save chat HTML/CSS/JS:', err)
+      return { ok: false, error: err.message }
+    }
+  })
+
+  ipcMain.handle('chat:load-html', async () => {
+    try {
+      const htmlExists = await fileManager.fileExists('chat', 'custom.html')
+      const cssExists = await fileManager.fileExists('chat', 'custom.css')
+      const jsExists = await fileManager.fileExists('chat', 'custom.js')
+      
+      let html = '', css = '', js = ''
+      
+      if (htmlExists) {
+        const buf = await fileManager.readFile('chat', 'custom.html')
+        html = buf.toString()
+      }
+      if (cssExists) {
+        const buf = await fileManager.readFile('chat', 'custom.css')
+        css = buf.toString()
+      }
+      if (jsExists) {
+        const buf = await fileManager.readFile('chat', 'custom.js')
+        js = buf.toString()
+      }
+      
+      console.log('[ChatHandlers] Chat HTML/CSS/JS loaded')
+      return { ok: true, html, css, js }
+    } catch (err: any) {
+      console.error('[ChatHandlers] Failed to load chat HTML/CSS/JS:', err)
+      return { ok: false, error: err.message }
+    }
+  })
 }

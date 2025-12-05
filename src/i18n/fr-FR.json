@@ -20,7 +20,7 @@
   "sidebar.alert": "Alerte",
   "sidebar.logout": "Déconnexion",
   "sidebar.chat": "Chat",
-  "sidebar.chatbox": "Chatbox: Travaux en cours...",
+  "sidebar.chatbox": "Chatbox",
   "sidebar.logoutFailed": "Échec de la déconnexion",
   
   "update.title": "Mise à jour de l’application",
@@ -131,5 +131,6 @@
   "twitchChat.recentMessages": "Messages récents",
   "twitchChat.noMessagesYet": "Aucun message pour le moment...",
   "twitchChat.loadCacheFailed": "Échec du chargement des messages et validations en cache",
-  "twitchChat.checkConnectionFailed": "Échec de la vérification du statut de connexion du chat Twitch"
+  "twitchChat.checkConnectionFailed": "Échec de la vérification du statut de connexion du chat Twitch",
+  "twitchChat.preview": "Aperçu de la boîte de chat"
 }

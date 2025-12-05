@@ -20,7 +20,7 @@
   "sidebar.alert": "Alerta",
   "sidebar.logout": "Cerrar sesión",
   "sidebar.chat": "Chat",
-  "sidebar.chatbox": "Chatbox: Trabajos en curso...",
+  "sidebar.chatbox": "Chatbox",
   "sidebar.logoutFailed": "Error al cerrar sesión",
 
   "update.title": "Actualizador de la aplicación",
@@ -131,5 +131,6 @@
   "twitchChat.recentMessages": "Mensajes recientes",
   "twitchChat.noMessagesYet": "Aún no hay mensajes...",
   "twitchChat.loadCacheFailed": "Error al cargar mensajes y canjes en caché",
-  "twitchChat.checkConnectionFailed": "Error al comprobar el estado de conexión del chat de Twitch"
+  "twitchChat.checkConnectionFailed": "Error al comprobar el estado de conexión del chat de Twitch",
+  "twitchChat.preview": "Vista previa del chat"
 }

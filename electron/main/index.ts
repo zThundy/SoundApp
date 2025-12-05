@@ -5,7 +5,7 @@ import os from 'node:os'
 
 import { initializeLogger, closeLogger } from './logger'
 import { update } from './update'
-import { startAlertServer } from './alertServer'
+import { startAlertServer } from './webServer'
 import SafeStorageWrapper from './safeStorageWrapper'
 import { registerAllIPCHandlers } from './ipc'
 import windowStateManager from './windowStateManager'

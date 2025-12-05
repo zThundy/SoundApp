@@ -354,6 +354,19 @@ class TwitchEventListener {
     if (this.mainWindow) {
       this.mainWindow.webContents.send('twitch:chat-message', chatMessage);
     }
+
+    // Broadcast to alert server for OBS overlay
+    const alertBroadcast = (globalThis as any).alertBroadcast;
+    if (alertBroadcast) {
+      alertBroadcast({
+        type: 'twitch-chat',
+        username: chatMessage.displayName || chatMessage.username,
+        message: chatMessage.message,
+        color: chatMessage.color || '#FFFFFF',
+        badges: chatMessage.badges,
+        timestamp: chatMessage.timestamp
+      });
+    }
   }
 
   private async handleSessionReconnect(message: any): Promise<void> {

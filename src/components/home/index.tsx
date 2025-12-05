@@ -9,6 +9,7 @@ import Reedems from "@/components/home/Reedems"
 import AlertEditor from "@/components/alert"
 import Settings from "@/components/settings"
 import TwitchChat from "@/components/twitchChat"
+import ChatBoxEditor from "@/components/chatBox"
 
 export default function Home() {
   const [selectedPageState, setSelectedPageState] = useState<string | undefined>("redeems");
@@ -28,6 +29,7 @@ export default function Home() {
         {selectedPageState === "alert" && <AlertEditor />}
         {selectedPageState === "settings" && <Settings />}
         {selectedPageState === "chat" && <TwitchChat />}
+        {selectedPageState === "chatbox" && <ChatBoxEditor />}
       </Grid>
     </Grid>
   )

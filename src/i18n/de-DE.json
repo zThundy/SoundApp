@@ -20,7 +20,7 @@
   "sidebar.alert": "Alert",
   "sidebar.logout": "Abmelden",
   "sidebar.chat": "Chat",
-  "sidebar.chatbox": "Chatbox: In Arbeit...",
+  "sidebar.chatbox": "Chatbox",
   "sidebar.logoutFailed": "Abmeldung fehlgeschlagen",
   
   "update.title": "App-Aktualisierer",
@@ -130,5 +130,6 @@
   "twitchChat.recentMessages": "Neueste Nachrichten",
   "twitchChat.noMessagesYet": "Noch keine Nachrichten...",
   "twitchChat.loadCacheFailed": "Fehler beim Laden zwischengespeicherter Nachrichten und Einlösungen",
-  "twitchChat.checkConnectionFailed": "Fehler beim Überprüfen des Twitch-Chat-Verbindungsstatus"
+  "twitchChat.checkConnectionFailed": "Fehler beim Überprüfen des Twitch-Chat-Verbindungsstatus",
+  "twitchChat.preview": "Chatbox-Vorschau"
 }
