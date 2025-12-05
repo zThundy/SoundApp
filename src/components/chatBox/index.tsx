@@ -76,7 +76,7 @@ body {
   height: calc(100% - 2rem);
   display: flex;
   flex-direction: column;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.9);
   border: 2px solid rgba(145, 70, 255, 0.5);
   border-radius: 8px;
   overflow: hidden;
@@ -223,9 +223,9 @@ body {
 
   return (
     <Box p={2}>
-      <Typography variant="h5" mb={2}>Chat Box Styling</Typography>
+      <Typography variant="h5" mb={2}>{t("chatBox.title")}</Typography>
       <Tabs value={tab} onChange={(_, v) => setTab(v)}>
-        <Tab label="Custom HTML/CSS/JS" />
+        <Tab label={t("chatBox.customHtmlCssJs")} />
       </Tabs>
 
       <Grid container spacing={{ lg: 2, md: 6 }} height="100%">
@@ -234,11 +234,11 @@ body {
             {tab === 0 && (
               <Stack spacing={2}>
                 <StyledBox sx={{ justifyContent: "space-between", alignItems: "flex-start", flexDirection: "column" }}>
-                  <Typography variant="h5">HTML</Typography>
+                  <Typography variant="h5">{t("chatBox.html")}</Typography>
                   <CodeEditor
                     value={rawHtml}
                     language="html"
-                    placeholder="Please enter HTML code."
+                    placeholder={t("chatBox.enterHtml")}
                     onChange={e => setRawHtml(e.target.value)}
                     className={style.codeEditor}
                     padding={15}
@@ -246,11 +246,11 @@ body {
                 </StyledBox>
 
                 <StyledBox sx={{ justifyContent: "space-between", alignItems: "flex-start", flexDirection: "column" }}>
-                  <Typography variant="h5">CSS (Styling personalizzato)</Typography>
+                  <Typography variant="h5">{t("chatBox.css")}</Typography>
                   <CodeEditor
                     value={rawCss}
                     language="css"
-                    placeholder="Please enter CSS code."
+                    placeholder={t("chatBox.enterCss")}
                     onChange={e => setRawCss(e.target.value)}
                     className={style.codeEditor}
                     padding={15}
@@ -258,11 +258,11 @@ body {
                 </StyledBox>
 
                 <StyledBox sx={{ justifyContent: "space-between", alignItems: "flex-start", flexDirection: "column" }}>
-                  <Typography variant="h5">JavaScript (Facoltativo)</Typography>
+                  <Typography variant="h5">{t("chatBox.js")}</Typography>
                   <CodeEditor
                     value={rawJs}
                     language="javascript"
-                    placeholder="Please enter JavaScript code."
+                    placeholder={t("chatBox.enterJs")}
                     onChange={e => setRawJs(e.target.value)}
                     className={style.codeEditor}
                     padding={15}
@@ -276,7 +276,7 @@ body {
                     onClick={saveChatCustomization}
                     fullWidth
                   >
-                    {t("common.save") || "Salva Modifiche"}
+                    {t("common.save")}
                   </Button>
                 </StyledBox>
               </Stack>
@@ -301,7 +301,7 @@ body {
             height="100%"
           >
             <StyledBox>
-              <Typography variant="h6">{t("twitchChat.preview") || "Preview"}</Typography>
+              <Typography variant="h6">{t("chatBox.preview")}</Typography>
             </StyledBox>
 
             <StyledBox>
@@ -317,7 +317,7 @@ body {
                 }}
               >
                 <Tooltip
-                  title={copied ? t("common.copied") || "Copiato!" : t("common.copyToClipboard") || "Copia negli appunti"}
+                  title={copied ? t("common.copied") : t("common.copyToClipboard")}
                   placement={"top"}
                   slots={{
                     transition: Zoom
@@ -345,7 +345,7 @@ body {
 
             <StyledBox sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
               <Box sx={{ position: 'relative', width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <Tooltip title="Apri in browser" placement="top" arrow>
+                <Tooltip title={t("chatBox.openInBrowser")} placement="top" arrow>
                   <IconButton
                     aria-label="open-external"
                     onClick={() => window.ipcRenderer?.invoke('open-external', chatServerUrl)}
@@ -365,7 +365,7 @@ body {
                 </Tooltip>
                 <iframe
                   ref={iframeRef}
-                  title="Chat Preview"
+                  title={t("chatBox.previewIframeTitle")}
                   srcDoc={`
                     <!DOCTYPE html>
                     <html>

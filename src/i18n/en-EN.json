@@ -132,5 +132,16 @@
   "twitchChat.noMessagesYet": "No messages yet...",
   "twitchChat.loadCacheFailed": "Failed to load cached messages and redeems",
   "twitchChat.checkConnectionFailed": "Failed to check Twitch chat connection status",
-  "twitchChat.preview": "Chatbox Preview"
+
+  "chatBox.title": "Chatbox Customization",
+  "chatBox.customHtmlCssJs": "Custom HTML/CSS/JS",
+  "chatBox.html": "Edit the chat HTML",
+  "chatBox.css": "Edit the chat CSS",
+  "chatBox.js": "Edit the chat JavaScript",
+  "chatBox.enterHtml": "Please enter HTML code.",
+  "chatBox.enterCss": "Please enter CSS code.",
+  "chatBox.enterJs": "Please enter JavaScript code.",
+  "chatBox.preview": "Chatbox Preview",
+  "chatBox.openInBrowser": "Open in browser",
+  "chatBox.previewIframeTitle": "Chatbox Preview Iframe"
 }

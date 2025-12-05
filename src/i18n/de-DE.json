@@ -131,5 +131,16 @@
   "twitchChat.noMessagesYet": "Noch keine Nachrichten...",
   "twitchChat.loadCacheFailed": "Fehler beim Laden zwischengespeicherter Nachrichten und Einlösungen",
   "twitchChat.checkConnectionFailed": "Fehler beim Überprüfen des Twitch-Chat-Verbindungsstatus",
-  "twitchChat.preview": "Chatbox-Vorschau"
+  
+  "chatBox.title": "Chatbox-Anpassung",
+  "chatBox.customHtmlCssJs": "Benutzerdefiniertes HTML/CSS/JS",
+  "chatBox.html": "Chat-HTML bearbeiten",
+  "chatBox.css": "Chat-CSS bearbeiten",
+  "chatBox.js": "Chat-JS bearbeiten",
+  "chatBox.enterHtml": "Bitte HTML-Code eingeben.",
+  "chatBox.enterCss": "Bitte CSS-Code eingeben.",
+  "chatBox.enterJs": "Bitte JavaScript-Code eingeben.",
+  "chatBox.preview": "Chatbox-Vorschau",
+  "chatBox.openInBrowser": "Im Browser öffnen",
+  "chatBox.previewIframeTitle": "Chatbox-Vorschau Iframe"
 }

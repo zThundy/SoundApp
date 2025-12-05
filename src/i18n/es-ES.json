@@ -132,5 +132,16 @@
   "twitchChat.noMessagesYet": "Aún no hay mensajes...",
   "twitchChat.loadCacheFailed": "Error al cargar mensajes y canjes en caché",
   "twitchChat.checkConnectionFailed": "Error al comprobar el estado de conexión del chat de Twitch",
-  "twitchChat.preview": "Vista previa del chat"
+
+  "chatBox.title": "Personalización del chatbox",
+  "chatBox.customHtmlCssJs": "HTML/CSS/JS personalizado",
+  "chatBox.html": "Editar el HTML del chat",
+  "chatBox.css": "Editar el CSS del chat",
+  "chatBox.js": "Editar el JS del chat",
+  "chatBox.enterHtml": "Por favor, introduce el código HTML.",
+  "chatBox.enterCss": "Por favor, introduce el código CSS.",
+  "chatBox.enterJs": "Por favor, introduce el código JavaScript.",
+  "chatBox.preview": "Vista previa del chatbox",
+  "chatBox.openInBrowser": "Abrir en el navegador",
+  "chatBox.previewIframeTitle": "Iframe de vista previa del chatbox"
 }
