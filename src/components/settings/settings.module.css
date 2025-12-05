@@ -4,5 +4,17 @@
     border-radius: 5px;
     background-color: var(--mui-palette-background-900);
     height: calc(100% - 3rem);
-    width: calc(100% - 4rem);
+}
+
+.icon {
+    cursor: pointer;
+    color: var(--mui-palette-text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+
+    :hover {
+        color: var(--mui-palette-primary-main);
+    }
 }

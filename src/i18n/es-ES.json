@@ -13,6 +13,7 @@
   "settings.loading": "Cargando...",
   "settings.version": "Versión de la aplicación",
   "settings.languageChanged": "Idioma cambiado con éxito.",
+  "settings.aboutTitle": "Acerca del creador de esta aplicación",
 
   "sidebar.redeems": "Canjes",
   "sidebar.settings": "Configuración",

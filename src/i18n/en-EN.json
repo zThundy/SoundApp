@@ -13,6 +13,7 @@
   "settings.loading": "Loading...",
   "settings.version": "App Version",
   "settings.languageChanged": "Language changed successfully.",
+  "settings.aboutTitle": "About the creator of this app",
 
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Settings",

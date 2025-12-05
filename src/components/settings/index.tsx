@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from 'react'
 import { Box, Button, Grid, TextField, Typography, Select, MenuItem, Stack } from '@mui/material'
+import { GitHub, LinkedIn } from '@mui/icons-material'
 
 import { TranslationContext } from '@/i18n/TranslationProvider'
 import { NotificationContext } from '@/context/NotificationProvider'
@@ -98,6 +99,10 @@ export default function Settings() {
     }
   }
 
+  const openLink = (url: string) => {
+    window.ipcRenderer?.invoke('open-external', url)
+  }
+
   return (
     <Box p={3}>
       <Typography variant="h5" gutterBottom>{t('settings.title')}</Typography>
@@ -167,6 +172,20 @@ export default function Settings() {
           <StyledBox>
             <Typography variant="subtitle1">{t('settings.version')}</Typography>
             <Typography variant="body1">{version || t("settings.loading")}</Typography>
+          </StyledBox>
+        </Grid>
+
+        <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2} justifyContent={"space-between"}>
+          <StyledBox>
+            <Typography variant="subtitle1">{t('settings.aboutTitle')}</Typography>
+            <Stack direction="row" spacing={1}>
+              <Box className={style.icon}>
+                <GitHub onClick={() => openLink('https://github.com/zThundy')} fontSize={"large"} />
+              </Box>
+              <Box className={style.icon}>
+                <LinkedIn onClick={() => openLink('https://www.linkedin.com/in/antonio-a-5803a0136/')} fontSize={"large"} />
+              </Box>
+            </Stack>
           </StyledBox>
         </Grid>
       </Grid>
