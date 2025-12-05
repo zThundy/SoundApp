@@ -102,14 +102,14 @@ async function createWindow() {
       console.log('[update] Skipping update check on startup in development mode.');
     }
     
-    // Show window after a small delay to ensure preload screen is visible
-    setTimeout(() => {
-      win?.show()
-    }, 500)
-    
     // Try to connect Twitch EventSub on window load
     connectEventSubIfPossible(safeStore, win)
   })
+
+  // Show window after a small delay to ensure preload screen is visible
+  setTimeout(() => {
+    win?.show()
+  }, 500)
 
   // Make all links open with the browser, not with the application
   win.webContents.setWindowOpenHandler(({ url }) => {
