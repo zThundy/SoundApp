@@ -25,7 +25,8 @@
           "x64"
         ]
       },
-      "portable"
+      "portable",
+      "msi"
     ],
     "artifactName": "Sound-App-Setup.${ext}",
     "icon": "assets/icon.ico"
@@ -37,11 +38,14 @@
     "allowToChangeInstallationDirectory": false,
     "artifactName": "Sound-App-Setup.${ext}",
     "differentialPackage": true
-},
+  },
+  "msi": {
+    "artifactName": "Sound-App-Msi-Setup.${ext}"
+  },
   "publish": [
     {
       "provider": "github",
-      "private": true,
+      "private": false,
       "owner": "zThundy",
       "repo": "SoundApp",
       "releaseType": "release"
