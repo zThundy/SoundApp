@@ -4,9 +4,9 @@ import React, { useContext } from "react"
 import { Grid, styled, TextField, Checkbox, FormControlLabel, Button, Stack, Box, Avatar, Tooltip } from "@mui/material"
 import { Delete, Info } from "@mui/icons-material";
 
-import EmptyList from "@/components/home/EmptyList";
+import EmptyList from "@/components/redeems/EmptyList";
 import AudioSelector from "@/components/AudioSelector";
-import DeleteModal from "@/components/home/DeleteModal";
+import DeleteModal from "@/components/redeems/DeleteModal";
 import { ColorPicker } from '@/components/ColorPicker';
 
 import { TranslationContext } from "@/i18n/TranslationProvider"

@@ -1,9 +1,9 @@
 import { useState, useContext } from "react"
 
-import style from "./home.module.css"
+import style from "./redeems.module.css"
 
-import CustomRewardDetails from "@/components/home/CustomRewardDetails"
-import CustomRewardsList from "@/components/home/CustomRewardsList"
+import CustomRewardDetails from "@/components/redeems/CustomRewardDetails"
+import CustomRewardsList from "@/components/redeems/CustomRewardsList"
 
 import { Grid, Stack, Button, Tooltip, Typography } from "@mui/material"
 

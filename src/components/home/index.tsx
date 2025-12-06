@@ -5,7 +5,7 @@ import style from "./home.module.css"
 import { Grid } from "@mui/material"
 
 import Sidebar from "@/components/sidebar"
-import Reedems from "@/components/home/Reedems"
+import Reedems from "@/components/redeems"
 import AlertEditor from "@/components/alert"
 import Settings from "@/components/settings"
 import TwitchChat from "@/components/twitchChat"

@@ -1,12 +1,12 @@
 
 import React, { useEffect, useState, useMemo, useContext } from "react"
 
-import style from "./home.module.css"
+import style from "./redeems.module.css"
 
 import { styled, Paper, Grid, Tooltip } from "@mui/material"
 import { Warning, CheckBoxRounded } from "@mui/icons-material"
 
-import EmptyList from "@/components/home/EmptyList";
+import EmptyList from "@/components/redeems/EmptyList";
 import { TranslationContext } from "@/i18n/TranslationProvider"
 import { NotificationContext } from "@/context/NotificationProvider";
 
