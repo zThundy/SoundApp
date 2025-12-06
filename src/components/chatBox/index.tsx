@@ -208,7 +208,7 @@ body {
     try {
       const res = await window.chat?.saveHtml(rawHtml, rawCss, rawJs);
       if (res?.ok) {
-        success(t("common.saved") || "Salvato!");
+        success(t("common.saved"));
       } else {
         error(t("common.error"), res?.error);
       }
@@ -231,7 +231,15 @@ body {
         <Grid size={{ lg: 8, md: 12 }} height="100%">
           <Box p={2} className={style.container}>
             {tab === 0 && (
-              <Templates />
+              <Templates
+                rawHtml={rawHtml}
+                setRawHtml={setRawHtml}
+                rawCss={rawCss}
+                setRawCss={setRawCss}
+                rawJs={rawJs}
+                setRawJs={setRawJs}
+                saveChatCustomization={saveChatCustomization}
+              />
             )}
             {tab === 1 && (
               <Custom
