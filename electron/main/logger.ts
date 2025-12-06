@@ -3,6 +3,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import util from 'node:util'
 
+const isDevelopment = process.env.NODE_ENV === 'development' || process.env.ELECTRON_ENV === 'development'
+
 class Logger {
   private logFilePath: string
   private errorLogFilePath: string
@@ -127,6 +129,7 @@ class Logger {
   }
 
   public debug(...args: any[]) {
+    if (!isDevelopment) return;
     this.originalConsole.debug(...args)
     const message = this.formatMessage('DEBUG', ...args)
     this.writeToFile(this.logStream, message)
