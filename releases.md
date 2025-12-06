@@ -97,5 +97,9 @@
 
 ## 0.2.1
 
+- Changed window load
+- Changed twitch module loading
+- Changed editable alerts GET
+- Removed local alerts save state
 
 ## 0.2.2
