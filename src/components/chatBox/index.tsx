@@ -48,6 +48,21 @@ const StyledBox = styled(Box)(({ theme }) => ({
   }
 }));
 
+const testMessages = [
+  { username: 'CoolGamer123', message: 'Hey everyone! How is the stream going?', color: '#FF6B6B' },
+  { username: 'ProPlayer99', message: 'This game looks amazing!', color: '#4ECDC4' },
+  { username: 'StreamFan', message: 'Can you try that move again?', color: '#95E1D3' },
+  { username: 'NightOwl', message: 'Finally caught the stream live!', color: '#F38181' },
+  { username: 'GamerGirl', message: 'Your setup is incredible!', color: '#AA96DA' },
+  { username: 'ChatMaster', message: 'What are your keybinds?', color: '#FCBAD3' },
+  { username: 'TechWizard', message: 'That was insane!', color: '#A8D8EA' },
+  { username: 'PixelHunter', message: 'GG well played', color: '#FFCCCC' },
+  { username: 'SpeedRunner', message: 'How long have you been playing?', color: '#B4E7CE' },
+  { username: 'CodeNinja', message: 'Nice combo!', color: '#FFD93D' },
+  { username: 'RetroGamer', message: 'This brings back memories', color: '#6BCB77' },
+  { username: 'EpicViewer', message: 'Best stream today!', color: '#FF6B9D' },
+];
+
 export default function ChatBoxEditor() {
   const { t } = useContext(TranslationContext);
   const { success, error } = useContext(NotificationContext);
@@ -57,100 +72,85 @@ export default function ChatBoxEditor() {
 
   // Raw HTML/CSS/JS tab
   const [rawHtml, setRawHtml] = useState(`<div id="container">
-    <div id="header">Twitch Chat</div>
-    <div id="messages"></div>
-  </div>`);
+  <div id="header">Twitch Chat</div>
+  <div id="messages"></div>
+</div>`);
   const [rawCss, setRawCss] = useState(`html,
-  body {
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    color: #000;
-    font-family: system-ui, Arial, sans-serif;
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: #000;
+  font-family: system-ui, Arial, sans-serif;
+}
+
+#container {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  width: calc(100% - 2rem);
+  height: calc(100% - 2rem);
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid rgba(145, 70, 255, 0.5);
+  border-radius: 8px;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+}
+
+#header {
+  padding: 10px 15px;
+  background: linear-gradient(135deg, rgba(145, 70, 255, 0.6), rgba(75, 0, 130, 0.6));
+  border-bottom: 1px solid rgba(145, 70, 255, 0.3);
+  font-weight: bold;
+  color: #fff;
+  font-size: 2rem;
+}
+
+#messages {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.message {
+  animation: slideIn 0.3s ease-out;
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
-  #container {
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
-    width: calc(100% - 2rem);
-    height: calc(100% - 2rem);
-    display: flex;
-    flex-direction: column;
-    background: rgba(0, 0, 0, 0.9);
-    border: 2px solid rgba(145, 70, 255, 0.5);
-    border-radius: 8px;
-    overflow: hidden;
-    backdrop-filter: blur(5px);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  #header {
-    padding: 10px 15px;
-    background: linear-gradient(135deg, rgba(145, 70, 255, 0.6), rgba(75, 0, 130, 0.6));
-    border-bottom: 1px solid rgba(145, 70, 255, 0.3);
-    font-weight: bold;
-    color: #fff;
-    font-size: 2rem;
-  }
-  
-  #messages {
-    flex: 1;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    overflow: hidden;
-  }
-  
-  .message {
-    animation: slideIn 0.3s ease-out;
-    font-size: 1.5rem;
-    line-height: 1.3;
-  }
-  
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .username {
-    font-weight: 600;
-    margin-right: 5px;
-    display: inline;
-  }
-  
-  .message-text {
-    color: #e0e0e0;
-    word-wrap: break-word;
-    display: inline;
-  }`);
+}
+
+.username {
+  font-weight: 600;
+  margin-right: 5px;
+  display: inline;
+}
+
+.message-text {
+  color: #e0e0e0;
+  word-wrap: break-word;
+  display: inline;
+}`);
   const [rawJs, setRawJs] = useState(`onChatMessage = function(data) {
-      // add any custom logic here
-  }`);
+  // add any custom logic here
+}`);
 
   const [copied, setCopied] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-
-  const testMessages = [
-    { username: 'CoolGamer123', message: 'Hey everyone! How is the stream going?', color: '#FF6B6B' },
-    { username: 'ProPlayer99', message: 'This game looks amazing!', color: '#4ECDC4' },
-    { username: 'StreamFan', message: 'Can you try that move again?', color: '#95E1D3' },
-    { username: 'NightOwl', message: 'Finally caught the stream live!', color: '#F38181' },
-    { username: 'GamerGirl', message: 'Your setup is incredible!', color: '#AA96DA' },
-    { username: 'ChatMaster', message: 'What are your keybinds?', color: '#FCBAD3' },
-    { username: 'TechWizard', message: 'That was insane!', color: '#A8D8EA' },
-    { username: 'PixelHunter', message: 'GG well played', color: '#FFCCCC' },
-    { username: 'SpeedRunner', message: 'How long have you been playing?', color: '#B4E7CE' },
-    { username: 'CodeNinja', message: 'Nice combo!', color: '#FFD93D' },
-    { username: 'RetroGamer', message: 'This brings back memories', color: '#6BCB77' },
-    { username: 'EpicViewer', message: 'Best stream today!', color: '#FF6B9D' },
-  ];
 
   useEffect(() => {
     if (copied) {
