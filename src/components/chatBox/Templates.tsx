@@ -1,5 +1,5 @@
 
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Typography } from '@mui/material';
 import { TranslationContext } from '@/i18n/TranslationProvider';
 
