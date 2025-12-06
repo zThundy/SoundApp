@@ -14,6 +14,8 @@
   "settings.version": "App-Version",
   "settings.languageChanged": "Sprache erfolgreich geändert.",
   "settings.aboutTitle": "Über den Ersteller dieser App",
+  "settings.enableBackground": "In den Systemtray minimieren",
+  "settings.enableBackgroundInfo": "Aktivieren Sie diese Option, um die App in den Systemtray zu minimieren, anstatt sie zu schließen. Sie können die App wiederherstellen, indem Sie auf das Tray-Symbol klicken.",
   
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Einstellungen",

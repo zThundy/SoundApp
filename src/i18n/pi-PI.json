@@ -14,6 +14,8 @@
   "settings.version": "Ship's Edition",
   "settings.languageChanged": "Tongue changed successfully, matey!",
   "settings.aboutTitle": "About the creator of this vessel, arr!",
+  "settings.enableBackground": "Enable background sailin' (via system tray icon)",
+  "settings.enableBackgroundInfo": "When ye close the main window, the vessel will keep sailin' in the background via the system tray icon.",
 
   "sidebar.redeems": "Booty Claims",
   "sidebar.settings": "Ship's Settings",

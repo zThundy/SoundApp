@@ -14,6 +14,8 @@
   "settings.version": "Version de l’application",
   "settings.languageChanged": "Langue changée avec succès.",
   "settings.aboutTitle": "À propos du créateur de cette application",
+  "settings.enableBackground": "Activer l’exécution en arrière-plan (icône de la barre d’état système)",
+  "settings.enableBackgroundInfo": "Lorsque cette option est activée, l’application continuera de fonctionner lorsque la fenêtre principale est fermée, accessible via l’icône de la barre d’état système.",
 
   "sidebar.redeems": "Récompenses",
   "sidebar.settings": "Paramètres",

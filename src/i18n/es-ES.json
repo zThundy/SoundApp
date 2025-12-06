@@ -14,6 +14,8 @@
   "settings.version": "Versión de la aplicación",
   "settings.languageChanged": "Idioma cambiado con éxito.",
   "settings.aboutTitle": "Acerca del creador de esta aplicación",
+  "settings.enableBackground": "Habilitar ejecución en segundo plano (bandeja del sistema)",
+  "settings.enableBackgroundInfo": "Habilita esta opción para minimizar la aplicación en la bandeja del sistema en lugar de cerrarla. Puedes restaurar la aplicación haciendo clic en el icono de la bandeja.",
 
   "sidebar.redeems": "Canjes",
   "sidebar.settings": "Configuración",

@@ -14,6 +14,8 @@
   "settings.version": "App Version",
   "settings.languageChanged": "Language changed successfully.",
   "settings.aboutTitle": "About the creator of this app",
+  "settings.enableBackground": "Go to system tray",
+  "settings.enableBackgroundInfo": "Enable this option to minimize the app to the system tray instead of closing it. You can restore the app by clicking the tray icon.",
 
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Settings",

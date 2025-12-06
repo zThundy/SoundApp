@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react'
-import { Box, Button, Grid, TextField, Typography, Select, MenuItem, Stack } from '@mui/material'
-import { GitHub, LinkedIn } from '@mui/icons-material'
+import { Box, Button, Grid, TextField, Typography, Select, MenuItem, Stack, Tooltip, Switch } from '@mui/material'
+import { GitHub, Info, LinkedIn } from '@mui/icons-material'
 
 import { TranslationContext } from '@/i18n/TranslationProvider'
 import { NotificationContext } from '@/context/NotificationProvider'
@@ -33,30 +33,32 @@ export default function Settings() {
   const [port, setPort] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [version, setVersion] = useState<string>('')
+  const [enableBackground, setEnableBackground] = useState(true)
 
   useEffect(() => {
-    let mounted = true;
     (window.alerts as any).getPort().then((res: any) => {
-      if (!mounted) return
       const p = res?.port ?? 4823
       setPort(String(p))
     }).catch(() => {
-      if (!mounted) return
       setPort('4823')
     })
 
     // Get app version
     window.ipcRenderer.invoke('app:get-version').then((res: any) => {
-      if (!mounted) return
       if (res?.ok && res?.version) {
         setVersion(res.version)
       }
     }).catch(() => {
       // ignore
     })
+    
+    
+    window.windowManager.isTrayEnabled()
+      .then((enabled: boolean) => {
+        setEnableBackground(enabled)
+      })
 
     return () => {
-      mounted = false
     }
   }, [])
 
@@ -101,6 +103,15 @@ export default function Settings() {
 
   const openLink = (url: string) => {
     window.ipcRenderer?.invoke('open-external', url)
+  }
+
+  const setTrayEnabled = async (enabled: boolean) => {
+    try {
+      await window.windowManager.setTrayEnabled(enabled)
+      setEnableBackground(enabled)
+    } catch (e: any) {
+      error(t('settings.error'), e.message || '')
+    }
   }
 
   return (
@@ -172,6 +183,22 @@ export default function Settings() {
           <StyledBox>
             <Typography variant="subtitle1">{t('settings.version')}</Typography>
             <Typography variant="body1">{version || t("settings.loading")}</Typography>
+          </StyledBox>
+        </Grid>
+
+        <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2} justifyContent={"space-between"}>
+          <StyledBox>
+            <Stack direction="row" alignItems="center" gap={1}>
+              <Typography variant="subtitle1">{t('settings.enableBackground')}</Typography>
+              <Tooltip title={t('settings.enableBackgroundInfo')} arrow placement='right'>
+                <Info style={{ cursor: 'pointer' }} />
+              </Tooltip>
+            </Stack>
+            <Switch
+              checked={enableBackground}
+              onChange={(e) => setTrayEnabled(e.target.checked)}
+              color="primary"
+            />
           </StyledBox>
         </Grid>
 

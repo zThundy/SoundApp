@@ -51,6 +51,8 @@ interface Window {
     minimize(): Promise<void>;
     toggleMaximize(): Promise<boolean>;
     close(): Promise<void>;
+    isTrayEnabled(): Promise<boolean>;
+    setTrayEnabled(enabled: boolean): Promise<void>;
   }
 }
 

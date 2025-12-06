@@ -1,6 +1,34 @@
-import { ipcMain, BrowserWindow } from 'electron'
+import { ipcMain, BrowserWindow, app } from 'electron'
+import fileManager from '../fileManager'
 
-export function registerWindowHandlers(getMainWindow: () => BrowserWindow | null) {
+const SETTINGS_CONTEXT = 'state'
+const SETTINGS_FILE = 'settings.json'
+
+export async function registerWindowHandlers(getMainWindow: () => BrowserWindow | null) {
+  const exists = await fileManager.fileExists(SETTINGS_CONTEXT, SETTINGS_FILE);
+  let settings: any = {}
+  if (exists) {
+    try {
+      const data = await fileManager.readFile(SETTINGS_CONTEXT, SETTINGS_FILE);
+      settings = JSON.parse(data.toString());
+    } catch (e) {
+      console.error('[WindowHandlers] Errore nel caricamento delle impostazioni:', e);
+    }
+  }
+
+  ipcMain.handle("window:is-tray-enabled", () => {
+    let enabled = true;
+    if (typeof settings.trayEnabled === 'boolean') {
+      enabled = settings.trayEnabled;
+    }
+    return enabled;
+  })
+
+  ipcMain.handle("window:set-tray-enabled", async (_event, enabled: boolean) => {
+    settings.trayEnabled = enabled
+    await fileManager.writeFile(SETTINGS_CONTEXT, SETTINGS_FILE, JSON.stringify(settings, null, 2))
+  })
+
   ipcMain.handle('window:minimize', () => {
     const win = getMainWindow()
     win?.minimize()
@@ -8,8 +36,14 @@ export function registerWindowHandlers(getMainWindow: () => BrowserWindow | null
 
   ipcMain.handle('window:close', () => {
     const win = getMainWindow()
-    // win?.close()
-    win?.hide()
+    if (win) {
+      if (settings.trayEnabled) {
+        win.hide()
+      } else {
+        win.close()
+        app.quit()
+      }
+    }
   })
 
   ipcMain.handle('window:is-maximized', () => {

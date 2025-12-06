@@ -30,6 +30,8 @@ contextBridge.exposeInMainWorld("windowManager", {
   minimize: () => ipcRenderer.invoke('window:minimize'),
   toggleMaximize: () => ipcRenderer.invoke('window:toggle-maximize'),
   close: () => ipcRenderer.invoke('window:close'),
+  isTrayEnabled: () => ipcRenderer.invoke('window:is-tray-enabled'),
+  setTrayEnabled: (enabled: boolean) => ipcRenderer.invoke('window:set-tray-enabled', enabled),
 });
 
 // Expose a small safeStore API that calls the main-process SafeStorageService
