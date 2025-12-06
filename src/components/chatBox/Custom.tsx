@@ -13,7 +13,6 @@ import style from './chatbox.module.css';
 import { styled } from '@mui/material/styles';
 
 import { TranslationContext } from '@/i18n/TranslationProvider';
-import { NotificationContext } from '@/context/NotificationProvider';
 
 import CodeEditor from '@uiw/react-textarea-code-editor';
 
@@ -54,7 +53,6 @@ const Custom = ({
   saveChatCustomization: () => Promise<void>;
 }) => {
   const { t } = useContext(TranslationContext);
-  const { success, error } = useContext(NotificationContext);
 
   return (
     <Stack spacing={2}>
