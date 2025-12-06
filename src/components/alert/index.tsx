@@ -323,7 +323,6 @@ export default function AlertEditor() {
             spacing={2}
             className={style.container}
             p={2}
-            mt={2}
             justifyContent={"space-between"}
             height="100%"
           >
