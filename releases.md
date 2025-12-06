@@ -103,3 +103,6 @@
 - Removed local alerts save state
 
 ## 0.2.2
+
+
+## 0.2.3
