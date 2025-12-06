@@ -104,5 +104,8 @@
 
 ## 0.2.2
 
+- Changed widow behaviour
+- Added some missing translations
+- Added new WIP page in the chat section
 
 ## 0.2.3
