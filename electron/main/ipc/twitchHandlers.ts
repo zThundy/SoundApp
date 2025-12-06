@@ -6,45 +6,14 @@ import {
   getCustomRewards,
   updateCustomReward,
   createCustomReward,
-  deleteCustomReward
+  deleteCustomReward,
+  getOnlyManageableRewards
 } from '../twitchWorker'
 import { TwitchEventListener } from '../twitchEventListener'
 import { RewardSettings } from '../twitchWorker'
-import fileManager from '../fileManager'
 
 let twitchEventListener: TwitchEventListener | null = null
 const clientId = '64aeehn5qo2902i5c4gvz41yjqd9h2'
-
-const REWARDS_CONFIG_CONTEXT = 'config'
-const REWARDS_CONFIG_FILE = 'appCreatedRewards.json'
-
-const loadAppCreatedRewards = async (): Promise<Set<string>> => {
-  try {
-    const exists = await fileManager.fileExists(REWARDS_CONFIG_CONTEXT, REWARDS_CONFIG_FILE)
-    if (!exists) return new Set()
-    const data = await fileManager.readFile(REWARDS_CONFIG_CONTEXT, REWARDS_CONFIG_FILE)
-    const parsed = JSON.parse(data.toString())
-    return new Set(parsed.rewardIds || [])
-  } catch (error) {
-    console.error('[Twitch] Failed to load app created rewards:', error)
-    return new Set()
-  }
-}
-
-const saveAppCreatedRewards = async (rewardIds: Set<string>): Promise<void> => {
-  try {
-    const data = JSON.stringify({ rewardIds: Array.from(rewardIds) }, null, 2)
-    await fileManager.writeFile(REWARDS_CONFIG_CONTEXT, REWARDS_CONFIG_FILE, data)
-  } catch (error) {
-    console.error('[Twitch] Failed to save app created rewards:', error)
-  }
-}
-
-const addAppCreatedReward = async (rewardId: string): Promise<void> => {
-  const rewards = await loadAppCreatedRewards()
-  rewards.add(rewardId)
-  await saveAppCreatedRewards(rewards)
-}
 
 export const getTwitchEventListener = () => twitchEventListener
 
@@ -179,6 +148,7 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
     const accessToken = await safeStore?.get('twitchAccessToken')
     const broadcasterId = await getBroadcasterId(accessToken as string)
     const customRewards = await getCustomRewards(accessToken as string, broadcasterId)
+    // console.log("Fetched custom rewards:", customRewards)
     return customRewards
   })
 
@@ -197,12 +167,6 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
     const accessToken = await safeStore?.get('twitchAccessToken')
     const broadcasterId = await getBroadcasterId(accessToken as string)
     const newReward = await createCustomReward(accessToken as string, broadcasterId, settings)
-    
-    // Save the reward ID to track that it was created by this app
-    if (newReward?.data?.[0]?.id) {
-      await addAppCreatedReward(newReward.data[0].id)
-    }
-    
     return newReward
   })
 
@@ -210,23 +174,13 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
     const accessToken = await safeStore?.get('twitchAccessToken')
     const broadcasterId = await getBroadcasterId(accessToken as string)
     await deleteCustomReward(accessToken as string, broadcasterId, rewardId)
-
-    // Remove the reward ID from the app created rewards tracking
-    const rewards = await loadAppCreatedRewards()
-    if (rewards.has(rewardId)) {
-      rewards.delete(rewardId)
-      await saveAppCreatedRewards(rewards)
-    }
     return
   })
 
-  ipcMain.handle("twitch:is-reward-manageable", async (_evt, rewardId: string) => {
-    const rewards = await loadAppCreatedRewards()
-    return rewards.has(rewardId)
-  })
-
   ipcMain.handle("twitch:get-manageable-rewards", async () => {
-    const rewards = await loadAppCreatedRewards()
-    return Array.from(rewards)
+    const accessToken = await safeStore?.get('twitchAccessToken')
+    const broadcasterId = await getBroadcasterId(accessToken as string)
+    const managableRewards = await getOnlyManageableRewards(accessToken as string, broadcasterId)
+    return managableRewards.data.map((reward: any) => reward.id)
   })
 }

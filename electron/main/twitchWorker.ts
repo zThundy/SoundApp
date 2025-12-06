@@ -34,6 +34,21 @@ const getTwitchRedemptions = async (accessToken: string, broadcasterId: string) 
   return data;
 };
 
+const getOnlyManageableRewards = async (accessToken: string, broadcasterId: string) => {
+  const url = 'https://api.twitch.tv/helix/channel_points/custom_rewards';
+  const headers = {
+    'Authorization': `Bearer ${accessToken}`,
+    'Client-Id': clientId
+  };
+  const response = await fetch(`${url}?broadcaster_id=${broadcasterId}&only_manageable_rewards=true`, { headers });
+  if (!response.ok) {
+    console.error("Failed to fetch manageable rewards:", await response.text());
+    throw new Error('Failed to fetch manageable rewards: ' + response.statusText);
+  }
+  const data = await response.json();
+  return data;
+};
+
 const getCustomRewards = async (accessToken: string, broadcasterId: string) => {
   const url = 'https://api.twitch.tv/helix/channel_points/custom_rewards';
   const headers = {
@@ -128,5 +143,6 @@ export {
   getCustomRewards,
   updateCustomReward,
   createCustomReward,
-  deleteCustomReward
+  deleteCustomReward,
+  getOnlyManageableRewards
 };
