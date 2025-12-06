@@ -10,7 +10,7 @@ const template: ChatBoxTemplate = {
   html: "",
   css: "",
   js: "",
-  name: "Default Template",
+  name: "Green Template",
 };
 
 template.html = `<div id="container">
@@ -37,7 +37,7 @@ body {
   display: flex;
   flex-direction: column;
   background: rgba(0, 0, 0, 0.9);
-  border: 2px solid rgba(145, 70, 255, 0.5);
+  border: 2px solid rgba(70, 255, 101, 0.5);
   border-radius: 8px;
   overflow: hidden;
   backdrop-filter: blur(5px);
@@ -45,8 +45,8 @@ body {
 
 #header {
   padding: 10px 15px;
-  background: linear-gradient(135deg, rgba(145, 70, 255, 0.6), rgba(75, 0, 130, 0.6));
-  border-bottom: 1px solid rgba(145, 70, 255, 0.3);
+  background: linear-gradient(135deg, rgba(70, 255, 101, 0.6), rgba(0, 130, 17, 0.6));
+  border-bottom: 1px solid rgba(70, 255, 79, 0.3);
   font-weight: bold;
   color: #fff;
   font-size: 2rem;
