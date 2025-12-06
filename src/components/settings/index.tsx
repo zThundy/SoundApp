@@ -181,13 +181,6 @@ export default function Settings() {
 
         <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2} justifyContent={"space-between"}>
           <StyledBox>
-            <Typography variant="subtitle1">{t('settings.version')}</Typography>
-            <Typography variant="body1">{version || t("settings.loading")}</Typography>
-          </StyledBox>
-        </Grid>
-
-        <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2} justifyContent={"space-between"}>
-          <StyledBox>
             <Stack direction="row" alignItems="center" gap={1}>
               <Typography variant="subtitle1">{t('settings.enableBackground')}</Typography>
               <Tooltip title={t('settings.enableBackgroundInfo')} arrow placement='right'>
@@ -199,6 +192,13 @@ export default function Settings() {
               onChange={(e) => setTrayEnabled(e.target.checked)}
               color="primary"
             />
+          </StyledBox>
+        </Grid>
+
+        <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2} justifyContent={"space-between"}>
+          <StyledBox>
+            <Typography variant="subtitle1">{t('settings.version')}</Typography>
+            <Typography variant="body1">{version || t("settings.loading")}</Typography>
           </StyledBox>
         </Grid>
 
