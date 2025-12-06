@@ -50,6 +50,9 @@
   "common.save": "Stow away",
   "common.enabled": "Ready fer battle",
   "common.delete": "Send to Davy Jones",
+  "common.confirm": "Confirm",
+  "common.saved": "Stowed away!",
+  "common.loading": "Hoisting the sails...",
 
   "colorPicker.default": "Standard Colors",
   "colorPicker.primary": "Captain's Choice",
@@ -147,5 +150,8 @@
   "chatBox.enterJs": "Please enter JavaScript code, shiver me timbers!",
   "chatBox.preview": "Chatbox Preview",
   "chatBox.openInBrowser": "Open in Browser",
-  "chatBox.previewIframeTitle": "Chatbox Preview Iframe"
+  "chatBox.previewIframeTitle": "Chatbox Preview Iframe",
+  "chatBox.changeTemplateTitle": "Change Chatbox Template",
+  "chatBox.changeTemplateConfirmation": "Are ye sure ye want to change the chatbox template to '{templateName}'? This will overwrite yer current HTML, CSS, and JavaScript code.",
+  "chatBox.templateChanged": "Chatbox template changed successfully to '{templateName}'."
 }

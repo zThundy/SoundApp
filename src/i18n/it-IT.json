@@ -50,6 +50,9 @@
   "common.save": "Salva",
   "common.enabled": "Abilitato",
   "common.delete": "Elimina",
+  "common.confirm": "Conferma",
+  "common.saved": "Salvato!",
+  "common.loading": "Caricamento...",
 
   "colorPicker.default": "Predefinito",
   "colorPicker.primary": "Primario",
@@ -147,5 +150,8 @@
   "chatBox.enterJs": "Inserisci il codice JavaScript.",
   "chatBox.preview": "Anteprima chatbox",
   "chatBox.openInBrowser": "Apri nel browser",
-  "chatBox.previewIframeTitle": "Iframe anteprima chatbox"
+  "chatBox.previewIframeTitle": "Iframe anteprima chatbox",
+  "chatBox.changeTemplateTitle": "Cambia template chatbox",
+  "chatBox.changeTemplateConfirmation": "Sei sicuro di voler cambiare il template della chatbox in '{templateName}'? Questo sovrascriverà il tuo attuale codice HTML, CSS e JavaScript.",
+  "chatBox.templateChanged": "Template della chatbox cambiato con successo in '{templateName}'."
 }
