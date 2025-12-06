@@ -8,7 +8,8 @@ export function registerWindowHandlers(getMainWindow: () => BrowserWindow | null
 
   ipcMain.handle('window:close', () => {
     const win = getMainWindow()
-    win?.close()
+    // win?.close()
+    win?.hide()
   })
 
   ipcMain.handle('window:is-maximized', () => {

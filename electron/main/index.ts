@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, Menu, shell, Tray } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
@@ -21,6 +21,9 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 export const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
 
 const INTERNAL_SERVER_PORT = 4823
+
+const isMac = process.platform === 'darwin'
+
 
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, 'public')
@@ -116,6 +119,29 @@ async function createWindow() {
     if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
+
+  const iconPath = path.join(process.env.VITE_PUBLIC, 'logo.png');
+  const tray = new Tray(iconPath)
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Quit',
+      click: async () => {
+        win = null
+        closeLogger()
+        app.quit()
+      }
+    },
+  ])
+  tray.setToolTip('Stream Alerts')
+  tray.setContextMenu(contextMenu)
+  tray.on("double-click", () => {
+    if (isMac) app.show()
+    if (win && !win.isDestroyed()) win.show()
+  })
+  tray.on("click", () => {
+    if (isMac) app.show()
+    if (win && !win.isDestroyed()) win.show()
+  })
 }
 
 app.whenReady().then(() => {
@@ -157,10 +183,9 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
-  win = null
+  // win = null
   if (process.platform !== 'darwin') {
-    closeLogger()
-    app.quit()
+    // app.hide()
   }
 })
 
