@@ -8,10 +8,10 @@ export function registerSafeStoreHandlers(safeStore: SafeStorageWrapper | null) 
   })
 
   ipcMain.handle('safe-store:get', async (_evt, key: string) => {
-    console.log('IPC safe-store:get for key:', key)
+    console.debug('IPC safe-store:get for key:', key)
     if (!safeStore) return null
     const value = safeStore.get(key)
-    console.log('Retrieved value:', value)
+    console.debug('Retrieved value:', value)
     return value
   })
 

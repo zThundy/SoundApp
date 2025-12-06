@@ -62,7 +62,7 @@ export function registerAlertHandlers(
 
   ipcMain.handle('alerts:restart', async () => {
     try {
-      console.log('[AlertServer] restarting...')
+      console.debug('[AlertServer] restarting...')
       const configuredPortStr = safeStore?.get('alertServerPort') ?? null
       const configuredPort = configuredPortStr ? Number(configuredPortStr) : null
       const alertPort = configuredPort && configuredPort > 0 ? configuredPort : INTERNAL_SERVER_PORT
@@ -75,7 +75,7 @@ export function registerAlertHandlers(
       const newServer = await startAlertServer(alertPort)
       setAlertServer(newServer)
       ;(globalThis as any).alertBroadcast = newServer.broadcast
-      console.log(`[AlertServer] restarted on http://localhost:${newServer.port}`)
+      console.debug(`[AlertServer] restarted on http://localhost:${newServer.port}`)
       return { ok: true, port: newServer.port }
     } catch (err: any) {
       console.error('Failed to restart AlertServer', err)
@@ -90,7 +90,7 @@ export function registerAlertHandlers(
       }
       const templatePath = `templates/${template.id}.json`
       await fileManager.writeFile('alerts', templatePath, JSON.stringify(template, null, 2))
-      console.log('[AlertHandlers] Template saved:', template.id)
+      console.debug('[AlertHandlers] Template saved:', template.id)
       return { ok: true }
     } catch (err: any) {
       console.error('[AlertHandlers] Failed to save template:', err)
@@ -106,12 +106,12 @@ export function registerAlertHandlers(
       const templatePath = `templates/${templateId}.json`
       const exists = await fileManager.fileExists('alerts', templatePath)
       if (!exists) {
-        console.log('[AlertHandlers] Template not found:', templateId)
+        console.debug('[AlertHandlers] Template not found:', templateId)
         return { ok: true, template: null }
       }
       const buf = await fileManager.readFile('alerts', templatePath)
       const template = JSON.parse(buf.toString()) as AlertTemplate
-      console.log('[AlertHandlers] Template loaded:', templateId)
+      console.debug('[AlertHandlers] Template loaded:', templateId)
       return { ok: true, template }
     } catch (err: any) {
       console.error('[AlertHandlers] Failed to load template:', err)
@@ -124,7 +124,7 @@ export function registerAlertHandlers(
       await fileManager.writeFile('chat', 'custom.html', html)
       await fileManager.writeFile('chat', 'custom.css', css)
       await fileManager.writeFile('chat', 'custom.js', js)
-      console.log('[ChatHandlers] Chat HTML/CSS/JS saved')
+      console.debug('[ChatHandlers] Chat HTML/CSS/JS saved')
       return { ok: true }
     } catch (err: any) {
       console.error('[ChatHandlers] Failed to save chat HTML/CSS/JS:', err)
@@ -153,7 +153,7 @@ export function registerAlertHandlers(
         js = buf.toString()
       }
       
-      console.log('[ChatHandlers] Chat HTML/CSS/JS loaded')
+      console.debug('[ChatHandlers] Chat HTML/CSS/JS loaded')
       return { ok: true, html, css, js }
     } catch (err: any) {
       console.error('[ChatHandlers] Failed to load chat HTML/CSS/JS:', err)

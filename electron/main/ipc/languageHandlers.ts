@@ -21,7 +21,7 @@ export function registerLanguageHandlers() {
       const data = await fileManager.readFile(LANGUAGE_CONTEXT, LANGUAGE_FILE);
       const config: LanguageConfig = JSON.parse(data.toString());
       
-      console.log('[LanguageHandlers] Lingua caricata:', config.language);
+      console.debug('[LanguageHandlers] Lingua caricata:', config.language);
       return { language: config.language || DEFAULT_LANGUAGE };
     } catch (error) {
       console.error('[LanguageHandlers] Errore nel caricamento della lingua:', error);
@@ -35,7 +35,7 @@ export function registerLanguageHandlers() {
       const data = JSON.stringify(config, null, 2);
       
       await fileManager.writeFile(LANGUAGE_CONTEXT, LANGUAGE_FILE, data);
-      console.log('[LanguageHandlers] Lingua salvata:', language);
+      console.debug('[LanguageHandlers] Lingua salvata:', language);
       
       return { success: true };
     } catch (error) {

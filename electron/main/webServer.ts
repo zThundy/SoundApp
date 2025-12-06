@@ -118,8 +118,8 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
     });
 
     function broadcast(payload: unknown) {
-      console.log('[AlertServer] Broadcasting payload to', clients.length, 'clients');
-      console.log('[AlertServer] Payload:', payload);
+      console.debug('[AlertServer] Broadcasting payload to', clients.length, 'clients');
+      console.debug('[AlertServer] Payload:', payload);
       const dataStr = JSON.stringify(payload);
       for (const c of clients) {
         c.res.write(`data: ${dataStr}\n\n`);

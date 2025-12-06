@@ -42,10 +42,10 @@ class SafeStorageWrapper {
   store(key: string, value: string): boolean {
     if (!this.isEncryptionAvailable()) return false;
     const encrypted = this.safeStorage.encryptString(value);
-    console.log('Storing encrypted value for key:', key, encrypted);
+    console.debug('Storing encrypted value for key:', key, encrypted);
     const base64Encoded = encrypted.toString('base64');
     (this.storage as any).set(key, base64Encoded);
-    console.log('Value stored successfully.', base64Encoded);
+    console.debug('Value stored successfully.', base64Encoded);
     return true;
   }
 

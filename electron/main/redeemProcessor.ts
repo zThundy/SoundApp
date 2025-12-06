@@ -75,9 +75,9 @@ export class RedeemProcessor {
   /** Process a redemption: find local audio by rewardId and broadcast alert */
   async process(redemption: RewardRedemption): Promise<boolean> {
     const def = await this.loadMapping(redemption.rewardId).catch(err => console.error('[RedeemProcessor] Failed to load mapping:', err))
-    console.log('[RedeemProcessor] Processing redemption for reward:', redemption.rewardId, 'Definition:', def)
+    console.debug('[RedeemProcessor] Processing redemption for reward:', redemption.rewardId, 'Definition:', def)
     if (!def) {
-      console.log('[RedeemProcessor] No local audio for reward:', redemption.rewardId)
+      console.debug('[RedeemProcessor] No local audio for reward:', redemption.rewardId)
       return false
     }
 
@@ -140,7 +140,7 @@ export class RedeemProcessor {
 
     try {
       alertServer.broadcast(payload)
-      console.log('[RedeemProcessor] Broadcasted alert for reward', redemption.rewardId)
+      console.debug('[RedeemProcessor] Broadcasted alert for reward', redemption.rewardId)
       return true
     } catch (e) {
       console.error('[RedeemProcessor] Failed to broadcast alert:', e)

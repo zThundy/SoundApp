@@ -6,7 +6,7 @@ if (!originalAppPath) originalAppPath = app.getAppPath();
 
 class FileManager {
   constructor() {
-    console.log("[FileManager] Initialized at path:", originalAppPath);
+    console.debug("[FileManager] Initialized at path:", originalAppPath);
   }
 
   private initFileContext(context: string): string {
@@ -14,7 +14,7 @@ class FileManager {
     if (!fs.existsSync(appPath)) {
       fs.mkdirSync(appPath, { recursive: true });
     }
-    console.log("[FileManager] Initialized context at path:", appPath);
+    console.debug("[FileManager] Initialized context at path:", appPath);
     return appPath;
   }
 

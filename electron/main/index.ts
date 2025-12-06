@@ -79,7 +79,7 @@ async function createWindow() {
   update(win)
 
   if (VITE_DEV_SERVER_URL) { // #298
-    console.log('VITE_DEV_SERVER_URL detected, opening devtools...')
+    console.debug('VITE_DEV_SERVER_URL detected, opening devtools...')
     win.loadURL(VITE_DEV_SERVER_URL)
     // Open devTool if the app is not packaged in a new window
     win.webContents.openDevTools({ mode: 'detach' })
@@ -96,13 +96,13 @@ async function createWindow() {
       try {
         await win?.webContents.executeJavaScript('void 0'); // Ensure webContents is ready
         const { checkForUpdatesOnStartup } = await import('./update')
-        console.log("[update] Checking for updates on startup...");
+        console.debug("[update] Checking for updates on startup...");
         await checkForUpdatesOnStartup(win!)
       } catch (error) {
         console.error('Error during startup update check:', error)
       }
     } else {
-      console.log('[update] Skipping update check on startup in development mode.');
+      console.debug('[update] Skipping update check on startup in development mode.');
     }
     
     // Try to connect Twitch EventSub on window load
@@ -159,7 +159,7 @@ app.whenReady().then(() => {
   const alertPort = configuredPort && configuredPort > 0 ? configuredPort : INTERNAL_SERVER_PORT
 
   startAlertServer(alertPort).then(server => {
-    console.log(`[AlertServer] running on http://localhost:${server.port}`);
+    console.debug(`[AlertServer] running on http://localhost:${server.port}`);
     (globalThis as any).alertBroadcast = server.broadcast;
     alertServerRef = server as any;
 
@@ -207,6 +207,6 @@ app.on('activate', () => {
 })
 
 app.on('before-quit', () => {
-  console.log('App is quitting...')
+  console.debug('App is quitting...')
   closeLogger()
 })

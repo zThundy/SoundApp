@@ -37,9 +37,9 @@ class WindowStateManager {
           isMaximized: parsedState.isMaximized,
         };
 
-        console.log('[WindowStateManager] State loaded:', this.state);
+        console.debug('[WindowStateManager] State loaded:', this.state);
       } else {
-        console.log('[WindowStateManager] State file not found, using default values');
+        console.debug('[WindowStateManager] State file not found, using default values');
         this.state = DEFAULT_STATE;
       }
     } catch (error) {
@@ -67,7 +67,7 @@ class WindowStateManager {
 
       const data = JSON.stringify(this.state, null, 2);
       await fileManager.writeFile(STATE_CONTEXT, STATE_FILE, data);
-      console.log('[WindowStateManager] State saved:', this.state);
+      console.debug('[WindowStateManager] State saved:', this.state);
     } catch (error) {
       console.error('[WindowStateManager] Error saving state:', error);
     }
@@ -103,7 +103,7 @@ class WindowStateManager {
       process.exit(0);
     });
 
-    console.log('[WindowStateManager] Tracking active for the window.');
+    console.debug('[WindowStateManager] Tracking active for the window.');
   }
 
   getState(): WindowState {
@@ -127,7 +127,7 @@ class WindowStateManager {
       window.maximize();
     }
 
-    console.log('[WindowStateManager] Window state applied to the window.');
+    console.debug('[WindowStateManager] Window state applied to the window.');
   }
 }
 

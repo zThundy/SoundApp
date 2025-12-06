@@ -115,7 +115,7 @@ const createCustomReward = async (accessToken: string, broadcasterId: string, se
     console.error("Failed to create custom reward:", await response.text());
     throw new Error('Failed to create custom reward: ' + response.statusText);
   }
-  console.log("Create Reward Response Status:", response.status);
+  console.debug("[TwitchWorker] Create Reward Response Status:", response.status);
   const data = await response.json();
   return data;
 };
