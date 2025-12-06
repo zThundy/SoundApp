@@ -134,6 +134,8 @@
   "twitchChat.checkConnectionFailed": "Verifica dello stato di connessione della chat di Twitch non riuscita",
 
   "chatBox.title": "Editor Chatbox",
+  "chatBox.templates": "Template",
+  "chatBox.templatesComingSoon": "Template in arrivo...",
   "chatBox.customHtmlCssJs": "HTML/CSS/JS personalizzato",
   "chatBox.html": "Modifica l'HTML della chat",
   "chatBox.css": "Modifica il CSS della chat",

@@ -134,6 +134,8 @@
   "twitchChat.checkConnectionFailed": "Error al comprobar el estado de conexión del chat de Twitch",
 
   "chatBox.title": "Personalización del chatbox",
+  "chatBox.templates": "Plantillas",
+  "chatBox.templatesComingSoon": "Plantillas próximamente...",
   "chatBox.customHtmlCssJs": "HTML/CSS/JS personalizado",
   "chatBox.html": "Editar el HTML del chat",
   "chatBox.css": "Editar el CSS del chat",

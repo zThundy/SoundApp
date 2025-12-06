@@ -133,6 +133,8 @@
   "twitchChat.checkConnectionFailed": "Fehler beim Überprüfen des Twitch-Chat-Verbindungsstatus",
   
   "chatBox.title": "Chatbox-Anpassung",
+  "chatBox.templates": "Vorlagen",
+  "chatBox.templatesComingSoon": "Vorlagen demnächst verfügbar...",
   "chatBox.customHtmlCssJs": "Benutzerdefiniertes HTML/CSS/JS",
   "chatBox.html": "Chat-HTML bearbeiten",
   "chatBox.css": "Chat-CSS bearbeiten",

@@ -134,6 +134,8 @@
   "twitchChat.checkConnectionFailed": "Failed to check Twitch crow's nest connection status",
 
   "chatBox.title": "Chatbox Settings",
+  "chatBox.templates": "Templates",
+  "chatBox.templatesComingSoon": "Templates coming soon...",
   "chatBox.customHtmlCssJs": "Custom HTML/CSS/JS",
   "chatBox.html": "Edit the chat HTML",
   "chatBox.css": "Edit the chat CSS",
