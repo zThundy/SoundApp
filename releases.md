@@ -110,5 +110,9 @@
 
 ## 0.2.3
 
+- Added chatbox templates
+- Fixed some styling
+- Added missing translations
+
 
 ## 0.2.4
