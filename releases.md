@@ -109,3 +109,6 @@
 - Added new WIP page in the chat section
 
 ## 0.2.3
+
+
+## 0.2.4
