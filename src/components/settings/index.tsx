@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
-import { Box, Button, Grid, TextField, Typography, Select, MenuItem, Stack, Tooltip, Switch } from '@mui/material'
+import { Box, Button, Grid, TextField, Typography, Select, MenuItem, Stack, Tooltip, Switch, SvgIcon } from '@mui/material'
 import { GitHub, Info, LinkedIn } from '@mui/icons-material'
+import TwitchSvg from '@/assets/twitch.svg'
 
 import { TranslationContext } from '@/i18n/TranslationProvider'
 import { NotificationContext } from '@/context/NotificationProvider'
@@ -211,6 +212,13 @@ export default function Settings() {
               </Box>
               <Box className={style.icon}>
                 <LinkedIn onClick={() => openLink('https://www.linkedin.com/in/antonio-a-5803a0136/')} fontSize={"large"} />
+              </Box>
+              <Box className={style.icon}>
+                <SvgIcon onClick={() => openLink('https://www.twitch.tv/zthundy__')} fontSize={"large"}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M 67.804 23.775 L 37.137 101.836 L 37.137 419.654 L 145.864 419.654 L 145.864 478.2 L 207.197 478.2 L 264.35 419.654 L 352.167 419.654 L 470.653 301.169 L 470.653 23.775 L 67.804 23.775 Z M 430.228 281.653 L 363.318 348.562 L 254.592 348.562 L 196.046 407.109 L 196.046 348.562 L 105.44 348.562 L 105.44 64.199 L 430.228 64.199 L 430.228 281.653 Z M 363.318 142.261 L 363.318 260.745 L 321.501 260.745 L 321.501 142.261 L 363.318 142.261 Z M 254.592 142.261 L 254.592 260.745 L 214.168 260.745 L 214.168 142.261 L 254.592 142.261 Z" />
+                  </svg>
+                </SvgIcon>
               </Box>
             </Stack>
           </StyledBox>
