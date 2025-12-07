@@ -204,9 +204,25 @@ body {
     }
   }
 
-  async function saveChatCustomization() {
+  async function saveChatCustomization(css?: string, html?: string, js?: string) {
     try {
-      const res = await window.chat?.saveHtml(rawHtml, rawCss, rawJs);
+      let localRawHtml = rawHtml;
+      let localRawCss = rawCss;
+      let localRawJs = rawJs;
+      if (html !== undefined) {
+        localRawHtml = html;
+        setRawHtml(html);
+      }
+      if (css !== undefined) {
+        localRawCss = css;
+        setRawCss(css);
+      }
+      if (js !== undefined) {
+        localRawJs = js;
+        setRawJs(js);
+      }
+      console.log('[ChatBox] Saving custom HTML/CSS/JS...', { localRawHtml, localRawCss, localRawJs });
+      const res = await window.chat?.saveHtml(localRawHtml, localRawCss, localRawJs);
       if (res?.ok) {
         success(t("common.saved"));
       } else {
@@ -232,12 +248,6 @@ body {
           <Box p={2} className={style.container}>
             {tab === 0 && (
               <Templates
-                rawHtml={rawHtml}
-                setRawHtml={setRawHtml}
-                rawCss={rawCss}
-                setRawCss={setRawCss}
-                rawJs={rawJs}
-                setRawJs={setRawJs}
                 saveChatCustomization={saveChatCustomization}
               />
             )}

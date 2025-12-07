@@ -12,6 +12,7 @@ import ChangeTemplateModal from './ChangeTemplateModal';
 import DefaultTemplate, { ChatBoxTemplate } from "@/components/chatBox/templates/default";
 import GreenTemplate from "@/components/chatBox/templates/green";
 import RedTemplate from "@/components/chatBox/templates/red";
+import YellowTemplate from "@/components/chatBox/templates/yellow";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
@@ -33,21 +34,9 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 
 const Templates = ({
-  rawHtml,
-  setRawHtml,
-  rawCss,
-  setRawCss,
-  rawJs,
-  setRawJs,
   saveChatCustomization
 }: {
-  rawHtml: string;
-  setRawHtml: (value: string) => void;
-  rawCss: string;
-  setRawCss: (value: string) => void;
-  rawJs: string;
-  setRawJs: (value: string) => void;
-  saveChatCustomization: () => Promise<void>;
+  saveChatCustomization: (css?: string, html?: string, js?: string) => Promise<void>;
 }) => {
   const { t } = useContext(TranslationContext);
   const [templates, setTemplates] = useState<ChatBoxTemplate[]>([]);
@@ -58,6 +47,7 @@ const Templates = ({
     setTemplates((prev) => [...prev, DefaultTemplate]);
     setTemplates((prev) => [...prev, GreenTemplate]);
     setTemplates((prev) => [...prev, RedTemplate]);
+    setTemplates((prev) => [...prev, YellowTemplate]);
   }, []);
 
   const handleSelectTemplate = (template: ChatBoxTemplate) => {
@@ -66,10 +56,7 @@ const Templates = ({
   }
 
   const handleChangeToTemplate = (template: ChatBoxTemplate) => {
-    setRawHtml(template.html);
-    setRawCss(template.css);
-    setRawJs(template.js);
-    saveChatCustomization();
+    saveChatCustomization(template.css, template.html, template.js);
     setShowModal(false);
   }
 
