@@ -1,6 +1,16 @@
 import { ipcMain, BrowserWindow, shell, app } from 'electron'
 import { getLogger } from '../logger'
 
+export async function openExternalLink(url: string) {
+  try {
+    if (typeof url !== 'string') throw new Error('Invalid URL')
+    await shell.openExternal(url)
+    return { ok: true }
+  } catch (err: any) {
+    return { ok: false, error: err?.message ?? 'Failed to open external link' }
+  }
+}
+
 export function registerMiscHandlers(
   getMainWindow: () => BrowserWindow | null,
   VITE_DEV_SERVER_URL: string | undefined,
@@ -26,13 +36,7 @@ export function registerMiscHandlers(
 
   // Open a URL in the system default browser
   ipcMain.handle('open-external', async (_evt, url: string) => {
-    try {
-      if (typeof url !== 'string') throw new Error('Invalid URL')
-      await shell.openExternal(url)
-      return { ok: true }
-    } catch (err: any) {
-      return { ok: false, error: err?.message ?? 'Failed to open external link' }
-    }
+    return openExternalLink(url)
   })
 
   // Get log file paths
