@@ -29,7 +29,7 @@
       "msi"
     ],
     "artifactName": "Sound-App-Setup.${ext}",
-    "icon": "assets/icon.ico"
+    "icon": "assets/icon.png"
   },
   "nsis": {
     "deleteAppDataOnUninstall": false,
