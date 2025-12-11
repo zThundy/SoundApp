@@ -23,6 +23,7 @@
   "sidebar.logout": "Abmelden",
   "sidebar.chat": "Chat",
   "sidebar.chatbox": "Chatbox",
+  "sidebar.fileManager": "Datei-Manager",
   "sidebar.logoutFailed": "Abmeldung fehlgeschlagen",
   
   "update.title": "App-Aktualisierer",
@@ -152,5 +153,16 @@
   "chatBox.previewIframeTitle": "Chatbox-Vorschau Iframe",
   "chatBox.changeTemplateTitle": "Chatbox-Vorlage ändern",
   "chatBox.changeTemplateConfirmation": "Sind Sie sicher, dass Sie die Chatbox-Vorlage in '{templateName}' ändern möchten? Dadurch werden Ihr aktueller HTML-, CSS- und JavaScript-Code überschrieben.",
-  "chatBox.templateChanged": "Chatbox-Vorlage erfolgreich in '{templateName}' geändert."
+  "chatBox.templateChanged": "Chatbox-Vorlage erfolgreich in '{templateName}' geändert.",
+
+  "fileManager.title": "Datei-Manager",
+  "fileManager.uploadFile": "Datei hochladen",
+  "fileManager.noFiles": "Keine Dateien hochgeladen",
+  "fileManager.uuid": "UUID",
+  "fileManager.uploaded": "Hochgeladen",
+  "fileManager.copyUuid": "UUID kopieren",
+  "fileManager.copied": "Kopiert!",
+  "fileManager.delete": "Löschen",
+  "fileManager.deleteFileTitle": "Datei löschen?",
+  "fileManager.deleteFileConfirmation": "Sind Sie sicher, dass Sie die Datei {fileName} löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
 }

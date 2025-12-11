@@ -9,6 +9,7 @@ import { registerFileHandlers } from './fileHandlers'
 import { registerMiscHandlers } from './miscHandlers'
 import { registerLanguageHandlers } from './languageHandlers'
 import { registerTwitchEventHandlers } from './twitchEventHandlers'
+import { registerUploadHandlers } from './uploadHandlers'
 import { RedeemProcessor } from '../redeemProcessor'
 import { setRedeemProcessor } from '../redeemRegistry'
 
@@ -42,6 +43,7 @@ export function registerAllIPCHandlers(context: IPCContext) {
     context.INTERNAL_SERVER_PORT
   )
   registerFileHandlers()
+  registerUploadHandlers()
   registerMiscHandlers(
     context.getMainWindow,
     context.VITE_DEV_SERVER_URL,
@@ -51,7 +53,6 @@ export function registerAllIPCHandlers(context: IPCContext) {
   registerLanguageHandlers()
   registerTwitchEventHandlers(getTwitchEventListener)
 
-  // Initialize RedeemProcessor with access to AlertServer
   const rp = new RedeemProcessor(context.getAlertServer)
   setRedeemProcessor(rp)
 }

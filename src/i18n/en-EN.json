@@ -23,6 +23,7 @@
   "sidebar.logout": "Log out",
   "sidebar.chat": "Chat",
   "sidebar.chatbox": "Chatbox",
+  "sidebar.fileManager": "File Manager",
   "sidebar.logoutFailed": "Logout failed",
 
   "update.title": "App Updater",
@@ -153,5 +154,16 @@
   "chatBox.previewIframeTitle": "Chatbox Preview Iframe",
   "chatBox.changeTemplateTitle": "Change Chatbox Template",
   "chatBox.changeTemplateConfirmation": "Are you sure you want to change the chatbox template to '{templateName}'? This will overwrite your current HTML, CSS, and JavaScript code.",
-  "chatBox.templateChanged": "Chatbox template changed to '{templateName}' successfully."
+  "chatBox.templateChanged": "Chatbox template changed to '{templateName}' successfully.",
+
+  "fileManager.title": "File Manager",
+  "fileManager.uploadFile": "Upload File",
+  "fileManager.noFiles": "No files uploaded",
+  "fileManager.uuid": "UUID",
+  "fileManager.uploaded": "Uploaded",
+  "fileManager.copyUuid": "Copy UUID",
+  "fileManager.copied": "Copied!",
+  "fileManager.delete": "Delete",
+  "fileManager.deleteFileTitle": "Delete file?",
+  "fileManager.deleteFileConfirmation": "Are you sure you want to delete the file {fileName}? This action cannot be undone."
 }

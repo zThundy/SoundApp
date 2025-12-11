@@ -110,6 +110,28 @@ contextBridge.exposeInMainWorld('languageManager', {
   }
 })
 
+// File Upload API with UUID references
+contextBridge.exposeInMainWorld('uploadManager', {
+  uploadFile(fileBuffer: Buffer, originalFileName: string) {
+    return ipcRenderer.invoke('upload:file', fileBuffer, originalFileName)
+  },
+  getFile(uuid: string) {
+    return ipcRenderer.invoke('upload:getFile', uuid)
+  },
+  getMetadata(uuid: string) {
+    return ipcRenderer.invoke('upload:getMetadata', uuid)
+  },
+  deleteFile(uuid: string) {
+    return ipcRenderer.invoke('upload:deleteFile', uuid)
+  },
+  getAll() {
+    return ipcRenderer.invoke('upload:getAll')
+  },
+  getPath(uuid: string) {
+    return ipcRenderer.invoke('upload:getPath', uuid)
+  },
+})
+
 // Twitch Events API for real-time chat and redemptions
 contextBridge.exposeInMainWorld('twitchEvents', {
   connect(accessToken: string, broadcasterId: string, clientId: string) {

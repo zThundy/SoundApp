@@ -16,6 +16,15 @@ declare global {
       loadHtml(): Promise<{ ok: boolean; html?: string; css?: string; js?: string; error?: string }>;
     }
 
+    uploadManager: {
+      uploadFile(fileBuffer: ArrayBuffer, originalFileName: string): Promise<{ ok: boolean; uuid?: string; error?: string }>;
+      getFile(uuid: string): Promise<{ ok: boolean; data?: Buffer; error?: string }>;
+      getMetadata(uuid: string): Promise<{ ok: boolean; metadata?: { uuid: string; originalName: string; storagePath: string; uploadedAt: number }; error?: string }>;
+      deleteFile(uuid: string): Promise<{ ok: boolean; message?: string; error?: string }>;
+      getAll(): Promise<{ ok: boolean; files?: Array<{ uuid: string; originalName: string; storagePath: string; uploadedAt: number }>; error?: string }>;
+      getPath(uuid: string): Promise<{ ok: boolean; path?: string; error?: string }>;
+    }
+
     version: string;
     appVersion: string;
     ipcRenderer: {
@@ -25,3 +34,4 @@ declare global {
     }
   }
 }
+

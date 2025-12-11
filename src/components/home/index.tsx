@@ -10,6 +10,7 @@ import AlertEditor from "@/components/alert"
 import Settings from "@/components/settings"
 import TwitchChat from "@/components/twitchChat"
 import ChatBoxEditor from "@/components/chatBox"
+import FileManager from "@/components/FileManager"
 
 export default function Home() {
   const [selectedPageState, setSelectedPageState] = useState<string | undefined>("redeems");
@@ -30,6 +31,7 @@ export default function Home() {
         {selectedPageState === "settings" && <Settings />}
         {selectedPageState === "chat" && <TwitchChat />}
         {selectedPageState === "chatbox" && <ChatBoxEditor />}
+        {selectedPageState === "filemanager" && <FileManager />}
       </Grid>
     </Grid>
   )

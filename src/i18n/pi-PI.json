@@ -153,5 +153,16 @@
   "chatBox.previewIframeTitle": "Chatbox Preview Iframe",
   "chatBox.changeTemplateTitle": "Change Chatbox Template",
   "chatBox.changeTemplateConfirmation": "Are ye sure ye want to change the chatbox template to '{templateName}'? This will overwrite yer current HTML, CSS, and JavaScript code.",
-  "chatBox.templateChanged": "Chatbox template changed successfully to '{templateName}'."
+  "chatBox.templateChanged": "Chatbox template changed successfully to '{templateName}'.",
+
+  "fileManager.title": "Treasure Chest Manager",
+  "fileManager.uploadFile": "Stow Treasure",
+  "fileManager.noFiles": "No treasure stowed yet, matey",
+  "fileManager.uuid": "Treasure Mark",
+  "fileManager.uploaded": "Stowed",
+  "fileManager.copyUuid": "Copy Treasure Mark",
+  "fileManager.copied": "Copied to yer parchment!",
+  "fileManager.delete": "Send to Davy Jones",
+  "fileManager.deleteFileTitle": "Send treasure to Davy Jones?",
+  "fileManager.deleteFileConfirmation": "Arrr ye sure ye want to send {fileName} to Davy Jones' locker? This action can't be undone, matey!"
 }

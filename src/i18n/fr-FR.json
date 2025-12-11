@@ -23,6 +23,7 @@
   "sidebar.logout": "Déconnexion",
   "sidebar.chat": "Chat",
   "sidebar.chatbox": "Chatbox",
+  "sidebar.fileManager": "Gestionnaire de fichiers",
   "sidebar.logoutFailed": "Échec de la déconnexion",
   
   "update.title": "Mise à jour de l’application",
@@ -153,5 +154,16 @@
   "chatBox.previewIframeTitle": "Iframe d’aperçu du chatbox",
   "chatBox.changeTemplateTitle": "Changer le modèle du chatbox",
   "chatBox.changeTemplateConfirmation": "Êtes-vous sûr de vouloir changer le modèle du chatbox en '{templateName}' ? Cela écrasera votre code HTML, CSS et JavaScript actuel.",
-  "chatBox.templateChanged": "Modèle du chatbox changé avec succès en '{templateName}'."
+  "chatBox.templateChanged": "Modèle du chatbox changé avec succès en '{templateName}'.",
+
+  "fileManager.title": "Gestionnaire de Fichiers",
+  "fileManager.uploadFile": "Télécharger un Fichier",
+  "fileManager.noFiles": "Aucun fichier téléchargé",
+  "fileManager.uuid": "UUID",
+  "fileManager.uploaded": "Téléchargé",
+  "fileManager.copyUuid": "Copier l'UUID",
+  "fileManager.copied": "Copié !",
+  "fileManager.delete": "Supprimer",
+  "fileManager.deleteFileTitle": "Supprimer le fichier ?",
+  "fileManager.deleteFileConfirmation": "Êtes-vous sûr de vouloir supprimer le fichier {fileName} ? Cette action est irréversible."
 }

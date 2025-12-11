@@ -10,6 +10,8 @@ interface DeleteModalProps {
   onClose: () => void;
   onConfirm: () => void;
   rewardTitle: string;
+  modalTitle?: string;
+  modalDescription?: string;
 }
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -46,7 +48,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const DeleteModal: React.FC<DeleteModalProps> = ({ isOpen, onClose, onConfirm, rewardTitle }) => {
+const DeleteModal: React.FC<DeleteModalProps> = ({ isOpen, onClose, onConfirm, rewardTitle, modalTitle, modalDescription }) => {
   const { t } = useContext(TranslationContext);
 
   return (
@@ -55,11 +57,11 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ isOpen, onClose, onConfirm, r
       onClose={onClose}
     >
       <StyledBox>
-        <DialogTitle>{t('redeems.deleteRewardTitle')}</DialogTitle>
+        <DialogTitle>{modalTitle || t('redeems.deleteRewardTitle')}</DialogTitle>
       </StyledBox>
       <DialogContent>
         <Typography>
-          {t('redeems.deleteRewardConfirmation', { rewardTitle })}
+          {modalDescription || t('redeems.deleteRewardConfirmation', { rewardTitle })}
         </Typography>
       </DialogContent>
       <DialogActions>

@@ -5,7 +5,7 @@ import { useContext, useState } from 'react'
 
 import style from './sidebar.module.css'
 
-import { Settings, LogoutOutlined, Tv, VideoLibrary, ChatBubble, Forum } from '@mui/icons-material'
+import { Settings, LogoutOutlined, Tv, VideoLibrary, ChatBubble, Forum, CloudUpload } from '@mui/icons-material'
 import { useNavigate } from 'react-router'
 
 import { TranslationContext } from '@/i18n/TranslationProvider'
@@ -88,6 +88,17 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
 
           <Tooltip title={t('sidebar.chat')} placement="right">
             <ChatBubble />
+          </Tooltip>
+
+        </Grid>
+        <Grid
+          size={{ xs: 12 }}
+          className={style.iconContainer + ' ' + (currentView === "filemanager" ? style.current : "")}
+          onClick={() => handleNavigation("filemanager")}
+        >
+
+          <Tooltip title={t('sidebar.fileManager')} placement="right">
+            <CloudUpload />
           </Tooltip>
 
         </Grid>
