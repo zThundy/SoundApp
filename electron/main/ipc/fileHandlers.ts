@@ -12,9 +12,9 @@ export function registerFileHandlers() {
     }
   })
 
-  ipcMain.handle('file:read', async (_evt, context: string, relativePath: string, asText: boolean = true) => {
+  ipcMain.handle('file:read', async (_evt, context: string, options: { relativePath?: string, uuid?: string }, asText: boolean = true) => {
     try {
-      const buffer = await fileManager.readFile(context, { relativePath })
+      const buffer = await fileManager.readFile(context, options)
       const data = asText ? buffer.toString('utf-8') : buffer
       return { ok: true, data }
     } catch (err: any) {
@@ -23,7 +23,7 @@ export function registerFileHandlers() {
     }
   })
 
-  ipcMain.handle('file:delete', async (_evt, context: string, options: { relativePath: string, uuid: string }) => {
+  ipcMain.handle('file:delete', async (_evt, context: string, options: { relativePath?: string, uuid?: string }) => {
     try {
       await fileManager.deleteFile(context, options)
       return { ok: true }

@@ -111,7 +111,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
       try {
         const rewardId = reward.id;
         const settingsPath = `settings/${rewardId}.json`;
-        const res = await window.fileManager?.read?.('alerts', settingsPath, true);
+        const res = await window.fileManager?.read?.('alerts', { relativePath: settingsPath }, true);
         if (res?.ok && res.data) {
           const settings = JSON.parse(res.data as string);
           if (settings.background_color) setBackgroundColor(settings.background_color);
@@ -122,7 +122,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
             let relativePath: string = settings.audioPath;
             const exists = await window.fileManager?.exists?.('alerts', { relativePath });
             if (exists?.ok && exists.exists) {
-              const fileRead = await window.fileManager?.read?.('alerts', settings.audioPath, false);
+              const fileRead = await window.fileManager?.read?.('alerts', { relativePath: settings.audioPath }, false);
               if (fileRead?.ok && fileRead.data) {
                 const buf = fileRead.data as any as ArrayBuffer;
                 const blob = new Blob([buf]);

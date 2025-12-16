@@ -23,7 +23,7 @@ interface Window {
 
   fileManager: {
     save(context: string, relativePath: string, content: string | Buffer, userReadable?: boolean): Promise<{ ok: boolean; error?: string }>;
-    read(context: string, relativePath: string, asText: boolean): Promise<{ ok: boolean; data?: string | Buffer; error?: string }>
+    read(context: string, options: { relativePath?: string, uuid?: string }, asText: boolean): Promise<{ ok: boolean; data?: string | Buffer; error?: string }>
     delete(context: string, options: { relativePath?: string, uuid?: string }): Promise<{ ok: boolean; error?: string }>;
     exists(context: string, options: { relativePath?: string, uuid?: string }): Promise<{ ok: boolean; exists?: boolean; error?: string }>
     getAll(): Promise<{ ok: boolean; error?: string, data?: Map<string, FileMapping> }>;
