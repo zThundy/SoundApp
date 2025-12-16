@@ -48,21 +48,6 @@ const StyledBox = styled(Box)(({ theme }) => ({
   }
 }));
 
-const testMessages = [
-  { username: 'CoolGamer123', message: 'Hey everyone! How is the stream going?', color: '#FF6B6B' },
-  { username: 'ProPlayer99', message: 'This game looks amazing!', color: '#4ECDC4' },
-  { username: 'StreamFan', message: 'Can you try that move again?', color: '#95E1D3' },
-  { username: 'NightOwl', message: 'Finally caught the stream live!', color: '#F38181' },
-  { username: 'GamerGirl', message: 'Your setup is incredible!', color: '#AA96DA' },
-  { username: 'ChatMaster', message: 'What are your keybinds?', color: '#FCBAD3' },
-  { username: 'TechWizard', message: 'That was insane!', color: '#A8D8EA' },
-  { username: 'PixelHunter', message: 'GG well played', color: '#FFCCCC' },
-  { username: 'SpeedRunner', message: 'How long have you been playing?', color: '#B4E7CE' },
-  { username: 'CodeNinja', message: 'Nice combo!', color: '#FFD93D' },
-  { username: 'RetroGamer', message: 'This brings back memories', color: '#6BCB77' },
-  { username: 'EpicViewer', message: 'Best stream today!', color: '#FF6B9D' },
-];
-
 export default function ChatBoxEditor() {
   const { t } = useContext(TranslationContext);
   const { success, error } = useContext(NotificationContext);
@@ -158,28 +143,6 @@ body {
       return () => clearTimeout(timer);
     }
   }, [copied]);
-
-  // Send test messages to preview iframe
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (iframeRef.current && iframeRef.current.contentWindow) {
-        const randomMsg = testMessages[Math.floor(Math.random() * testMessages.length)];
-        
-        try {
-          iframeRef.current.contentWindow.postMessage({
-            type: 'test-message',
-            username: randomMsg.username,
-            message: randomMsg.message,
-            color: randomMsg.color
-          }, '*');
-        } catch (err) {
-          console.error('[ChatBox] Failed to send test message to iframe:', err);
-        }
-      }
-    }, 3000); // Send a message every 3 seconds
-
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     (window.alerts as any).getPort().then((res: any) => {
