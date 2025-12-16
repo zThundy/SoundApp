@@ -151,7 +151,12 @@ class FileManager {
 
     const fullPath = `${appPath}/${fileMetadata.storagePath}`;
     this.createFolderAndSubfolders(fullPath);
-    this.createFileIfNotExists(fullPath);
+    // this.createFileIfNotExists(fullPath);
+
+    if (!this.doesFileExist(fullPath)) {
+      throw new Error(`[FileManager] Trying to read file from path ${fullPath}, but it does not exists.`)
+    }
+
     return { meta: fileMetadata, buffer: fs.promises.readFile(fullPath) };
   }
 
@@ -200,16 +205,15 @@ class FileManager {
     return this.doesFolderAndSubfoldersExist(fullPath);
   }
 
-  getAllUserReadableFilesMetadata(): Map<string, FileMapping> {
-    let toReturn = new Map<string, FileMapping>()
-
-    for (var i in this.fileRegistry) {
-      const file = this.fileRegistry.get(i);
+  getAllUserReadableFilesMetadata(): Array<FileMapping> {
+    let toReturn = new Array<FileMapping>
+    for (let k of this.fileRegistry.keys()) {
+      const file = this.fileRegistry.get(k);
       if (file?.userReadable) {
-        toReturn.set(file.uuid, file);
+        console.debug("[FileManager] getAllUserReadableFilesMetadata: adding user uploaded file to result.", JSON.stringify(file))
+        toReturn.push(file)
       }
     }
-
     return toReturn
   }
 };

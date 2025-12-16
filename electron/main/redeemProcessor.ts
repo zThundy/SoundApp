@@ -93,7 +93,7 @@ export class RedeemProcessor {
     const audioPathInput = def.audioPath
     let audioBuffer: Buffer = Buffer.from([])
     try {
-      const { buffer } = fileManager.readFile(this.CONTEXT, audioPathInput);
+      const { buffer } = fileManager.readFile(this.CONTEXT, { relativePath: audioPathInput });
       audioBuffer = await buffer;
     } catch (e) {
       console.error('[RedeemProcessor] Audio file missing or unreadable:', audioPathInput, '->', e)
