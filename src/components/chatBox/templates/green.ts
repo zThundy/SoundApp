@@ -14,7 +14,7 @@ const template: ChatBoxTemplate = {
 };
 
 template.html = `<div id="container">
-  <div id="header">Twitch Chat</div>
+  <div id="header">G Twitch Chat</div>
   <div id="messages"></div>
 </div>
 `;

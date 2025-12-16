@@ -24,11 +24,11 @@ class WindowStateManager {
 
   async loadState(): Promise<WindowState> {
     try {
-      const exists = await fileManager.fileExists(STATE_CONTEXT, STATE_FILE);
+      const exists = await fileManager.fileExists(STATE_CONTEXT, { relativePath: STATE_FILE });
       if (exists) {
-        const data = await fileManager.readFile(STATE_CONTEXT, STATE_FILE);
+        const data = await fileManager.readFile(STATE_CONTEXT, { relativePath: STATE_FILE });
         const parsedState = JSON.parse(data.toString()) as WindowState;
-        
+
         this.state = {
           width: parsedState.width || DEFAULT_STATE.width,
           height: parsedState.height || DEFAULT_STATE.height,
@@ -66,7 +66,7 @@ class WindowStateManager {
       };
 
       const data = JSON.stringify(this.state, null, 2);
-      await fileManager.writeFile(STATE_CONTEXT, STATE_FILE, data);
+      await fileManager.writeFile(STATE_CONTEXT, { relativePath: STATE_FILE }, data);
       console.debug('[WindowStateManager] State saved:', this.state);
     } catch (error) {
       console.error('[WindowStateManager] Error saving state:', error);

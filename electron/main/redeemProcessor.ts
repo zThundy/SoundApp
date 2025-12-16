@@ -24,7 +24,6 @@ export class RedeemProcessor {
   private readonly MAP_FILE = 'settings/{rewardId}.json'
   private readonly TEMPLATE_FILE = 'templates/{templateId}.json'
   private getAlertServer: () => AlertServer | null
-  private readonly ALERTS_DIR = 'alerts'
 
   constructor(getAlertServer: () => AlertServer | null) {
     this.getAlertServer = getAlertServer
@@ -32,12 +31,12 @@ export class RedeemProcessor {
 
   async loadMapping(rewardId: string): Promise<any | null> {
     try {
-      const exists = await fileManager.fileExists(this.CONTEXT, this.MAP_FILE.replace('{rewardId}', rewardId))
+      const exists = await fileManager.fileExists(this.CONTEXT, { relativePath: this.MAP_FILE.replace('{rewardId}', rewardId) })
       if (!exists) {
         console.warn('[RedeemProcessor] rewards.json not found in alerts context')
         return null
       }
-      const buf = await fileManager.readFile(this.CONTEXT, this.MAP_FILE.replace('{rewardId}', rewardId))
+      const buf = await fileManager.readFile(this.CONTEXT, { relativePath: this.MAP_FILE.replace('{rewardId}', rewardId) })
       const data = JSON.parse(buf.toString())
       return data;
     } catch (e) {
@@ -49,12 +48,12 @@ export class RedeemProcessor {
   async loadTemplate(templateId: string): Promise<any | null> {
     try {
       const templatePath = this.TEMPLATE_FILE.replace('{templateId}', templateId)
-      const exists = await fileManager.fileExists(this.CONTEXT, templatePath)
+      const exists = await fileManager.fileExists(this.CONTEXT, { relativePath: templatePath })
       if (!exists) {
         console.warn(`[RedeemProcessor] Template ${templateId} not found`)
         return null
       }
-      const buf = await fileManager.readFile(this.CONTEXT, templatePath)
+      const buf = await fileManager.readFile(this.CONTEXT, { relativePath: templatePath })
       const template = JSON.parse(buf.toString())
       return template
     } catch (e) {
@@ -90,7 +89,7 @@ export class RedeemProcessor {
 
     // Resolve audio path: if relative, it is under userData/alerts/
     const audioPathInput = def.audioPath
-    let audioBuffer: Buffer
+    let audioBuffer: Buffer = Buffer.from([])
     try {
       audioBuffer = await fileManager.readFile(this.CONTEXT, audioPathInput)
     } catch (e) {
@@ -105,7 +104,7 @@ export class RedeemProcessor {
     }
 
     // Build the payload with template data and variable substitution
-    const alertText = template?.text 
+    const alertText = template?.text
       ? this.replaceVariables(template.text, redemption)
       : `${redemption.userDisplayName} has redeemed ${redemption.rewardTitle}!`
 
@@ -115,7 +114,7 @@ export class RedeemProcessor {
       imageDataUrl: template?.imageDataUrl || undefined,
       text: alertText,
       duration: template?.duration || 6000,
-      
+
       audio: {
         base64: audioBuffer.toString('base64'),
         volume: def.volume ?? 1.0,

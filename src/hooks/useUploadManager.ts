@@ -57,7 +57,7 @@ export function useUploadManager() {
         const fileName = file instanceof File ? file.name : `file_${Date.now()}`
         const buffer = await file.arrayBuffer()
 
-        const result = (await window.uploadManager.uploadFile(
+        const result = (await window.fileManager.save(
           buffer,
           fileName
         )) as UploadResponse

@@ -86,8 +86,8 @@ contextBridge.exposeInMainWorld('chat', {
 
 // File management API for saving/reading files in userData
 contextBridge.exposeInMainWorld('fileManager', {
-  save(context: string, relativePath: string, content: string | Buffer) {
-    return ipcRenderer.invoke('file:save', context, relativePath, content)
+  save(context: string, relativePath: string, content: string | Buffer, userReadable: boolean = false) {
+    return ipcRenderer.invoke('file:save', context, relativePath, content, userReadable)
   },
   read(context: string, relativePath: string, asText: boolean = true) {
     return ipcRenderer.invoke('file:read', context, relativePath, asText)
@@ -97,6 +97,9 @@ contextBridge.exposeInMainWorld('fileManager', {
   },
   exists(context: string, relativePath: string) {
     return ipcRenderer.invoke('file:exists', context, relativePath)
+  },
+  getAll() {
+    return ipcRenderer.invoke("file:getAll");
   }
 })
 
@@ -108,28 +111,6 @@ contextBridge.exposeInMainWorld('languageManager', {
   setLanguage(language: string) {
     return ipcRenderer.invoke('language:set', language)
   }
-})
-
-// File Upload API with UUID references
-contextBridge.exposeInMainWorld('uploadManager', {
-  uploadFile(fileBuffer: Buffer, originalFileName: string) {
-    return ipcRenderer.invoke('upload:file', fileBuffer, originalFileName)
-  },
-  getFile(uuid: string) {
-    return ipcRenderer.invoke('upload:getFile', uuid)
-  },
-  getMetadata(uuid: string) {
-    return ipcRenderer.invoke('upload:getMetadata', uuid)
-  },
-  deleteFile(uuid: string) {
-    return ipcRenderer.invoke('upload:deleteFile', uuid)
-  },
-  getAll() {
-    return ipcRenderer.invoke('upload:getAll')
-  },
-  getPath(uuid: string) {
-    return ipcRenderer.invoke('upload:getPath', uuid)
-  },
 })
 
 // Twitch Events API for real-time chat and redemptions

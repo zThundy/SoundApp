@@ -1,80 +1,128 @@
-import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 import { app } from 'electron';
+import fileManager from './fileManager';
 
 let originalAppPath = app.getPath('userData');
 if (!originalAppPath) originalAppPath = app.getAppPath();
-
-export function loadHtmlPage(pageName: string): string {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-  // check if dev environment
-  if (process.env.NODE_ENV === 'development') {
-    const devPageDir = path.join(__dirname, '../../electron/pages');
-    const devFilePath = path.join(devPageDir, `${pageName}.html`);
-    let htmlContent = readFileSync(devFilePath, 'utf-8');
-    
-    // Inject custom HTML/CSS/JS for chat page
-    if (pageName === 'chat') {
-      htmlContent = injectChatCustomization(htmlContent);
-    }
-    
-    return htmlContent;
-  }
-
-  const pageDir = path.join(__dirname, '../pages');
-  const filePath = path.join(pageDir, `${pageName}.html`);
-  let htmlContent = readFileSync(filePath, 'utf-8');
-  
-  // Inject custom HTML/CSS/JS for chat page
-  if (pageName === 'chat') {
-    htmlContent = injectChatCustomization(htmlContent);
-  }
-  
-  return htmlContent;
+if (process.env.ELECTRON_ENV === 'development' || process.env.NODE_ENV === 'development') {
+  console.debug('[PageLoader] App path set to:', originalAppPath, "replacing to", app.getAppPath());
+  originalAppPath = app.getAppPath();
 }
 
-function injectChatCustomization(htmlContent: string): string {
+const UUID_PATTERN = /\{([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\}/g;
+
+function extnameFromPath(p?: string | null): string {
+  if (!p) return '';
+  const idx = p.lastIndexOf('.');
+  return idx >= 0 ? p.slice(idx).toLowerCase() : '';
+}
+
+function isTextExt(ext: string): boolean {
+  return ['.txt', '.html', '.htm', '.css', '.js', '.json', '.svg', '.md'].includes(ext);
+}
+
+function mimeFromExt(ext: string): string {
+  switch (ext) {
+    case '.png': return 'image/png';
+    case '.jpg':
+    case '.jpeg': return 'image/jpeg';
+    case '.gif': return 'image/gif';
+    case '.webp': return 'image/webp';
+    case '.svg': return 'image/svg+xml';
+    case '.mp3': return 'audio/mpeg';
+    case '.wav': return 'audio/wav';
+    case '.ogg': return 'audio/ogg';
+    case '.mp4': return 'video/mp4';
+    case '.webm': return 'video/webm';
+    case '.txt': return 'text/plain; charset=utf-8';
+    case '.css': return 'text/css; charset=utf-8';
+    case '.js': return 'text/javascript; charset=utf-8';
+    case '.json': return 'application/json; charset=utf-8';
+    case '.html':
+    case '.htm': return 'text/html; charset=utf-8';
+    default: return 'application/octet-stream';
+  }
+}
+
+async function replaceUuidPlaceholders(input: string): Promise<string> {
+  if (!input || typeof input !== 'string') return input;
+  const uuids = new Set<string>();
+  input.replace(UUID_PATTERN, (_m, g1) => {
+    uuids.add(String(g1).toLowerCase());
+    return '';
+  });
+  if (uuids.size === 0) return input;
+
+  let output = input;
+  for (const uuid of uuids) {
+    try {
+      const meta = fileManager.readFileMetadata({ uuid });
+      if (!meta) throw new Error("[PageLoader] replaceUuidPlaceholders: Unable to get file meta")
+      const ext = extnameFromPath(meta?.storagePath || meta?.originalName || '');
+      const buf = await fileManager.readFile(meta.context, { uuid: meta.uuid });
+      if (!buf) continue;
+
+      if (isTextExt(ext)) {
+        const text = buf.toString('utf-8');
+        const re = new RegExp(`\\{${uuid}\\}`, 'gi');
+        output = output.replace(re, () => text);
+      } else {
+        const mime = mimeFromExt(ext);
+        const dataUrl = `data:${mime};base64,${buf.toString('base64')}`;
+        const re = new RegExp(`\\{${uuid}\\}`, 'gi');
+        output = output.replace(re, () => dataUrl);
+      }
+    } catch (e) {
+      console.warn('[PageLoader] Failed to replace UUID', uuid, e);
+    }
+  }
+  console.debug('[PageLoader] UUID placeholders replaced, returning output', output);
+  return output;
+}
+
+export async function loadHtmlPage(pageName: string): Promise<string> {
+  const filePath = path.join(originalAppPath, "electron", 'pages', `${pageName}.html`);
+  console.debug('[PageLoader] Loading HTML page from path:', filePath);
+  let htmlContent = readFileSync(filePath, 'utf-8');
+  return htmlContent as string;
+}
+
+export async function injectCustomization(htmlContent: string): Promise<string> {
   try {
-    const chatPath = `${originalAppPath}/chat`;
-    
-    // Try to load custom HTML/CSS/JS
-    let customHtml = '';
-    let customCss = '';
-    let customJs = '';
-    
-    const htmlPath = path.join(chatPath, 'custom.html');
-    const cssPath = path.join(chatPath, 'custom.css');
-    const jsPath = path.join(chatPath, 'custom.js');
-    
-    if (existsSync(htmlPath)) {
-      customHtml = readFileSync(htmlPath, 'utf-8');
+    let customHtml: string = '';
+    let customCss: string = '';
+    let customJs: string = '';
+
+    if (await fileManager.doesContextExist("chat")) {
+      let customHtmlBuffer = await fileManager.readFile("chat", { relativePath: "custom.html" });
+      customHtml = customHtmlBuffer ? customHtmlBuffer.toString('utf-8') : '';
+      customHtml = await replaceUuidPlaceholders(customHtml);
+      // console.debug('[PageLoader] Loaded custom html', customHtml);
+      let customCssBuffer = await fileManager.readFile("chat", { relativePath: "custom.css" });
+      customCss = customCssBuffer ? customCssBuffer.toString('utf-8') : '';
+      customCss = await replaceUuidPlaceholders(customCss);
+      // console.debug('[PageLoader] Loaded custom css', customCss);
+      let customJsBuffer = await fileManager.readFile("chat", { relativePath: "custom.js" });
+      customJs = customJsBuffer ? customJsBuffer.toString('utf-8') : '';
+      customJs = await replaceUuidPlaceholders(customJs);
+      // console.debug('[PageLoader] Loaded custom js', customJs);
     }
-    
-    if (existsSync(cssPath)) {
-      customCss = readFileSync(cssPath, 'utf-8');
-    }
-    
-    if (existsSync(jsPath)) {
-      customJs = readFileSync(jsPath, 'utf-8');
-    }
-    
-    // Replace placeholders if custom content exists
+
     if (customCss) {
       htmlContent = htmlContent.replace(
         '<!-- Custom style from frontend -->',
         `<style>${customCss}</style>`
       );
     }
-    
+
     if (customHtml) {
       htmlContent = htmlContent.replace(
         '<!-- Custom html from frontend -->',
         customHtml
       );
     }
-    
+
     if (customJs) {
       htmlContent = htmlContent.replace(
         '<!-- Custom js from frontend -->',
@@ -84,6 +132,6 @@ function injectChatCustomization(htmlContent: string): string {
   } catch (err) {
     console.error('[PageLoader] Failed to inject chat customization:', err);
   }
-  
+
   return htmlContent;
 }

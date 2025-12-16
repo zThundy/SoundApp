@@ -49,7 +49,7 @@ const calculateImage = (reward: any) => {
 const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, clearReward, onRefreshRewards }: { reward: any, clearReward: () => void, onRefreshRewards?: () => void }) {
   const { t } = useContext(TranslationContext);
   const { success, error, info, warning } = useContext(NotificationContext);
-  
+
   const [form, setForm] = React.useState<any>(null)
   const lastRewardId = React.useRef<string | null>(null)
   const [backgroundColor, setBackgroundColor] = React.useState<string>('#000000');
@@ -119,7 +119,8 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
           if (typeof settings.muted === 'boolean') setAudioMuted(settings.muted);
           setAudioRelPath(settings.audioPath ?? null);
           if (settings.audioPath) {
-            const exists = await window.fileManager?.exists?.('alerts', settings.audioPath);
+            let relativePath: string = settings.audioPath;
+            const exists = await window.fileManager?.exists?.('alerts', { relativePath });
             if (exists?.ok && exists.exists) {
               const fileRead = await window.fileManager?.read?.('alerts', settings.audioPath, false);
               if (fileRead?.ok && fileRead.data) {
@@ -289,7 +290,7 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
 
   return (
     <Box>
-      <DeleteModal 
+      <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
@@ -356,19 +357,19 @@ const CustomRewardDetails = React.memo(function CustomRewardDetails({ reward, cl
         <StyledBox>
           <Grid size={{ xs: 12, md: 8 }}>
             <Stack direction="column" spacing={2} flexWrap="wrap">
-                <Stack direction="row" spacing={2} alignItems="center">
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={!!form.is_in_stock}
-                        onChange={handleCheckbox('is_in_stock')}
-                        disabled
-                      />}
-                    label={t("redeems.inStock")} />
+              <Stack direction="row" spacing={2} alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!!form.is_in_stock}
+                      onChange={handleCheckbox('is_in_stock')}
+                      disabled
+                    />}
+                  label={t("redeems.inStock")} />
                 <Tooltip title={t("redeems.inStockInfo")} placement="right">
-                    <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
-                  </Tooltip>
-                </Stack>
+                  <Info fontSize={"inherit"} style={{ cursor: 'pointer' }} />
+                </Tooltip>
+              </Stack>
 
               <Stack direction="row" spacing={2} alignItems="center">
                 <FormControlLabel

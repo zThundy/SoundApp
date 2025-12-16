@@ -46,7 +46,7 @@ class TwitchEventListener {
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
   private keepaliveTimer: NodeJS.Timeout | null = null;
-  
+
   private chatMessages: ChatMessage[] = [];
   private rewardRedemptions: RewardRedemption[] = [];
   private readonly MAX_CACHE_SIZE = 50;
@@ -60,25 +60,25 @@ class TwitchEventListener {
 
   private async loadCache(): Promise<void> {
     try {
-      const exists = await fileManager.fileExists(this.CACHE_CONTEXT, this.CACHE_FILE);
+      const exists = await fileManager.fileExists(this.CACHE_CONTEXT, { relativePath: this.CACHE_FILE });
       if (!exists) {
         console.debug('[TwitchEventListener] No cache file found, starting fresh');
         return;
       }
 
-      const data = await fileManager.readFile(this.CACHE_CONTEXT, this.CACHE_FILE);
+      const data = await fileManager.readFile(this.CACHE_CONTEXT, { relativePath: this.CACHE_FILE });
       const cache: TwitchCache = JSON.parse(data.toString());
-      
+
       this.chatMessages = cache.messages.map(msg => ({
         ...msg,
         timestamp: new Date(msg.timestamp)
       }));
-      
+
       this.rewardRedemptions = cache.redemptions.map(redemption => ({
         ...redemption,
         timestamp: new Date(redemption.timestamp)
       }));
-      
+
       console.debug(`[TwitchEventListener] Cache loaded: ${this.chatMessages.length} messages, ${this.rewardRedemptions.length} redemptions`);
     } catch (error) {
       console.error('[TwitchEventListener] Failed to load cache:', error);
@@ -91,8 +91,8 @@ class TwitchEventListener {
         messages: this.chatMessages,
         redemptions: this.rewardRedemptions
       };
-      
-      await fileManager.writeFile(this.CACHE_CONTEXT, this.CACHE_FILE, JSON.stringify(cache, null, 2));
+
+      await fileManager.writeFile(this.CACHE_CONTEXT, { relativePath: this.CACHE_FILE }, JSON.stringify(cache, null, 2));
       console.debug('[TwitchEventListener] Cache saved');
     } catch (error) {
       console.error('[TwitchEventListener] Failed to save cache:', error);
@@ -137,7 +137,7 @@ class TwitchEventListener {
         try {
           const message = JSON.parse(data.toString());
           await this.handleMessage(message);
-          
+
           if (message.metadata?.message_type === 'session_welcome') {
             resolve();
           }
@@ -152,12 +152,12 @@ class TwitchEventListener {
 
       this.ws.on('close', (code, reason) => {
         console.debug(`[TwitchEventListener] WebSocket closed - Code: ${code}, Reason: ${reason.toString()}`);
-        
+
         if (this.keepaliveTimer) {
           clearTimeout(this.keepaliveTimer);
           this.keepaliveTimer = null;
         }
-        
+
         this.handleReconnect();
       });
 
@@ -323,7 +323,7 @@ class TwitchEventListener {
     if (this.rewardRedemptions.length > this.MAX_CACHE_SIZE) {
       this.rewardRedemptions.pop();
     }
-    
+
     this.saveCache();
 
     if (this.mainWindow) {
@@ -348,7 +348,7 @@ class TwitchEventListener {
     if (this.chatMessages.length > this.MAX_CACHE_SIZE) {
       this.chatMessages.shift();
     }
-    
+
     this.saveCache();
 
     if (this.mainWindow) {
@@ -414,7 +414,7 @@ class TwitchEventListener {
 
   disconnect(): void {
     console.debug('[TwitchEventListener] Disconnecting...');
-    
+
     if (this.keepaliveTimer) {
       clearTimeout(this.keepaliveTimer);
       this.keepaliveTimer = null;

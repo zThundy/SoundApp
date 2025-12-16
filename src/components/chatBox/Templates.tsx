@@ -36,7 +36,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 const Templates = ({
   saveChatCustomization
 }: {
-  saveChatCustomization: (css?: string, html?: string, js?: string) => Promise<void>;
+  saveChatCustomization: (html: string, css: string, js: string) => Promise<void>;
 }) => {
   const { t } = useContext(TranslationContext);
   const [templates, setTemplates] = useState<ChatBoxTemplate[]>([]);
@@ -56,7 +56,7 @@ const Templates = ({
   }
 
   const handleChangeToTemplate = (template: ChatBoxTemplate) => {
-    saveChatCustomization(template.css, template.html, template.js);
+    saveChatCustomization(template.html, template.css, template.js);
     setShowModal(false);
   }
 

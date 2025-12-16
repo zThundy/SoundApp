@@ -204,27 +204,18 @@ body {
     }
   }
 
-  async function saveChatCustomization(css?: string, html?: string, js?: string) {
+  async function saveChatCustomization(html: string, css: string, js: string) {
     try {
-      let localRawHtml = rawHtml;
-      let localRawCss = rawCss;
-      let localRawJs = rawJs;
-      if (html !== undefined) {
-        localRawHtml = html;
-        setRawHtml(html);
-      }
-      if (css !== undefined) {
-        localRawCss = css;
-        setRawCss(css);
-      }
-      if (js !== undefined) {
-        localRawJs = js;
-        setRawJs(js);
-      }
-      console.log('[ChatBox] Saving custom HTML/CSS/JS...', { localRawHtml, localRawCss, localRawJs });
-      const res = await window.chat?.saveHtml(localRawHtml, localRawCss, localRawJs);
+      console.log('[ChatBox] Saving custom HTML/CSS/JS...');
+      console.log(html);
+      console.log(css);
+      console.log(js);
+      const res = await window.chat?.saveHtml(html, css, js);
       if (res?.ok) {
         success(t("common.saved"));
+        setRawHtml(html);
+        setRawCss(css);
+        setRawJs(js);
       } else {
         error(t("common.error"), res?.error);
       }
@@ -248,7 +239,7 @@ body {
           <Box p={2} className={style.container}>
             {tab === 0 && (
               <Templates
-                saveChatCustomization={saveChatCustomization}
+                saveChatCustomization={(html: string, css: string, js: string) => saveChatCustomization(html, css, js)}
               />
             )}
             {tab === 1 && (
@@ -259,7 +250,7 @@ body {
                 setRawCss={setRawCss}
                 rawJs={rawJs}
                 setRawJs={setRawJs}
-                saveChatCustomization={saveChatCustomization}
+                saveChatCustomization={() => saveChatCustomization(rawHtml, rawCss, rawJs)}
               />
             )}
           </Box>
@@ -347,60 +338,7 @@ body {
                 <iframe
                   ref={iframeRef}
                   title={t("chatBox.previewIframeTitle")}
-                  srcDoc={`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                      <style>
-                        * { margin: 0; padding: 0; box-sizing: border-box; }
-                        body { width: 100%; height: 100%; overflow: hidden; }
-                        ${rawCss}
-                      </style>
-                    </head>
-                    <body>
-                      ${rawHtml}
-                      <script>
-                        // Listen for test messages from parent
-                        window.addEventListener('message', function(event) {
-                          if (event.data && event.data.type === 'test-message') {
-                            const messagesContainer = document.getElementById('messages');
-                            if (messagesContainer && typeof addMessage === 'function') {
-                              addMessage(event.data.username, event.data.message, event.data.color);
-                            } else if (messagesContainer) {
-                              // Fallback if addMessage doesn't exist
-                              const messageEl = document.createElement('div');
-                              messageEl.className = 'message';
-                              
-                              const usernameEl = document.createElement('span');
-                              usernameEl.className = 'username';
-                              usernameEl.textContent = event.data.username + ':';
-                              usernameEl.style.color = event.data.color;
-                              
-                              const textEl = document.createElement('span');
-                              textEl.className = 'message-text';
-                              textEl.textContent = ' ' + event.data.message;
-                              
-                              messageEl.appendChild(usernameEl);
-                              messageEl.appendChild(textEl);
-                              messagesContainer.appendChild(messageEl);
-                              
-                              messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                              
-                              const MAX_MESSAGES = 50;
-                              while (messagesContainer.children.length > MAX_MESSAGES) {
-                                messagesContainer.removeChild(messagesContainer.firstChild);
-                              }
-                            }
-
-                            if (onChatMessage && typeof onChatMessage === 'function') onChatMessage(event.data);
-                          }
-                        });
-                        
-                        ${rawJs}
-                      </script>
-                    </body>
-                    </html>
-                  `}
+                  src={chatServerUrl}
                   style={{ width: '100%', height: '100%', minHeight: '300px', border: 'none' }}
                 />
               </Box>

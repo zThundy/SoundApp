@@ -1,5 +1,6 @@
 import http from 'node:http';
 import { loadHtmlPage } from './pageLoader';
+import { injectCustomization } from './pageLoader';
 
 interface SseClient {
   id: number;
@@ -18,7 +19,7 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
     const clients: SseClient[] = [];
     const sockets = new Set<import('net').Socket>();
 
-    const server = http.createServer((req, res) => {
+    const server = http.createServer(async (req, res) => {
       const origin = req.headers.origin;
 
       if (origin && /^http:\/\/localhost(:\d+)?$/.test(origin)) {
@@ -70,7 +71,8 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
       if (pathname === '/alerts') {
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         try {
-          const htmlContent = loadHtmlPage('alerts');
+          let htmlContent = await loadHtmlPage('alerts');
+          htmlContent = await injectCustomization(htmlContent);
           res.end(htmlContent);
         } catch (err) {
           console.error('Failed to load alerts page:', err);
@@ -83,7 +85,8 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
       if (pathname === "/chat") {
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         try {
-          const htmlContent = loadHtmlPage('chat');
+          let htmlContent = await loadHtmlPage('chat');
+          htmlContent = await injectCustomization(htmlContent);
           res.end(htmlContent);
         } catch (err) {
           console.error('Failed to load chat page:', err);
