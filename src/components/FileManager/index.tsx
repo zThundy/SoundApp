@@ -19,7 +19,7 @@ import DeleteModal from '@/components/redeems/DeleteModal'
 import { useUploadManager } from '../../hooks/useUploadManager'
 import { TranslationContext } from '@/i18n/TranslationProvider'
 
-interface FileItem {
+interface FileMetadata {
   uuid: string
   originalName: string
   storagePath: string
@@ -28,7 +28,7 @@ interface FileItem {
 
 export function FileManager() {
   const { t } = useContext(TranslationContext)
-  const [files, setFiles] = useState<FileItem[]>([])
+  const [files, setFiles] = useState<FileMetadata[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -41,9 +41,12 @@ export function FileManager() {
     setLoading(true)
     setError(null)
     try {
-      const files = await getAll()
-      console.log('Fetched files:', files)
-      setFiles(files)
+      const all = await getAll()
+      const asArray: FileMetadata[] = Array.isArray(all)
+        ? all as FileMetadata[]
+        : Array.from((all as Map<string, FileMetadata>).values())
+      console.log('Fetched files:', asArray)
+      setFiles(asArray)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
       setError(message)

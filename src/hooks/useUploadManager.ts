@@ -7,42 +7,6 @@ interface FileMetadata {
   uploadedAt: number
 }
 
-interface UploadResponse {
-  ok: boolean
-  uuid?: string
-  error?: string
-}
-
-interface FileResponse {
-  ok: boolean
-  data?: Buffer
-  error?: string
-}
-
-interface MetadataResponse {
-  ok: boolean
-  metadata?: FileMetadata
-  error?: string
-}
-
-interface DeleteResponse {
-  ok: boolean
-  message?: string
-  error?: string
-}
-
-interface FilesResponse {
-  ok: boolean
-  files?: FileMetadata[]
-  error?: string
-}
-
-interface PathResponse {
-  ok: boolean
-  path?: string
-  error?: string
-}
-
 export function useUploadManager() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -56,11 +20,7 @@ export function useUploadManager() {
       try {
         const fileName = file instanceof File ? file.name : `file_${Date.now()}`
         const buffer = await file.arrayBuffer()
-
-        const result = (await window.fileManager.save(
-          buffer,
-          fileName
-        )) as UploadResponse
+        const result = await window.fileManager.save("files", fileName, new Uint8Array(buffer) as any, true)
 
         if (!result.ok) {
           setError(result.error || 'Upload failed')
@@ -79,12 +39,12 @@ export function useUploadManager() {
     []
   )
 
-  const getFile = useCallback(async (uuid: string): Promise<Buffer | null> => {
+  const getFile = useCallback(async (uuid: string): Promise<Buffer | null | string> => {
     setLoading(true)
     setError(null)
 
     try {
-      const result = (await window.uploadManager.getFile(uuid)) as FileResponse
+      const result = await window.fileManager.read("files", { uuid })
 
       if (!result.ok) {
         setError(result.error || 'Failed to retrieve file')
@@ -106,7 +66,7 @@ export function useUploadManager() {
     setError(null)
 
     try {
-      const result = (await window.uploadManager.getMetadata(uuid)) as MetadataResponse
+      const result = await window.fileManager.read("files", { uuid })
 
       if (!result.ok) {
         setError(result.error || 'Failed to retrieve metadata')
@@ -128,7 +88,7 @@ export function useUploadManager() {
     setError(null)
 
     try {
-      const result = (await window.uploadManager.deleteFile(uuid)) as DeleteResponse
+      const result = await window.fileManager.delete("files", { uuid })
 
       if (!result.ok) {
         setError(result.error || 'Failed to delete file')
@@ -145,45 +105,23 @@ export function useUploadManager() {
     }
   }, [])
 
-  const getAll = useCallback(async (): Promise<FileMetadata[]> => {
+  const getAll = useCallback(async (): Promise<Map<string, FileMetadata> | []> => {
     setLoading(true)
     setError(null)
 
     try {
-      const result = (await window.uploadManager.getAll()) as FilesResponse
+      const result = await window.fileManager.getAll()
 
       if (!result.ok) {
         setError(result.error || 'Failed to retrieve files')
-        return []
+        return new Map()
       }
 
-      return result.files || []
+      return result.data || []
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
       setError(message)
       return []
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  const getPath = useCallback(async (uuid: string): Promise<string | null> => {
-    setLoading(true)
-    setError(null)
-
-    try {
-      const result = (await window.uploadManager.getPath(uuid)) as PathResponse
-
-      if (!result.ok) {
-        setError(result.error || 'Failed to retrieve path')
-        return null
-      }
-
-      return result.path || null
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Unknown error'
-      setError(message)
-      return null
     } finally {
       setLoading(false)
     }
@@ -195,7 +133,6 @@ export function useUploadManager() {
     getMetadata,
     deleteFile,
     getAll,
-    getPath,
     loading,
     error,
   }

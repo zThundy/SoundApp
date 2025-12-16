@@ -1,5 +1,14 @@
 /// <reference types="vite/client" />
 
+interface FileMapping {
+  uuid: string
+  originalName: string
+  storagePath: string
+  context: string
+  uploadedAt: number
+  userReadable: boolean
+}
+
 interface Window {
   // expose in the `electron/preload/index.ts`
   ipcRenderer: import('electron').IpcRenderer
@@ -22,8 +31,8 @@ interface Window {
   }
 
   fileManager: {
-    save(context: string, relativePath: string, content: string | Buffer, userReadable?: boolean): Promise<{ ok: boolean; error?: string }>;
-    read(context: string, options: { relativePath?: string, uuid?: string }, asText: boolean): Promise<{ ok: boolean; data?: string | Buffer; error?: string }>
+    save(context: string, relativePath: string, content: string | Buffer, userReadable?: boolean): Promise<{ ok: boolean; error?: string, uuid: string }>;
+    read(context: string, options: { relativePath?: string, uuid?: string }, asText?: boolean): Promise<{ ok: boolean; data?: string | Buffer; error?: string, metadata: FileMapping | undefined }>
     delete(context: string, options: { relativePath?: string, uuid?: string }): Promise<{ ok: boolean; error?: string }>;
     exists(context: string, options: { relativePath?: string, uuid?: string }): Promise<{ ok: boolean; exists?: boolean; error?: string }>
     getAll(): Promise<{ ok: boolean; error?: string, data?: Map<string, FileMapping> }>;
