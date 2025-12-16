@@ -36,8 +36,8 @@ class Logger {
       fs.mkdirSync(logsDir, { recursive: true })
     }
 
-    // Create log file paths with timestamp
-    const timestamp = new Date().toISOString().replace(/:/g, '-').split('.')[0]
+    // Create log file paths with date only
+    const timestamp = new Date().toISOString().split('T')[0]
     this.logFilePath = path.join(logsDir, `app-${timestamp}.log`)
     this.errorLogFilePath = path.join(logsDir, `error-${timestamp}.log`)
 
