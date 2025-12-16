@@ -23,9 +23,8 @@
         
         if (data.type === "twitch-chat") {
           addMessage(data.username, data.message, data.color);
+          if (onChatMessage) onChatMessage(data);
         }
-
-        if (onChatMessage) onChatMessage(data);
       } catch (e) {
         console.error('Bad payload', e, ev.data);
       }
