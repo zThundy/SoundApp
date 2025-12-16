@@ -36,7 +36,8 @@ export class RedeemProcessor {
         console.warn('[RedeemProcessor] rewards.json not found in alerts context')
         return null
       }
-      const buf = await fileManager.readFile(this.CONTEXT, { relativePath: this.MAP_FILE.replace('{rewardId}', rewardId) })
+      const { buffer } = fileManager.readFile(this.CONTEXT, { relativePath: this.MAP_FILE.replace('{rewardId}', rewardId) })
+      const buf = await buffer;
       const data = JSON.parse(buf.toString())
       return data;
     } catch (e) {
@@ -53,7 +54,8 @@ export class RedeemProcessor {
         console.warn(`[RedeemProcessor] Template ${templateId} not found`)
         return null
       }
-      const buf = await fileManager.readFile(this.CONTEXT, { relativePath: templatePath })
+      const { buffer } = fileManager.readFile(this.CONTEXT, { relativePath: templatePath })
+      const buf = await buffer;
       const template = JSON.parse(buf.toString())
       return template
     } catch (e) {
@@ -91,7 +93,8 @@ export class RedeemProcessor {
     const audioPathInput = def.audioPath
     let audioBuffer: Buffer = Buffer.from([])
     try {
-      audioBuffer = await fileManager.readFile(this.CONTEXT, audioPathInput)
+      const { buffer } = fileManager.readFile(this.CONTEXT, audioPathInput);
+      audioBuffer = await buffer;
     } catch (e) {
       console.error('[RedeemProcessor] Audio file missing or unreadable:', audioPathInput, '->', e)
       return false

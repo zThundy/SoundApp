@@ -26,7 +26,8 @@ class WindowStateManager {
     try {
       const exists = await fileManager.fileExists(STATE_CONTEXT, { relativePath: STATE_FILE });
       if (exists) {
-        const data = await fileManager.readFile(STATE_CONTEXT, { relativePath: STATE_FILE });
+        const { buffer } = fileManager.readFile(STATE_CONTEXT, { relativePath: STATE_FILE });
+        const data = await buffer;
         const parsedState = JSON.parse(data.toString()) as WindowState;
 
         this.state = {

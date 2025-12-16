@@ -60,7 +60,8 @@ async function replaceUuidPlaceholders(input: string): Promise<string> {
       const meta = fileManager.readFileMetadata({ uuid });
       if (!meta) throw new Error("[PageLoader] replaceUuidPlaceholders: Unable to get file meta")
       const ext = extnameFromPath(meta?.storagePath || meta?.originalName || '');
-      const buf = await fileManager.readFile(meta.context, { uuid: meta.uuid });
+      const { buffer } = fileManager.readFile(meta.context, { uuid: meta.uuid });
+      const buf = await buffer;
       if (!buf) continue;
 
       if (isTextExt(ext)) {
@@ -95,15 +96,18 @@ export async function injectCustomization(htmlContent: string): Promise<string> 
     let customJs: string = '';
 
     if (await fileManager.doesContextExist("chat")) {
-      let customHtmlBuffer = await fileManager.readFile("chat", { relativePath: "custom.html" });
+      const { buffer: customHtmlBufferPromise } = fileManager.readFile("chat", { relativePath: "custom.html" });
+      let customHtmlBuffer = await customHtmlBufferPromise;
       customHtml = customHtmlBuffer ? customHtmlBuffer.toString('utf-8') : '';
       customHtml = await replaceUuidPlaceholders(customHtml);
       // console.debug('[PageLoader] Loaded custom html', customHtml);
-      let customCssBuffer = await fileManager.readFile("chat", { relativePath: "custom.css" });
+      const { buffer: customCssBufferPromise } = fileManager.readFile("chat", { relativePath: "custom.css" });
+      let customCssBuffer = await customCssBufferPromise;
       customCss = customCssBuffer ? customCssBuffer.toString('utf-8') : '';
       customCss = await replaceUuidPlaceholders(customCss);
       // console.debug('[PageLoader] Loaded custom css', customCss);
-      let customJsBuffer = await fileManager.readFile("chat", { relativePath: "custom.js" });
+      const { buffer: customJsBufferPromise } = fileManager.readFile("chat", { relativePath: "custom.js" });
+      let customJsBuffer = await customJsBufferPromise;
       customJs = customJsBuffer ? customJsBuffer.toString('utf-8') : '';
       customJs = await replaceUuidPlaceholders(customJs);
       // console.debug('[PageLoader] Loaded custom js', customJs);

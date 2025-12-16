@@ -19,13 +19,14 @@ export function registerLanguageHandlers() {
         return { language: DEFAULT_LANGUAGE };
       }
 
-      const data = await fileManager.readFile(LANGUAGE_CONTEXT, { relativePath: LANGUAGE_FILE });
+      const { buffer } = fileManager.readFile(LANGUAGE_CONTEXT, { relativePath: LANGUAGE_FILE });
+      const data = await buffer;
       const config: LanguageConfig = JSON.parse(data.toString());
 
-      console.debug('[LanguageHandlers] Lingua caricata:', config.language);
+      console.debug('[LanguageHandlers] Loaded language:', config.language);
       return { language: config.language || DEFAULT_LANGUAGE };
     } catch (error) {
-      console.error('[LanguageHandlers] Errore nel caricamento della lingua:', error);
+      console.error('[LanguageHandlers] Error while trying to load the language:', error);
       return { language: DEFAULT_LANGUAGE };
     }
   });

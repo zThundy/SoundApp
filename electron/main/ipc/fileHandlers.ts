@@ -4,8 +4,8 @@ import fileManager from '../fileManager'
 export function registerFileHandlers() {
   ipcMain.handle('file:save', async (_evt, context: string, relativePath: string, content: string | Buffer, userReadable) => {
     try {
-      await fileManager.writeFile(context, { relativePath }, content, userReadable)
-      return { ok: true }
+      const { uuid, promise } = await fileManager.writeFile(context, { relativePath }, content, userReadable)
+      return { ok: true, uuid }
     } catch (err: any) {
       console.error('[FileManager] Save error:', err)
       return { ok: false, error: err?.message ?? 'Failed to save file' }
@@ -14,9 +14,11 @@ export function registerFileHandlers() {
 
   ipcMain.handle('file:read', async (_evt, context: string, options: { relativePath?: string, uuid?: string }, asText: boolean = true) => {
     try {
-      const buffer = await fileManager.readFile(context, options)
-      const data = asText ? buffer.toString('utf-8') : buffer
-      return { ok: true, data }
+      const { buffer } = fileManager.readFile(context, options);
+      const buf = await buffer;
+      const data = asText ? buf.toString('utf-8') : buf
+      const metadata = fileManager.readFileMetadata(options);
+      return { ok: true, data, metadata }
     } catch (err: any) {
       console.error('[FileManager] Read error:', err)
       return { ok: false, error: err?.message ?? 'Failed to read file' }

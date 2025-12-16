@@ -121,7 +121,7 @@ class FileManager {
     return undefined;
   }
 
-  async writeFile(context: string, options: { relativePath: string, uuid?: string }, data: Buffer | string, userReadable: boolean = false): Promise<void> {
+  async writeFile(context: string, options: { relativePath: string, uuid?: string }, data: Buffer | string, userReadable: boolean = false): Promise<{ uuid: string, promise: Promise<void> }> {
     console.debug("[FileManager] Writing file with options", JSON.stringify(options), "user readable", userReadable)
     let fileMetadata: FileMapping | undefined = this.readFileMetadata(options);
     const fileName = options.relativePath.substring(options.relativePath.lastIndexOf('/') + 1);
@@ -140,10 +140,10 @@ class FileManager {
     const fullPath = `${appPath}/${fileMetadata.storagePath}`;
     this.createFolderAndSubfolders(fullPath);
     this.createFileIfNotExists(fullPath);
-    return fs.promises.writeFile(fullPath, data);
+    return { uuid: options.uuid!, promise: fs.promises.writeFile(fullPath, data) };
   }
 
-  async readFile(context: string, options: { relativePath?: string, uuid?: string }): Promise<any> {
+  readFile(context: string, options: { relativePath?: string, uuid?: string }): { meta: FileMapping | undefined, buffer: Promise<Buffer> } {
     let appPath = this.initFileContext(context);
 
     let fileMetadata: FileMapping | undefined = this.readFileMetadata(options);
@@ -152,7 +152,7 @@ class FileManager {
     const fullPath = `${appPath}/${fileMetadata.storagePath}`;
     this.createFolderAndSubfolders(fullPath);
     this.createFileIfNotExists(fullPath);
-    return fs.promises.readFile(fullPath);
+    return { meta: fileMetadata, buffer: fs.promises.readFile(fullPath) };
   }
 
   async deleteFile(context: string, options: { relativePath?: string, uuid?: string }): Promise<void> {

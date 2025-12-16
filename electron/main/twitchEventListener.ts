@@ -66,7 +66,8 @@ class TwitchEventListener {
         return;
       }
 
-      const data = await fileManager.readFile(this.CACHE_CONTEXT, { relativePath: this.CACHE_FILE });
+      const { buffer } = fileManager.readFile(this.CACHE_CONTEXT, { relativePath: this.CACHE_FILE });
+      const data = await buffer;
       const cache: TwitchCache = JSON.parse(data.toString());
 
       this.chatMessages = cache.messages.map(msg => ({

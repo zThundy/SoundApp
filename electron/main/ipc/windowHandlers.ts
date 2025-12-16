@@ -9,7 +9,8 @@ export async function registerWindowHandlers(getMainWindow: () => BrowserWindow 
   let settings: any = {}
   if (exists) {
     try {
-      const data = await fileManager.readFile(SETTINGS_CONTEXT, { relativePath: SETTINGS_FILE });
+      const { buffer } = fileManager.readFile(SETTINGS_CONTEXT, { relativePath: SETTINGS_FILE });
+      const data = await buffer;
       settings = JSON.parse(data.toString());
     } catch (e) {
       console.error('[WindowHandlers] Errore nel caricamento delle impostazioni:', e);

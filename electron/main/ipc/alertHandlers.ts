@@ -70,7 +70,8 @@ export function registerAlertHandlers(
         const meta = fileManager.readFileMetadata({ uuid })
         if (!meta) throw new Error("[AlertHandlers] Unable to get file meta");
         const ext = extnameFromPath(meta?.storagePath || meta?.originalName || '')
-        const buf = await fileManager.readFile(meta.context, { uuid })
+        const { buffer } = await fileManager.readFile(meta.context, { uuid });
+        const buf = await buffer;
         if (!buf) continue
 
         if (isTextExt(ext)) {
@@ -182,7 +183,8 @@ export function registerAlertHandlers(
         console.debug('[AlertHandlers] Template not found:', templateId)
         return { ok: true, template: null }
       }
-      const buf = await fileManager.readFile('alerts', { relativePath: templatePath })
+      const { buffer } = fileManager.readFile('alerts', { relativePath: templatePath });
+      const buf = await buffer;
       const template = JSON.parse(buf.toString()) as AlertTemplate
       console.debug('[AlertHandlers] Template loaded:', templateId)
       return { ok: true, template }
@@ -215,15 +217,18 @@ export function registerAlertHandlers(
       let html = '', css = '', js = ''
 
       if (htmlExists) {
-        const buf = await fileManager.readFile('chat', { relativePath: 'custom.html' })
+        const { buffer } = fileManager.readFile('chat', { relativePath: 'custom.html' });
+        const buf = await buffer;
         html = buf.toString()
       }
       if (cssExists) {
-        const buf = await fileManager.readFile('chat', { relativePath: 'custom.css' })
+        const { buffer } = fileManager.readFile('chat', { relativePath: 'custom.css' });
+        const buf = await buffer;
         css = buf.toString()
       }
       if (jsExists) {
-        const buf = await fileManager.readFile('chat', { relativePath: 'custom.js' })
+        const { buffer } = fileManager.readFile('chat', { relativePath: 'custom.js' });
+        const buf = await buffer;
         js = buf.toString()
       }
 
