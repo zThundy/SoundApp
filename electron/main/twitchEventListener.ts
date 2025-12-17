@@ -17,24 +17,29 @@ interface ChatMessage {
   timestamp: Date;
   color?: string;
   badges?: string[];
+  messageFragment: Object
 }
 
-interface RewardRedemption {
-  id: string;
+interface Alert {
+  type: string;
+  templateId: string;
+  id?: string;
   userId: string;
   username: string;
   userDisplayName: string;
-  rewardId: string;
-  rewardTitle: string;
-  rewardCost: number;
+  rewardId?: string;
+  rewardTitle?: string;
+  rewardCost?: number;
   userInput?: string;
   timestamp: Date;
-  status: 'unfulfilled' | 'fulfilled' | 'canceled';
+  tier?: number;
+  is_gift?: boolean;
+  status?: 'unfulfilled' | 'fulfilled' | 'canceled';
 }
 
 interface TwitchCache {
   messages: ChatMessage[];
-  redemptions: RewardRedemption[];
+  redemptions: Alert[];
 }
 
 class TwitchEventListener {
@@ -48,7 +53,7 @@ class TwitchEventListener {
   private keepaliveTimer: NodeJS.Timeout | null = null;
 
   private chatMessages: ChatMessage[] = [];
-  private rewardRedemptions: RewardRedemption[] = [];
+  private rewardRedemptions: Alert[] = [];
   private readonly MAX_CACHE_SIZE = 50;
   private readonly CACHE_FILE = 'twitch-cache.json';
   private readonly CACHE_CONTEXT = 'twitch';
@@ -104,7 +109,7 @@ class TwitchEventListener {
     return [...this.chatMessages];
   }
 
-  getCachedRedemptions(): RewardRedemption[] {
+  getCachedRedemptions(): Alert[] {
     return [...this.rewardRedemptions];
   }
 
@@ -232,6 +237,43 @@ class TwitchEventListener {
           broadcaster_user_id: this.config.broadcasterId,
           user_id: this.config.broadcasterId
         }
+      },
+      {
+        type: 'channel.follow',
+        version: '2',
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+          moderator_user_id: this.config.broadcasterId
+          // user_id: this.config.broadcasterId
+        }
+      },
+      {
+        type: 'channel.subscribe',
+        version: '1',
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+        }
+      },
+      {
+        type: 'channel.subscription.end',
+        version: '1',
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+        }
+      },
+      {
+        type: 'channel.subscription.gift',
+        version: '1',
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+        }
+      },
+      {
+        type: 'channel.subscription.message',
+        version: '1',
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+        }
       }
     ];
 
@@ -281,15 +323,55 @@ class TwitchEventListener {
   private async handleNotification(message: any): Promise<void> {
     const subscriptionType = message.metadata.subscription_type;
     const event = message.payload.event;
-
+    
+    console.debug("[TwitchEventListener] Got notification with data: ", event)
     switch (subscriptionType) {
       case 'channel.channel_points_custom_reward_redemption.add':
       case 'channel.channel_points_custom_reward_redemption.update':
-        this.handleRewardRedemption(event);
+        // TODO: add templateId in this redemption so that we can filter the type of redemption
+        this.handleAlertNotification({
+          type: "reward",
+          templateId: "default-soundAlert",
+          id: event.id,
+          userId: event.user_id,
+          username: event.user_login,
+          userDisplayName: event.user_name,
+          rewardId: event.reward.id,
+          rewardTitle: event.reward.title,
+          rewardCost: event.reward.cost,
+          userInput: event.user_input,
+          timestamp: new Date(event.redeemed_at),
+          status: event.status
+        });
         break;
 
       case 'channel.chat.message':
         this.handleChatMessage(event);
+        break;
+      
+      case "channel.follow":
+        this.handleAlertNotification({
+          type: "follow",
+          templateId: "default-follow",
+          userId: event.user_id,
+          username: event.user_login,
+          userDisplayName: event.user_name,
+          timestamp: new Date(event.redeemed_at)
+        });
+        break;
+      
+      case "channel.subscribe":
+        this.handleAlertNotification({
+          type: "subscriber",
+          templateId: "default-subscriber",
+          userId: event.user_id,
+          username: event.user_login,
+          userDisplayName: event.user_name,
+          tier: event.tier,
+          is_gift: event.is_gift,
+          timestamp: new Date(event.redeemed_at)
+        });
+        this.handleAlertNotification(event);
         break;
 
       default:
@@ -297,30 +379,16 @@ class TwitchEventListener {
     }
   }
 
-  private handleRewardRedemption(event: any): void {
-    const redemption: RewardRedemption = {
-      id: event.id,
-      userId: event.user_id,
-      username: event.user_login,
-      userDisplayName: event.user_name,
-      rewardId: event.reward.id,
-      rewardTitle: event.reward.title,
-      rewardCost: event.reward.cost,
-      userInput: event.user_input,
-      timestamp: new Date(event.redeemed_at),
-      status: event.status
-    };
-
-    console.debug('Reward redeemed:', redemption);
-
+  private handleAlertNotification(alert: Alert): void {
+    console.debug('[TwitchEventListener] Handling alert notification with data:', alert);
     try {
       const processor = getRedeemProcessor()
-      processor?.process(redemption)
+      processor?.process(alert)
     } catch (e) {
       console.error('[TwitchEventListener] Failed to process redemption locally:', e)
     }
 
-    this.rewardRedemptions.unshift(redemption);
+    this.rewardRedemptions.unshift(alert);
     if (this.rewardRedemptions.length > this.MAX_CACHE_SIZE) {
       this.rewardRedemptions.pop();
     }
@@ -328,11 +396,12 @@ class TwitchEventListener {
     this.saveCache();
 
     if (this.mainWindow) {
-      this.mainWindow.webContents.send('twitch:reward-redeemed', redemption);
+      this.mainWindow.webContents.send('twitch:reward-redeemed', alert);
     }
   }
 
   private handleChatMessage(event: any): void {
+    console.debug("[TwitchEventListener] Received a new chat message with data: ", event, event.message.fragments)
     const chatMessage: ChatMessage = {
       userId: event.chatter_user_id,
       username: event.chatter_user_login,
@@ -340,10 +409,12 @@ class TwitchEventListener {
       message: event.message.text,
       timestamp: new Date(),
       color: event.color,
-      badges: event.badges?.map((b: any) => b.set_id) || []
+      badges: event.badges?.map((b: any) => b.set_id) || [],
+      // TODO: decide if to save messageFragment.type = "emote", to local file system for caching or fetching it every time
+      messageFragment: event.message.fragments
     };
 
-    console.debug('Chat message:', chatMessage);
+    console.debug('[TwitchEventListener] Chat message:', chatMessage);
 
     this.chatMessages.push(chatMessage);
     if (this.chatMessages.length > this.MAX_CACHE_SIZE) {
@@ -438,4 +509,4 @@ class TwitchEventListener {
 }
 
 export { TwitchEventListener };
-export type { ChatMessage, RewardRedemption };
+export type { ChatMessage, Alert };

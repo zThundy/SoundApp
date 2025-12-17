@@ -61,10 +61,14 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
       const scopes = [
         "channel:read:redemptions",
         "channel:manage:redemptions",
+        "channel:read:subscriptions",
         "user:read:chat",
         "moderator:read:chatters",
+        "moderator:read:followers",
         "chat:read",
-        "chat:edit"
+        "chat:edit",
+        "user:read:follows",
+        "user:read:subscriptions",
       ].join(' ')
 
       const forceVerify = false
