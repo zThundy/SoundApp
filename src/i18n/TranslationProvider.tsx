@@ -44,10 +44,8 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
         const result = await (window as any).languageManager?.getLanguage();
         if (result?.language) {
           setLanguageState(result.language);
-          console.log('[TranslationProvider] Lingua caricata:', result.language);
         }
       } catch (error) {
-        console.error('[TranslationProvider] Errore nel caricamento della lingua:', error);
       }
     };
     loadSavedLanguage();
@@ -63,9 +61,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setLanguageState(lang);
     try {
       await (window as any).languageManager?.setLanguage(lang);
-      console.log('[TranslationProvider] Lingua salvata:', lang);
     } catch (error) {
-      console.error('[TranslationProvider] Errore nel salvataggio della lingua:', error);
     }
   }, []);
 
