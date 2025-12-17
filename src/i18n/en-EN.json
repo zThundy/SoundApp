@@ -73,7 +73,9 @@
   "login.oauthFailed": "OAuth failed",
 
   "alert.alert": "Alert Editor",
-  "alert.imageTemplate": "Image Template",
+  "alert.soundAlerts": "Sound Alerts",
+  "alert.followAlerts": "Follow Alerts",
+  "alert.subAlerts": "Subscriber Alerts",
   "alert.customHtmlCssJs": "Custom HTML/CSS/JS",
   "alert.comingSoon": "Coming soon...",
   "alert.textFieldLabel": "Text",

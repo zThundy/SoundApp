@@ -73,7 +73,9 @@
   "login.oauthFailed": "OAuth fehlgeschlagen",
 
   "alert.alert": "Alert-Editor",
-  "alert.imageTemplate": "Bildvorlage",
+  "alert.soundAlerts": "Sound Alerts",
+  "alert.followAlerts": "Follow Alerts",
+  "alert.subAlerts": "Subscriber Alerts",
   "alert.customHtmlCssJs": "Benutzerdefiniertes HTML/CSS/JS",
   "alert.comingSoon": "Demnächst verfügbar...",
   "alert.textFieldLabel": "Text",

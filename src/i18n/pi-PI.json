@@ -72,7 +72,9 @@
   "login.oauthFailed": "Boardin' failed, arr!",
 
   "alert.alert": "Signal Flare Editor",
-  "alert.imageTemplate": "Picture Template",
+  "alert.soundAlerts": "Sound Alerts",
+  "alert.followAlerts": "Follow Alerts",
+  "alert.subAlerts": "Subscriber Alerts",
   "alert.customHtmlCssJs": "Custom HTML/CSS/JS (Landlubber stuff)",
   "alert.comingSoon": "Sailin' to ye soon...",
   "alert.textFieldLabel": "Message",

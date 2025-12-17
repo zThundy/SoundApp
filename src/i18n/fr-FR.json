@@ -73,7 +73,9 @@
   "login.oauthFailed": "Échec de l’authentification OAuth",
 
   "alert.alert": "Éditeur d’alertes",
-  "alert.imageTemplate": "Modèle d’image",
+  "alert.soundAlerts": "Sound Alerts",
+  "alert.followAlerts": "Follow Alerts",
+  "alert.subAlerts": "Subscriber Alerts",
   "alert.customHtmlCssJs": "HTML/CSS/JS personnalisés",
   "alert.comingSoon": "Bientôt disponible...",
   "alert.textFieldLabel": "Texte",

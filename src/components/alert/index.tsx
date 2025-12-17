@@ -30,7 +30,6 @@ import { styled } from '@mui/material/styles';
 import style from "./alert.module.css"
 
 import { TranslationContext } from '@/i18n/TranslationProvider';
-import { NotificationContext } from '@/context/NotificationProvider';
 import SoundAlert from "@/components/alert/SoundAlert"
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -54,20 +53,10 @@ const StyledBox = styled(Box)(({ theme }) => ({
 
 export default function AlertEditor() {
   const { t } = useContext(TranslationContext);
-  const { success, error } = useContext(NotificationContext);
 
   const [serverUrl, setServerUrl] = useState('http://localhost:4823/alerts');
   const [tab, setTab] = useState(0);
-  const [rawHtml, setRawHtml] = useState('<div style="font-size:4rem;font-weight:700;">Hello!</div>');
-  const [rawCss, setRawCss] = useState('');
-  const [rawJs, setRawJs] = useState('');
-  const [rawDuration, setRawDuration] = useState(10000);
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imageText, setImageText] = useState('${username} has redeemed ${reward_title}!');
-  const [imageDuration, setImageDuration] = useState(6000);
-
-  const [sending, setSending] = useState(false);
   const [copied, setCopied] = useState(false);
   const [iframeError, setIframeError] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -86,44 +75,7 @@ export default function AlertEditor() {
       setServerUrl(`http://localhost:${res?.port}/alerts`);
       checkServerHealth(`http://localhost:${res?.port}`);
     });
-
-    loadDefaultTemplate();
   }, []);
-
-  async function loadDefaultTemplate() {
-    try {
-      const res = await window.alerts?.loadTemplate('default');
-      if (res?.ok && res?.template) {
-        const template = res.template;
-        setImageText(template.text);
-        setImageDuration(template.duration);
-        console.log('[Alert] Loaded default template');
-      }
-    } catch (err) {
-      console.error('[Alert] Failed to load default template:', err);
-    }
-  }
-
-  async function saveDefaultTemplate() {
-    try {
-      let imageDataUrl: string | undefined = undefined;
-      if (imageFile) {
-        imageDataUrl = await toDataUrl(imageFile);
-      } else {
-        imageDataUrl = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
-      }
-      const template = {
-        id: 'default',
-        imageDataUrl,
-        text: imageText,
-        duration: imageDuration,
-      };
-      await window.alerts?.saveTemplate(template);
-      console.log('[Alert] Saved default template');
-    } catch (err) {
-      console.error('[Alert] Failed to save default template:', err);
-    }
-  }
 
   async function checkServerHealth(currentUrl: string) {
     setChecking(true);
@@ -142,66 +94,13 @@ export default function AlertEditor() {
     }
   }
 
-  function toDataUrl(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  async function sendRaw() {
-    setSending(true);
-    try {
-      const payload = { type: 'raw', html: rawHtml, css: rawCss, js: rawJs, duration: rawDuration };
-      const res = await window.alerts?.broadcast(payload);
-      if (res?.ok) {
-        success(t("common.sent"));
-      } else {
-        error(t("common.error"), res?.error);
-      }
-    } catch (e: any) { error(t("common.error"), e.message); }
-    finally { setSending(false); }
-  }
-
-  async function sendImageTemplate() {
-    setSending(true);
-    try {
-      let image = null;
-      if (imageFile) {
-        image = await toDataUrl(imageFile);
-      } else {
-        image = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
-      }
-      const payload = { type: 'imageTemplate', imageDataUrl: image, text: imageText, duration: imageDuration };
-      const res = await window.alerts?.broadcast(payload);
-      if (res?.ok) {
-        success(t("common.sent"));
-      } else {
-        error(t("common.error"), res?.error);
-      }
-
-      if (res?.ok) {
-        await saveDefaultTemplate();
-      }
-    } catch (e: any) { error(t("common.error"), e.message); }
-    finally {
-      setTimeout(() => {
-        setSending(false)
-      }, 2000)
-    }
-  }
-
   return (
     <Box p={2}>
       <Typography variant="h5" mb={2}>{t('alert.alert')}</Typography>
       <Tabs value={tab} onChange={(_, v) => setTab(v)}>
-        <Tab label={t('alert.imageTemplate')} />
-
-        <Tooltip title={t('alert.comingSoon')} placement="top" arrow>
-          <Tab label={t('alert.customHtmlCssJs')} disabled />
-        </Tooltip>
+        <Tab label={t('alert.soundAlerts')} />
+        <Tab label={t('alert.followAlerts')} />
+        <Tab label={t('alert.subAlerts')} />
       </Tabs>
 
       <Grid container spacing={{ lg: 2, md: 6 }} height="100%">
@@ -209,28 +108,13 @@ export default function AlertEditor() {
           <Box p={2} className={style.container}>
 
             {tab === 0 && (
-              <SoundAlert
-                imageFile={imageFile}
-                setImageFile={setImageFile}
-                imageText={imageText}
-                setImageText={setImageText}
-                imageDuration={imageDuration}
-                setImageDuration={setImageDuration}
-                sending={sending}
-                sendImageTemplate={sendImageTemplate}
-              />
+              <SoundAlert />
             )}
             {tab === 1 && (
-              <Stack spacing={2}>
-                <Typography variant="body2" color="warning.main">
-                  Attenzione: l'HTML verrà iniettato nella pagina OBS. Evita codice non fidato. I tag &lt;script&gt; vengono rimossi, ma il JS nel campo dedicato viene eseguito.
-                </Typography>
-                <TextField label="HTML" multiline minRows={4} value={rawHtml} onChange={e => setRawHtml(e.target.value)} />
-                <TextField label="CSS" multiline minRows={2} value={rawCss} onChange={e => setRawCss(e.target.value)} />
-                <TextField label="JavaScript" multiline minRows={2} value={rawJs} onChange={e => setRawJs(e.target.value)} />
-                <TextField label="Durata (ms)" type="number" value={rawDuration} onChange={e => setRawDuration(parseInt(e.target.value) || 10000)} />
-                <Button variant="contained" disabled={sending} onClick={sendRaw}>Invia Alert Custom</Button>
-              </Stack>
+              <SoundAlert />
+            )}
+            {tab === 2 && (
+              <SoundAlert />
             )}
           </Box>
         </Grid>

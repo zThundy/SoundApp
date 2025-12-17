@@ -1,5 +1,5 @@
 
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 
 import { Stack, Typography, TextField, Tooltip, Button, Box } from "@mui/material"
 
@@ -8,6 +8,7 @@ import { Info } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 
 import { TranslationContext } from '@/i18n/TranslationProvider';
+import { NotificationContext } from '@/context/NotificationProvider';
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
@@ -40,26 +41,90 @@ const StyledVariable = styled(Typography)(({ theme }) => ({
   gap: 10,
 }));
 
-export default function SoundAlert({
-  imageFile,
-  setImageFile,
-  imageText,
-  setImageText,
-  imageDuration,
-  setImageDuration,
-  sending,
-  sendImageTemplate
-}: {
-  imageFile: File | null,
-  setImageFile: Function,
-  imageText: string,
-  setImageText: Function,
-  imageDuration: number,
-  setImageDuration: Function,
-  sending: boolean,
-  sendImageTemplate: Function
-}) {
+export default function SoundAlert() {
   const { t } = useContext(TranslationContext);
+  const { success, error } = useContext(NotificationContext);
+
+  const [sending, setSending] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageText, setImageText] = useState('${username} has redeemed ${reward_title}!');
+  const [imageDuration, setImageDuration] = useState(6000);
+
+  useEffect(() => {
+    loadDefaultTemplate();
+  }, []);
+
+  async function loadDefaultTemplate() {
+    try {
+      const res = await window.alerts?.loadTemplate('default-soundAlert');
+      if (res?.ok && res?.template) {
+        const template = res.template;
+        setImageText(template.text);
+        setImageDuration(template.duration);
+        console.log('[Alert] Loaded default template');
+      }
+    } catch (err) {
+      console.error('[Alert] Failed to load default template:', err);
+    }
+  }
+
+  function toDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function sendImageTemplate() {
+    setSending(true);
+    try {
+      let image = null;
+      if (imageFile) {
+        image = await toDataUrl(imageFile);
+      } else {
+        image = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
+      }
+      const payload = { type: 'imageTemplate', imageDataUrl: image, text: imageText, duration: imageDuration };
+      const res = await window.alerts?.broadcast(payload);
+      if (res?.ok) {
+        success(t("common.sent"));
+      } else {
+        error(t("common.error"), res?.error);
+      }
+
+      if (res?.ok) {
+        await saveDefaultTemplate();
+      }
+    } catch (e: any) { error(t("common.error"), e.message); }
+    finally {
+      setTimeout(() => {
+        setSending(false)
+      }, 2000)
+    }
+  }
+
+  async function saveDefaultTemplate() {
+    try {
+      let imageDataUrl: string | undefined = undefined;
+      if (imageFile) {
+        imageDataUrl = await toDataUrl(imageFile);
+      } else {
+        imageDataUrl = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
+      }
+      const template = {
+        id: 'default-soundAlert',
+        imageDataUrl,
+        text: imageText,
+        duration: imageDuration,
+      };
+      await window.alerts?.saveTemplate(template);
+      console.log('[Alert] Saved default template');
+    } catch (err) {
+      console.error('[Alert] Failed to save default template:', err);
+    }
+  }
 
   return (
     <Stack spacing={2}>
