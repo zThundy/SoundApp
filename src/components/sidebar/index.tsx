@@ -1,6 +1,6 @@
 
 
-import { Grid, Tooltip } from '@mui/material'
+import { Grid, Tooltip, Typography } from '@mui/material'
 import { useContext, useState } from 'react'
 
 import style from './sidebar.module.css'
@@ -28,7 +28,46 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
       })
   }
 
+  const elements = [
+    {
+      icon: <VideoLibrary />,
+      text: t('sidebar.redeems'),
+      onSelect: "redeems"
+    },
+    {
+      icon: <Settings />,
+      text: t('sidebar.settings'),
+      onSelect: "settings"
+    },
+    {
+      icon: <Tv />,
+      text: t('sidebar.alert'),
+      onSelect: "alert"
+    },
+    {
+      icon: <Forum />,
+      text: t('sidebar.chatbox'),
+      onSelect: "chatbox"
+    },
+    {
+      icon: <BrowserUpdated />,
+      text: t('sidebar.twitchEvents'),
+      onSelect: "twitchEvents"
+    },
+    {
+      icon: <CloudUpload />,
+      text: t('sidebar.fileManager'),
+      onSelect: "filemanager"
+    },
+    {
+      icon: <LogoutOutlined />,
+      text: t('sidebar.logout'),
+      onSelect: "logout"
+    }
+  ]
+
   const handleNavigation = (page: string) => {
+    if (page === "logout") return logout();
     setCurrentView(page)
     setSelectedPage?.(page)
   }
@@ -36,83 +75,22 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
   return (
     <div className={style.container}>
       <Grid container direction="column" spacing={2} flexGrow={0} className={style.gridStyle}>
-        <Grid
-          size={{ xs: 12 }}
-          className={style.iconContainer + ' ' + (currentView === "redeems" ? style.current : "")}
-          onClick={() => handleNavigation("redeems")}
-        >
-
-          <Tooltip title={t('sidebar.redeems')} placement="right">
-            <VideoLibrary />
-          </Tooltip>
-
-        </Grid>
-        <Grid
-          size={{ xs: 12 }}
-          className={style.iconContainer + ' ' + (currentView === "settings" ? style.current : "")}
-          onClick={() => handleNavigation("settings")}
-        >
-
-          <Tooltip title={t('sidebar.settings')} placement="right">
-            <Settings />
-          </Tooltip>
-
-        </Grid>
-        <Grid
-          size={{ xs: 12 }}
-          className={style.iconContainer + ' ' + (currentView === "alert" ? style.current : "")}
-          onClick={() => handleNavigation("alert")}
-        >
-
-          <Tooltip title={t('sidebar.alert')} placement="right">
-            <Tv />
-          </Tooltip>
-
-        </Grid>
-        <Grid
-          size={{ xs: 12 }}
-          className={style.iconContainer + ' ' + (currentView === "chatbox" ? style.current : "")}
-          onClick={() => handleNavigation("chatbox")}
-        >
-
-          <Tooltip title={t('sidebar.chatbox')} placement="right">
-            <Forum />
-          </Tooltip>
-
-        </Grid>
-        <Grid
-          size={{ xs: 12 }}
-          className={style.iconContainer + ' ' + (currentView === "twitchEvents" ? style.current : "")}
-          onClick={() => handleNavigation("twitchEvents")}
-        >
-
-          <Tooltip title={t('sidebar.twitchEvents')} placement="right">
-            <BrowserUpdated />
-          </Tooltip>
-
-        </Grid>
-        <Grid
-          size={{ xs: 12 }}
-          className={style.iconContainer + ' ' + (currentView === "filemanager" ? style.current : "")}
-          onClick={() => handleNavigation("filemanager")}
-        >
-
-          <Tooltip title={t('sidebar.fileManager')} placement="right">
-            <CloudUpload />
-          </Tooltip>
-
-        </Grid>
-        <Grid
-          size={{ xs: 12 }}
-          className={style.iconContainer + ' ' + (currentView === "logout" ? style.current : "")}
-          onClick={logout}
-        >
-
-          <Tooltip title={t('sidebar.logout')} placement="right">
-            <LogoutOutlined />
-          </Tooltip>
-
-        </Grid>
+        {elements.map((element, index) => (
+          <Grid
+            key={index}
+            size={{ xs: 12 }}
+            flexDirection={"row"}
+            display={"flex"}
+            justifyContent={"flex-start"}
+            className={style.iconContainer + ' ' + (currentView === element.onSelect ? style.current : "")}
+            onClick={() => handleNavigation(element.onSelect)}
+          >
+            {element.icon}
+            <Typography>
+              <span>{element.text}</span>
+            </Typography>
+          </Grid>
+        ))}
       </Grid>
     </div>
   )
