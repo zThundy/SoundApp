@@ -21,7 +21,7 @@
   "sidebar.settings": "Paramètres",
   "sidebar.alert": "Alerte",
   "sidebar.logout": "Déconnexion",
-  "sidebar.chat": "Chat",
+  "sidebar.twitchEvents": "Événements Twitch",
   "sidebar.chatbox": "Chatbox",
   "sidebar.fileManager": "Gestionnaire de fichiers",
   "sidebar.logoutFailed": "Échec de la déconnexion",

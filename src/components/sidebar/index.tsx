@@ -5,7 +5,7 @@ import { useContext, useState } from 'react'
 
 import style from './sidebar.module.css'
 
-import { Settings, LogoutOutlined, Tv, VideoLibrary, ChatBubble, Forum, CloudUpload } from '@mui/icons-material'
+import { Settings, LogoutOutlined, Tv, VideoLibrary, Forum, CloudUpload, BrowserUpdated } from '@mui/icons-material'
 import { useNavigate } from 'react-router'
 
 import { TranslationContext } from '@/i18n/TranslationProvider'
@@ -82,12 +82,12 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
         </Grid>
         <Grid
           size={{ xs: 12 }}
-          className={style.iconContainer + ' ' + (currentView === "chat" ? style.current : "")}
-          onClick={() => handleNavigation("chat")}
+          className={style.iconContainer + ' ' + (currentView === "twitchEvents" ? style.current : "")}
+          onClick={() => handleNavigation("twitchEvents")}
         >
 
-          <Tooltip title={t('sidebar.chat')} placement="right">
-            <ChatBubble />
+          <Tooltip title={t('sidebar.twitchEvents')} placement="right">
+            <BrowserUpdated />
           </Tooltip>
 
         </Grid>

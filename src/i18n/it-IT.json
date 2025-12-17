@@ -21,7 +21,7 @@
   "sidebar.settings": "Impostazioni",
   "sidebar.alert": "Alert",
   "sidebar.logout": "Esci",
-  "sidebar.chat": "Chat",
+  "sidebar.twitchEvents": "Eventi da Twitch",
   "sidebar.chatbox": "Chatbox",
   "sidebar.fileManager": "Gestione File",
   "sidebar.logoutFailed": "Logout fallito",

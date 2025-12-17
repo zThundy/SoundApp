@@ -8,7 +8,7 @@ import Sidebar from "@/components/sidebar"
 import Reedems from "@/components/redeems"
 import AlertEditor from "@/components/alert"
 import Settings from "@/components/settings"
-import TwitchChat from "@/components/twitchChat"
+import TwitchEvents from "@/components/twitchEvents"
 import ChatBoxEditor from "@/components/chatBox"
 import FileManager from "@/components/FileManager"
 
@@ -29,7 +29,7 @@ export default function Home() {
         {selectedPageState === "redeems" && <Reedems />}
         {selectedPageState === "alert" && <AlertEditor />}
         {selectedPageState === "settings" && <Settings />}
-        {selectedPageState === "chat" && <TwitchChat />}
+        {selectedPageState === "twitchEvents" && <TwitchEvents />}
         {selectedPageState === "chatbox" && <ChatBoxEditor />}
         {selectedPageState === "filemanager" && <FileManager />}
       </Grid>
