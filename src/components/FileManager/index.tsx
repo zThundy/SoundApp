@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
+
 import {
   Box,
   Button,
-  Card,
-  CardContent,
-  Grid,
+  Stack,
   LinearProgress,
   List,
   ListItem,
@@ -14,10 +13,18 @@ import {
   Tooltip,
   
 } from '@mui/material'
-import { Delete as DeleteIcon, CopyAll as CopyIcon, Add as AddIcon, OpenInNew as OpenIcon } from '@mui/icons-material'
-import DeleteModal from '@/components/redeems/DeleteModal'
-import { useUploadManager } from '../../hooks/useUploadManager'
+
+import style from "./fileManager.module.css"
+
+import { styled } from '@mui/material/styles';
+
+import { Delete, CopyAll, Add } from '@mui/icons-material'
+
+import { useUploadManager } from '@/hooks/useUploadManager'
 import { TranslationContext } from '@/i18n/TranslationProvider'
+import { NotificationContext } from '@/context/NotificationProvider'
+
+import DeleteModal from '@/components/redeems/DeleteModal'
 
 interface FileMetadata {
   uuid: string
@@ -26,33 +33,46 @@ interface FileMetadata {
   uploadedAt: number
 }
 
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  backgroundColor: (theme.palette as any).background["850"],
+  padding: theme.spacing(2.2),
+  borderRadius: theme.shape.borderRadius,
+  justifyContent: "space-between",
+  alignContent: "center",
+  alignItems: "center",
+  display: "flex",
+  flexDirection: "row",
+  maxHeight: "fit-content",
+  width: "calc(100% - )" + theme.spacing(4),
+  height: "100%",
+  transition: "background-color .2s ease-in-out",
+
+  ":hover": {
+    backgroundColor: (theme.palette as any).background["800"],
+  }
+}));
+
 export function FileManager() {
   const { t } = useContext(TranslationContext)
   const [files, setFiles] = useState<FileMetadata[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [copiedUuid, setCopiedUuid] = useState<string | null>(null)
   const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false)
   const [pendingDelete, setPendingDelete] = useState<{ uuid: string; name: string } | null>(null)
   const { uploadFile, deleteFile, getAll } = useUploadManager()
+  const { error } = useContext(NotificationContext)
 
   const fetchFiles = async () => {
-    setLoading(true)
-    setError(null)
     try {
       const all = await getAll()
       const asArray: FileMetadata[] = Array.isArray(all)
         ? all as FileMetadata[]
         : Array.from((all as Map<string, FileMetadata>).values())
-      console.log('Fetched files:', asArray)
       setFiles(asArray)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
-      setError(message)
+      error(t("common.error"), message)
       console.error('[FileManager] Fetch error:', err)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -64,9 +84,6 @@ export function FileManager() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    setLoading(true)
-    setError(null)
-
     try {
       const uuid = await uploadFile(file)
       if (uuid) {
@@ -74,16 +91,12 @@ export function FileManager() {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
-      setError(message)
-    } finally {
-      setLoading(false)
+      error(t("common.error"), message)
     }
   }
 
   const handleDeleteConfirm = async () => {
     if (!pendingDelete) return
-    setLoading(true)
-    setError(null)
     try {
       const success = await deleteFile(pendingDelete.uuid)
       if (success) {
@@ -91,9 +104,8 @@ export function FileManager() {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
-      setError(message)
+      error(t("common.error"), message)
     } finally {
-      setLoading(false)
       setDeleteModalOpen(false)
       setPendingDelete(null)
     }
@@ -128,11 +140,11 @@ export function FileManager() {
         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
           {t('fileManager.title')}
         </Typography>
+
         <Button
           variant="contained"
-          startIcon={<AddIcon />}
+          startIcon={<Add />}
           onClick={() => fileInputRef.current?.click()}
-          disabled={loading}
         >
           {t('fileManager.uploadFile')}
         </Button>
@@ -144,18 +156,8 @@ export function FileManager() {
         />
       </Box>
 
-      {error && (
-        <Card sx={{ mb: 2, backgroundColor: '#ffebee' }}>
-          <CardContent>
-            <Typography color="error">{error}</Typography>
-          </CardContent>
-        </Card>
-      )}
-
-      {loading && <LinearProgress sx={{ mb: 2 }} />}
-
-      <Card>
-        <CardContent>
+      <Box p={2} className={style.container}>
+        <Stack>
           {files.length === 0 ? (
             <Typography color="textSecondary" sx={{ textAlign: 'center', py: 3 }}>
               {t('fileManager.noFiles')}
@@ -163,15 +165,13 @@ export function FileManager() {
           ) : (
             <List>
               {files.map(file => (
-                <ListItem
+                <StyledListItem
                   key={file.uuid}
                   sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    py: 2,
-                    borderBottom: '1px solid #eee',
-                    '&:last-child': { borderBottom: 'none' },
+                    m: 1
                   }}
                 >
                   <ListItemText
@@ -195,25 +195,26 @@ export function FileManager() {
                         onClick={() => handleCopyUuid(file.uuid)}
                         color={copiedUuid === file.uuid ? 'success' : 'default'}
                       >
-                        <CopyIcon />
+                        <CopyAll />
                       </IconButton>
                     </Tooltip>
+
                     <Tooltip title={t('fileManager.delete')} placement='top' arrow>
                       <IconButton
                         size="small"
                         color="error"
                         onClick={() => openDeleteModal(file.uuid, file.originalName)}
                       >
-                        <DeleteIcon />
+                        <Delete />
                       </IconButton>
                     </Tooltip>
                   </Box>
-                </ListItem>
+                </StyledListItem>
               ))}
             </List>
           )}
-        </CardContent>
-      </Card>
+        </Stack>
+      </Box>
     </Box>
   )
 }
