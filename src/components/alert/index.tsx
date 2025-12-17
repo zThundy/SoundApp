@@ -30,7 +30,9 @@ import { styled } from '@mui/material/styles';
 import style from "./alert.module.css"
 
 import { TranslationContext } from '@/i18n/TranslationProvider';
-import SoundAlert from "@/components/alert/SoundAlert"
+import SoundAlert from "@/components/alert/SoundAlert";
+import FollowAlert from "@/components/alert/FollowAlert";
+import SubscriberAlert from "@/components/alert/SubscriberAlert";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
@@ -108,13 +110,19 @@ export default function AlertEditor() {
           <Box p={2} className={style.container}>
 
             {tab === 0 && (
-              <SoundAlert />
+              <SoundAlert
+                iframeRef={iframeRef}
+              />
             )}
             {tab === 1 && (
-              <SoundAlert />
+              <FollowAlert
+                iframeRef={iframeRef}
+              />
             )}
             {tab === 2 && (
-              <SoundAlert />
+              <SubscriberAlert
+                iframeRef={iframeRef}
+              />
             )}
           </Box>
         </Grid>

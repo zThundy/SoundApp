@@ -41,7 +41,7 @@ const StyledVariable = styled(Typography)(({ theme }) => ({
   gap: 10,
 }));
 
-export default function SoundAlert({
+export default function SubscriberAlert({
   iframeRef
 }: {
   iframeRef: MutableRefObject<HTMLIFrameElement | null>
