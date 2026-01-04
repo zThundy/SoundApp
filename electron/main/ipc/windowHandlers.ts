@@ -33,6 +33,9 @@ export async function registerWindowHandlers(getMainWindow: () => BrowserWindow 
 
   ipcMain.handle("window:is-tray-enabled", () => {
     let enabled = true;
+    if (!settings.hasOwnProperty("trayEnabled")) {
+      settings.trayEnabled = enabled;
+    }
     if (typeof settings.trayEnabled === 'boolean') {
       enabled = settings.trayEnabled;
     }
