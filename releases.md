@@ -133,5 +133,6 @@
 
 ## 0.2.5
 
+- Fixed huge issue where the servers wouldn't correctly read the pages files
 
 ## 0.2.6
