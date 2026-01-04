@@ -141,6 +141,7 @@
   "twitchChat.noMessagesYet": "Noch keine Nachrichten...",
   "twitchChat.loadCacheFailed": "Fehler beim Laden zwischengespeicherter Nachrichten und Einlösungen",
   "twitchChat.checkConnectionFailed": "Fehler beim Überprüfen des Twitch-Chat-Verbindungsstatus",
+  "twitchChat.points": "{points} Punkte",
   
   "chatBox.title": "Chatbox-Anpassung",
   "chatBox.templates": "Vorlagen",

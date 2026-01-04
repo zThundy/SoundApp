@@ -141,6 +141,7 @@
   "twitchChat.noMessagesYet": "No parley yet, matey...",
   "twitchChat.loadCacheFailed": "Failed to load cached parley and booty claims",
   "twitchChat.checkConnectionFailed": "Failed to check Twitch crow's nest connection status",
+  "twitchChat.points": "{points} Dobloons",
 
   "chatBox.title": "Chatbox Settings",
   "chatBox.templates": "Templates",

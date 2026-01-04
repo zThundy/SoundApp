@@ -142,6 +142,7 @@
   "twitchChat.noMessagesYet": "Aucun message pour le moment...",
   "twitchChat.loadCacheFailed": "Échec du chargement des messages et validations en cache",
   "twitchChat.checkConnectionFailed": "Échec de la vérification du statut de connexion du chat Twitch",
+  "twitchChat.points": "{points} Points",
 
   "chatBox.title": "Éditeur de chatbox",
   "chatBox.templates": "Modèles",

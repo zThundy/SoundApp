@@ -142,6 +142,7 @@
   "twitchChat.noMessagesYet": "Ancora nessun messaggio...",
   "twitchChat.loadCacheFailed": "Caricamento dei messaggi e dei riscatti memorizzati nella cache non riuscito",
   "twitchChat.checkConnectionFailed": "Verifica dello stato di connessione della chat di Twitch non riuscita",
+  "twitchChat.points": "{points} Punti",
 
   "chatBox.title": "Editor Chatbox",
   "chatBox.templates": "Template",

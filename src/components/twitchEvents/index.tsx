@@ -151,8 +151,8 @@ export default function TwitchChat() {
                 {t("twitchChat.noRedeemsYet")}
               </Typography>
             ) : (
-              redemptions.map((redemption) => (
-                <ListItem key={redemption.id} className={style.listItem}>
+              redemptions.map((redemption, index) => (
+                <ListItem key={index} className={style.listItem}>
                   <ListItemText
                     primary={
                       <Grid container direction="row" spacing={1} alignItems={"flex-start"} flexWrap={"wrap"}>
@@ -168,7 +168,7 @@ export default function TwitchChat() {
                             color="primary"
                           />
                           <Chip
-                            label={`${redemption.rewardCost} punti`}
+                            label={t("twitchChat.points", { points: redemption.rewardCost })}
                             size="small"
                             variant="outlined"
                           />

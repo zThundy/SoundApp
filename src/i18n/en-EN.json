@@ -142,6 +142,7 @@
   "twitchChat.noMessagesYet": "No messages yet...",
   "twitchChat.loadCacheFailed": "Failed to load cached messages and redeems",
   "twitchChat.checkConnectionFailed": "Failed to check Twitch chat connection status",
+  "twitchChat.points": "{points} Points",
 
   "chatBox.title": "Chatbox Customization",
   "chatBox.templates": "Templates",

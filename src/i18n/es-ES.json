@@ -142,6 +142,7 @@
   "twitchChat.noMessagesYet": "Aún no hay mensajes...",
   "twitchChat.loadCacheFailed": "Error al cargar mensajes y canjes en caché",
   "twitchChat.checkConnectionFailed": "Error al comprobar el estado de conexión del chat de Twitch",
+  "twitchChat.points": "{points} Puntos",
 
   "chatBox.title": "Personalización del chatbox",
   "chatBox.templates": "Plantillas",
