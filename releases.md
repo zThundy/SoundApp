@@ -114,8 +114,21 @@
 - Fixed some styling
 - Added missing translations
 
-
 ## 0.2.4
 
+- Complete refactor of fileManager logic
+- Started working on File Uploader for custom files upload
+  + You can upload files and use them in the chatbox component
+  + You can upload any type of file
+- Fixed issue in pages/*.html files so that JS functions will be triggered only on correct pages
+- Added default html files for chat on first init
+- Changed from "Chat" to "Twitch Events" tab for clear understanding
+- Full restyle of sidebar
+- Added Follow sub event type to Twitch
+- Added Subscriber sub event type to Twitch
+- Started working on different alert types and screen in the alert section
+- Solution of multiple security issues with React
+- Added open at startup option in the settings
+- Added missing translation on events page
 
 ## 0.2.5
