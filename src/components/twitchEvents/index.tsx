@@ -147,7 +147,7 @@ export default function TwitchChat() {
         <StyledStack>
           <List>
             {redemptions.length === 0 ? (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ paddingLeft: "1rem" }}>
                 {t("twitchChat.noRedeemsYet")}
               </Typography>
             ) : (
@@ -202,7 +202,7 @@ export default function TwitchChat() {
         <StyledStack>
           <List>
             {messagesToDisplay.length === 0 ? (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ paddingLeft: "1rem" }}>
                 {t("twitchChat.noMessagesYet")}
               </Typography>
             ) : (
