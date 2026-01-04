@@ -137,3 +137,6 @@
 - Fixed issue where registry would not be initialized
 
 ## 0.2.6
+
+
+## 0.2.7
