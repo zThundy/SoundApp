@@ -43,10 +43,11 @@ class FileManager {
 
   private saveRegistry(): void {
     try {
-      const registry = Object.fromEntries(this.fileRegistry)
-      const data = JSON.stringify(registry, null, 2)
-      fs.writeFileSync(`${originalAppPath}/${this.filesContext}/${this.registryFile}`, data)
-      console.debug(`[FileManager] Registry saved successfully on path ${originalAppPath}/${this.filesContext}/${this.registryFile}. Data: ${data.length}`)
+      this.initFileContext(this.filesContext);
+      const registry = Object.fromEntries(this.fileRegistry);
+      const data = JSON.stringify(registry, null, 2);
+      fs.writeFileSync(`${originalAppPath}/${this.filesContext}/${this.registryFile}`, data);
+      console.debug(`[FileManager] Registry saved successfully on path ${originalAppPath}/${this.filesContext}/${this.registryFile}. Data: ${data.length}`);
     } catch (err) {
       console.error('[FileManager] Failed to save registry:', err)
     }
