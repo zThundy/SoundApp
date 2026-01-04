@@ -63,6 +63,8 @@ interface Window {
     close(): Promise<void>;
     isTrayEnabled(): Promise<boolean>;
     setTrayEnabled(enabled: boolean): Promise<void>;
+    isStartupEnabled(): Promise<boolean>;
+    setStartupEnabled(enabled: boolean): Promise<void>;
   }
 }
 

@@ -16,7 +16,9 @@
   "settings.aboutTitle": "Über den Ersteller dieser App",
   "settings.enableBackground": "In den Systemtray minimieren",
   "settings.enableBackgroundInfo": "Aktivieren Sie diese Option, um die App in den Systemtray zu minimieren, anstatt sie zu schließen. Sie können die App wiederherstellen, indem Sie auf das Tray-Symbol klicken.",
-  
+  "settings.enableStartup": "Beim Systemstart starten",
+  "settings.enableStartupInfo": "Die App wird nach dem Start Ihres Betriebssystems automatisch geöffnet",
+
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Einstellungen",
   "sidebar.alert": "Alert",

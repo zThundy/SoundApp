@@ -16,6 +16,8 @@
   "settings.aboutTitle": "About the creator of this vessel, arr!",
   "settings.enableBackground": "Enable background sailin' (via system tray icon)",
   "settings.enableBackgroundInfo": "When ye close the main window, the vessel will keep sailin' in the background via the system tray icon.",
+  "settings.enableStartup": "Hoist the sails at dawn",
+  "settings.enableStartupInfo": "Set the vessel sailin' when yer ship's system starts up, arr!",
 
   "sidebar.redeems": "Booty Claims",
   "sidebar.settings": "Ship's Settings",

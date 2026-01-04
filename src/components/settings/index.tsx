@@ -35,6 +35,7 @@ export default function Settings() {
   const [loading, setLoading] = useState(false)
   const [version, setVersion] = useState<string>('')
   const [enableBackground, setEnableBackground] = useState(true)
+  const [startupEnabled, setStartupEnabled] = useState(false)
 
   useEffect(() => {
     (window.alerts as any).getPort().then((res: any) => {
@@ -57,6 +58,11 @@ export default function Settings() {
     window.windowManager.isTrayEnabled()
       .then((enabled: boolean) => {
         setEnableBackground(enabled)
+      })
+    
+    window.windowManager.isStartupEnabled()
+      .then((enabled: boolean) => {
+        setStartupEnabled(enabled);
       })
 
     return () => {
@@ -110,6 +116,15 @@ export default function Settings() {
     try {
       await window.windowManager.setTrayEnabled(enabled)
       setEnableBackground(enabled)
+    } catch (e: any) {
+      error(t('settings.error'), e.message || '')
+    }
+  }
+
+  const setEnableStartup = async (enabled: boolean) => {
+    try {
+      await window.windowManager.setStartupEnabled(enabled)
+      setStartupEnabled(enabled)
     } catch (e: any) {
       error(t('settings.error'), e.message || '')
     }
@@ -191,6 +206,22 @@ export default function Settings() {
             <Switch
               checked={enableBackground}
               onChange={(e) => setTrayEnabled(e.target.checked)}
+              color="primary"
+            />
+          </StyledBox>
+        </Grid>
+
+        <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2} justifyContent={"space-between"}>
+          <StyledBox>
+            <Stack direction="row" alignItems="center" gap={1}>
+              <Typography variant="subtitle1">{t('settings.enableStartup')}</Typography>
+              <Tooltip title={t('settings.enableStartupInfo')} arrow placement='right'>
+                <Info style={{ cursor: 'pointer' }} />
+              </Tooltip>
+            </Stack>
+            <Switch
+              checked={startupEnabled}
+              onChange={(e) => setEnableStartup(e.target.checked)}
               color="primary"
             />
           </StyledBox>

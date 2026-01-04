@@ -32,6 +32,8 @@ contextBridge.exposeInMainWorld("windowManager", {
   close: () => ipcRenderer.invoke('window:close'),
   isTrayEnabled: () => ipcRenderer.invoke('window:is-tray-enabled'),
   setTrayEnabled: (enabled: boolean) => ipcRenderer.invoke('window:set-tray-enabled', enabled),
+  isStartupEnabled: () => ipcRenderer.invoke("window:is-startupopen-enabled"),
+  setStartupEnabled: (enabled: boolean) => ipcRenderer.invoke("window:set-startupopen-enabled", enabled)
 });
 
 // Expose a small safeStore API that calls the main-process SafeStorageService

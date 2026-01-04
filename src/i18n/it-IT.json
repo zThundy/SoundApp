@@ -16,7 +16,9 @@
   "settings.aboutTitle": "Informazioni sul creatore di questa app",
   "settings.enableBackground": "Abilita esecuzione in background (tramite icona di sistema)",
   "settings.enableBackgroundInfo": "Quando chiudi la finestra principale, l'app continuerà a funzionare in background tramite l'icona di sistema.",
-
+  "settings.enableStartup": "Avvia all'avvio del sistema",
+  "settings.enableStartupInfo": "Apri automaticamente l'app dopo l'avvio del sistema operativo",
+  
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Impostazioni",
   "sidebar.alert": "Alert",

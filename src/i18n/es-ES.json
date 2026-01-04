@@ -16,6 +16,8 @@
   "settings.aboutTitle": "Acerca del creador de esta aplicación",
   "settings.enableBackground": "Habilitar ejecución en segundo plano (bandeja del sistema)",
   "settings.enableBackgroundInfo": "Habilita esta opción para minimizar la aplicación en la bandeja del sistema en lugar de cerrarla. Puedes restaurar la aplicación haciendo clic en el icono de la bandeja.",
+  "settings.enableStartup": "Iniciar al arrancar el sistema",
+  "settings.enableStartupInfo": "Abrir la aplicación automáticamente después del inicio de tu sistema operativo",
 
   "sidebar.redeems": "Canjes",
   "sidebar.settings": "Configuración",

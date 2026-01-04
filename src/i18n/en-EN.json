@@ -16,6 +16,8 @@
   "settings.aboutTitle": "About the creator of this app",
   "settings.enableBackground": "Go to system tray",
   "settings.enableBackgroundInfo": "Enable this option to minimize the app to the system tray instead of closing it. You can restore the app by clicking the tray icon.",
+  "settings.enableStartup": "Launch on startup",
+  "settings.enableStartupInfo": "Open the app after the startup of your operating system",
 
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Settings",
