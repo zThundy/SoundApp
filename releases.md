@@ -132,3 +132,6 @@
 - Added missing translation on events page
 
 ## 0.2.5
+
+
+## 0.2.6
