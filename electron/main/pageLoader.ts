@@ -1,14 +1,8 @@
 import path from 'node:path';
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'url';
 import { app } from 'electron';
 import fileManager from './fileManager';
-
-let originalAppPath = app.getPath('userData');
-if (!originalAppPath) originalAppPath = app.getAppPath();
-if (process.env.ELECTRON_ENV === 'development' || process.env.NODE_ENV === 'development') {
-  console.debug('[PageLoader] App path set to:', originalAppPath, "replacing to", app.getAppPath());
-  originalAppPath = app.getAppPath();
-}
 
 const UUID_PATTERN = /\{([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\}/g;
 
@@ -83,7 +77,19 @@ async function replaceUuidPlaceholders(input: string): Promise<string> {
 }
 
 export async function loadHtmlPage(pageName: string): Promise<string> {
-  const filePath = path.join(originalAppPath, "electron", 'pages', `${pageName}.html`);
+  let filePath: string;
+
+  const __filename = fileURLToPath(import.meta.url);
+  const __currentDir = path.dirname(__filename.replace(/\\/g, '/'));
+  const __dirname = path.resolve(__currentDir, '..');
+
+  if (process.env.ELECTRON_ENV === 'development' || process.env.NODE_ENV === 'development') {
+    const originalAppPath = app.getAppPath();
+    filePath = path.join(originalAppPath, "electron", 'pages', `${pageName}.html`);
+  } else {
+    filePath = path.join(__dirname, 'pages', `${pageName}.html`);
+  }
+
   console.debug('[PageLoader] Loading HTML page from path:', filePath);
   let htmlContent = readFileSync(filePath, 'utf-8');
   return htmlContent as string;

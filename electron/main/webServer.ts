@@ -63,8 +63,7 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
       }
 
       if (pathname === "/health") {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ status: 'ok' }));
+        res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify({ status: 'ok' }));
         return;
       }
 
@@ -77,7 +76,6 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
         } catch (err) {
           console.error('Failed to load alerts page:', err);
           res.writeHead(500, { 'Content-Type': 'text/plain' });
-          res.end('Internal Server Error');
         }
         return;
       }
@@ -91,7 +89,6 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
         } catch (err) {
           console.error('Failed to load chat page:', err);
           res.writeHead(500, { 'Content-Type': 'text/plain' });
-          res.end('Internal Server Error');
         }
         return;
       }
@@ -104,7 +101,6 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
         } catch (err) {
           console.error('Failed to load index page:', err);
           res.writeHead(500, { 'Content-Type': 'text/plain' });
-          res.end('Internal Server Error');
         }
         return;
       }
