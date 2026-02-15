@@ -39,6 +39,7 @@ import FollowAlert from "@/components/alert/FollowAlert";
 import SubscriberAlert from "@/components/alert/SubscriberAlert";
 import SubscriberGiftAlert from "@/components/alert/SubscriberGiftAlert";
 import SubscriberMessageAlert from "@/components/alert/SubscriberMessageAlert";
+import BitsAlert from "@/components/alert/BitsAlert";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
@@ -127,7 +128,7 @@ export default function AlertEditor() {
             <MenuItem value={3}>{t('alert.giftSubAlerts')}</MenuItem>
             <MenuItem value={4}>{t('alert.messageSubAlerts')}</MenuItem>
             <ListSubheader>{t('alert.bitsCategory')}</ListSubheader>
-            <MenuItem value={5} disabled>{t('alert.bitsAlerts')}</MenuItem>
+            <MenuItem value={5}>{t('alert.bitsAlerts')}</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -157,6 +158,11 @@ export default function AlertEditor() {
             )}
             {tab === 4 && (
               <SubscriberMessageAlert
+                iframeRef={iframeRef}
+              />
+            )}
+            {tab === 5 && (
+              <BitsAlert
                 iframeRef={iframeRef}
               />
             )}
