@@ -248,6 +248,13 @@ class TwitchEventListener {
         }
       },
       {
+        type: 'channel.raid',
+        version: '1',
+        condition: {
+          to_broadcaster_user_id: this.config.broadcasterId,
+        }
+      },
+      {
         type: 'channel.subscribe',
         version: '1',
         condition: {
@@ -270,6 +277,41 @@ class TwitchEventListener {
       },
       {
         type: 'channel.subscription.message',
+        version: '1',
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+        }
+      },
+      {
+        type: 'channel.bits.use',
+        version: '1',
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+        }
+      },
+      {
+        type: 'channel.cheer',
+        version: '1',
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+        }
+      },
+      {
+        type: 'channel.shared_chat.begin',
+        version: '1',
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+        }
+      },
+      {
+        type: 'channel.shared_chat.update',
+        version: '1',
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+        }
+      },
+      {
+        type: 'channel.shared_chat.end',
         version: '1',
         condition: {
           broadcaster_user_id: this.config.broadcasterId,
@@ -352,7 +394,7 @@ class TwitchEventListener {
       case "channel.follow":
         this.handleAlertNotification({
           type: "follow",
-          templateId: "default-follow",
+          templateId: "default-followAlert",
           userId: event.user_id,
           username: event.user_login,
           userDisplayName: event.user_name,
@@ -363,7 +405,7 @@ class TwitchEventListener {
       case "channel.subscribe":
         this.handleAlertNotification({
           type: "subscriber",
-          templateId: "default-subscriber",
+          templateId: "default-subscriberAlert",
           userId: event.user_id,
           username: event.user_login,
           userDisplayName: event.user_name,

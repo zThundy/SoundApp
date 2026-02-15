@@ -62,6 +62,7 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
         "channel:read:redemptions",
         "channel:manage:redemptions",
         "channel:read:subscriptions",
+        "bits:read",
         "user:read:chat",
         "moderator:read:chatters",
         "moderator:read:followers",
