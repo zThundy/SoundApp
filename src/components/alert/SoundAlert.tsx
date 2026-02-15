@@ -3,7 +3,7 @@ import { useContext, useState, useEffect, MutableRefObject } from "react";
 
 import { Stack, Typography, TextField, Tooltip, Button, Box } from "@mui/material"
 
-import { Info } from '@mui/icons-material';
+import { Info, AttachFile, Send, Save } from '@mui/icons-material';
 
 import { styled } from '@mui/material/styles';
 
@@ -230,6 +230,7 @@ export default function SoundAlert({
               width: "100%",
             }}
           >
+            <Save fontSize="small" sx={{ paddingRight: 1 }} />
             {t("alert.saveTemplate")}
           </Button>
           <Button
@@ -240,6 +241,7 @@ export default function SoundAlert({
               width: "100%",
             }}
           >
+            <Send fontSize="small" sx={{ paddingRight: 1 }} />
             {t("alert.testTemplate")}
           </Button>
           <Button
@@ -250,6 +252,7 @@ export default function SoundAlert({
               width: "100%",
             }}
           >
+            <AttachFile fontSize="small" sx={{ paddingRight: 1 }} />
             {t("alert.selectImage")}
             <input hidden type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] || null)} />
           </Button>
