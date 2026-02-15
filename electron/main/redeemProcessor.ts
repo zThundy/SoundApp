@@ -75,18 +75,21 @@ export class RedeemProcessor {
       .replace(/\$\{user_input\}/g, redemption.userInput || '')
   }
 
-  process(redemption: Alert): void {
-    switch(redemption.type) {
+  process(eventData: Alert): void {
+    switch(eventData.type) {
       case "reward":
-        this.processTwitchRedemption(redemption);
+        this.processTwitchRedemption(eventData);
         break;
       
       case "follow":
-        this.processTwitchAlert(redemption);
+        this.processTwitchAlert(eventData);
         break;
       
       case "subscriber":
-        this.processTwitchAlert(redemption);
+        this.processTwitchAlert(eventData);
+        break;
+
+      case "bits":
         break;
     }
   }
@@ -113,7 +116,7 @@ export class RedeemProcessor {
       : `${data.userDisplayName} has followed the channel!`
 
     const payload = {
-      type: 'twitch-redeem',
+      type: 'twitch-alert',
       templateId: data.templateId,
       imageDataUrl: template?.imageDataUrl || undefined,
       text: alertText,

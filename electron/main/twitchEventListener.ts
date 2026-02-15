@@ -34,6 +34,13 @@ interface Alert {
   timestamp: Date;
   tier?: number;
   is_gift?: boolean;
+  message?: string;
+  total_months?: number;
+  streak_months?: number;
+  duration_months?: number;
+  cumulative_total?: number;
+  total?: number;
+  followed_at?: Date;
   status?: 'unfulfilled' | 'fulfilled' | 'canceled';
 }
 
@@ -370,7 +377,6 @@ class TwitchEventListener {
     switch (subscriptionType) {
       case 'channel.channel_points_custom_reward_redemption.add':
       case 'channel.channel_points_custom_reward_redemption.update':
-        // TODO: add templateId in this redemption so that we can filter the type of redemption
         this.handleAlertNotification({
           type: "reward",
           templateId: "default-soundAlert",
@@ -398,7 +404,7 @@ class TwitchEventListener {
           userId: event.user_id,
           username: event.user_login,
           userDisplayName: event.user_name,
-          timestamp: new Date(event.redeemed_at)
+          timestamp: new Date(event.followed_at)
         });
         break;
       
@@ -411,9 +417,40 @@ class TwitchEventListener {
           userDisplayName: event.user_name,
           tier: event.tier,
           is_gift: event.is_gift,
-          timestamp: new Date(event.redeemed_at)
+          timestamp: new Date()
         });
-        this.handleAlertNotification(event);
+        break;
+
+      case "channel.subscription.message":
+        this.handleAlertNotification({
+          type: "subscriber",
+          templateId: "default-subscriberMessageAlert",
+          userId: event.user_id,
+          username: event.user_login,
+          userDisplayName: event.user_name,
+          tier: event.tier,
+          // TODO: format the text with the emotes in message.text.emotes
+          message: event.message.text,
+          total_months: event.cumulative_months,
+          streak_months: event.streak_months,
+          duration_months: event.duration_months,
+          is_gift: event.is_gift,
+          timestamp: new Date()
+        });
+        break;
+
+      case "channel.subscription.gift":
+        this.handleAlertNotification({
+          type: "subscriber",
+          templateId: "default-subscriberGiftAlert",
+          userId: event.user_id,
+          username: event.user_login,
+          userDisplayName: event.user_name,
+          tier: event.tier,
+          cumulative_total: event.cumulative_total,
+          total: event.total,
+          timestamp: new Date()
+        });
         break;
 
       default:
