@@ -138,5 +138,16 @@
 
 ## 0.2.6
 
+- Changed navigator in the Alerts Editor
+- Changed style of left navigator menu
+- Added Subscription Alert
+- Added Subscription with message Alert
+- Added Gifter Subscription Alert
+- Added bits Alert
+- Fixed some processor minor errors
+- Added missing translations
+- Added Twitch dev server capabilities
+- Cleanup frontend html for alerts
+- Added more scopes for subscriptions and bits to authentication flow
 
 ## 0.2.7
