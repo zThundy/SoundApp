@@ -3,7 +3,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import util from 'node:util'
 
-const isDevelopment = process.env.NODE_ENV === 'development' || process.env.ELECTRON_ENV === 'development'
+const isDevelopment = process.env.IS_PACKAGED === "false" ||
+                      process.env.NODE_ENV === 'development' ||
+                      process.env.ELECTRON_ENV === 'development'
 
 class Logger {
   private logFilePath: string
