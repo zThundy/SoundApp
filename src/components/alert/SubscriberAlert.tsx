@@ -160,7 +160,6 @@ export default function SubscriberAlert({
 
   return (
     <Stack spacing={2}>
-      {imageFile && <Typography fontSize={12}>File: {imageFile.name}</Typography>}
       <StyledBox>
         <TextField
           label={t("alert.textFieldLabel")}
