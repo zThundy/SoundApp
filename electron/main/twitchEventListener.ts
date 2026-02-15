@@ -434,6 +434,19 @@ class TwitchEventListener {
         });
         break;
 
+      case "channel.cheer":
+        this.handleAlertNotification({
+          type: "bits",
+          templateId: "default-bitsAlert",
+          userId: event.user_id,
+          username: event.user_login,
+          userDisplayName: event.user_name,
+          bits: event.bits,
+          message: event.message,
+          timestamp: new Date()
+        });
+        break;
+
       default:
         console.debug('Unhandled subscription type:', subscriptionType);
     }

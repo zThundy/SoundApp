@@ -67,154 +67,166 @@ export class RedeemProcessor {
       .replace(/\$\{cumulative_months\}/g, String(redemption.cumulative_total || 1))
       .replace(/\$\{streak_months\}/g, String(redemption.streak_months || 1))
       .replace(/\$\{duration_months\}/g, String(redemption.duration_months || 1))
+      .replace(/\$\{bits\}/g, String(redemption.bits || 1))
   }
 
   process(eventData: Alert): void {
-    switch(eventData.type) {
-      case "reward":
-        this.processTwitchRedemption(eventData);
-        break;
-      
-      case "follow":
-        this.processTwitchAlert(eventData);
-        break;
-      
-      case "subscriber":
-        this.processTwitchAlert(eventData);
-        break;
+    try {
+      switch (eventData.type) {
+        case "reward":
+          this.processTwitchRedemption(eventData);
+          break;
 
-      case "bits":
-        break;
+        case "follow":
+          this.processTwitchFollowAlert(eventData);
+          break;
+
+        case "subscriber":
+          this.processTwitchSubscribeAlert(eventData);
+          break;
+
+        case "bits":
+          this.processBitsAlert(eventData);
+          break;
+      }
+    } catch (e: any) {
+      console.error("[RedeemProcessor] Error in .process function: ", e)
     }
   }
 
-  private async processTwitchAlert(data: Alert): Promise<void> {
-    console.debug("[RedeemProcessor] Processing alert with data", data)
-
-    // Load template (default or specified in reward definition)
-    const template = await this.loadTemplate(data.templateId)
-    if (!template) {
-      // TODO: implement fallback template
-      console.warn(`[RedeemProcessor] Template ${data.templateId} not found, using fallback`)
-    }
-
-    const alertServer = this.getAlertServer()
-    if (!alertServer) {
-      console.error('[RedeemProcessor] Alert server not available')
-      throw new Error("[RedeemProcessor] Alert server not available")
-    }
-
-    // Build the payload with template data and variable substitution
-    const alertText = template?.text
-      ? this.replaceVariables(template.text, data)
-      : `${data.userDisplayName} has followed the channel!`
-
-    const payload = {
-      type: 'twitch-alert',
-      templateId: data.templateId,
-      imageDataUrl: template?.imageDataUrl || undefined,
-      text: alertText,
-      duration: template?.duration || 6000,
-
-      redemption: {
-        id: data.id,
-        user: {
-          id: data.userId,
-          login: data.username,
-          name: data.userDisplayName,
-        },
-        reward: {
-          id: data.rewardId,
-          title: data.rewardTitle,
-          cost: data.rewardCost,
-        },
-        input: data.userInput ?? '',
-        timestamp: data.timestamp,
-        status: data.status,
-      }
-    }
-
+  private async processBitsAlert(data: Alert): Promise<void> {
     try {
-      alertServer.broadcast(payload)
-      console.debug('[RedeemProcessor] Broadcasted alert for reward', data.rewardId)
-    } catch (e) {
-      console.error('[RedeemProcessor] Failed to broadcast alert:', e)
-      throw new Error(`[RedeemProcessor] Failed to broadcast alert: ${e}`)
+      console.debug("[RedeemProcessor] Processing alert with data", data)
+      const template = await this.loadTemplate(data.templateId)
+      if (!template) {
+        // TODO: implement fallback template
+        console.warn(`[RedeemProcessor] Template ${data.templateId} not found, using fallback`)
+      }
+      const alertText = template?.text ? this.replaceVariables(template.text, data) : `${data.userDisplayName} has cheered ${data.bits}!`
+      this.sendToServer({
+        type: 'twitch-alert',
+        templateId: data.templateId,
+        imageDataUrl: template?.imageDataUrl || undefined,
+        text: alertText,
+        duration: template?.duration || 6000,
+      });
+    } catch (e: any) {
+      console.error("[RedeemProcessor] Error in processTwitchFollowAlert: ", e)
+    }
+  }
+
+  private async processTwitchSubscribeAlert(data: Alert): Promise<void> {
+    try {
+      console.debug("[RedeemProcessor] Processing alert with data", data)
+      const template = await this.loadTemplate(data.templateId)
+      if (!template) {
+        // TODO: implement fallback template
+        console.warn(`[RedeemProcessor] Template ${data.templateId} not found, using fallback`)
+      }
+      const alertText = template?.text ? this.replaceVariables(template.text, data) : `${data.userDisplayName} has subscribed to the channel!`
+      this.sendToServer({
+        type: 'twitch-alert',
+        templateId: data.templateId,
+        imageDataUrl: template?.imageDataUrl || undefined,
+        text: alertText,
+        duration: template?.duration || 6000,
+      });
+    } catch (e: any) {
+      console.error("[RedeemProcessor] Error in processTwitchFollowAlert: ", e)
+    }
+  }
+
+  private async processTwitchFollowAlert(data: Alert): Promise<void> {
+    try {
+      console.debug("[RedeemProcessor] Processing alert with data", data)
+      const template = await this.loadTemplate(data.templateId)
+      if (!template) {
+        // TODO: implement fallback template
+        console.warn(`[RedeemProcessor] Template ${data.templateId} not found, using fallback`)
+      }
+      const alertText = template?.text ? this.replaceVariables(template.text, data) : `${data.userDisplayName} has followed the channel!`
+      this.sendToServer({
+        type: 'twitch-alert',
+        templateId: data.templateId,
+        imageDataUrl: template?.imageDataUrl || undefined,
+        text: alertText,
+        duration: template?.duration || 6000,
+      });
+    } catch (e: any) {
+      console.error("[RedeemProcessor] Error in processTwitchFollowAlert: ", e)
     }
   }
 
   private async processTwitchRedemption(data: Alert): Promise<void> {
-    if (!data.rewardId) {
-      throw new Error(`[RedeemProcessor] No reward id found for reward with data ${JSON.stringify(data)}`)
-    }
-
-    const def = await this.loadMapping(data.rewardId).catch(err => console.error('[RedeemProcessor] Failed to load mapping:', err))
-    console.debug('[RedeemProcessor] Processing redemption for reward:', data.rewardId, 'Definition:', def)
-    if (!def) {
-      console.debug('[RedeemProcessor] No local audio for reward:', data.rewardId)
-    }
-
-    // Load template (default or specified in reward definition)
-    const template = await this.loadTemplate(data.templateId)
-    if (!template) {
-      // TODO: implement fallback template
-      console.warn(`[RedeemProcessor] Template ${data.templateId} not found, using fallback`)
-    }
-
-    // Resolve audio path: if relative, it is under userData/alerts/
-    const audioPathInput = def.audioPath
-    let audioBuffer: Buffer = Buffer.from([])
     try {
-      const { buffer } = fileManager.readFile(this.CONTEXT, { relativePath: audioPathInput });
-      audioBuffer = await buffer;
-    } catch (e) {
-      console.error('[RedeemProcessor] Audio file missing or unreadable:', audioPathInput, '->', e)
-      throw new Error(`[RedeemProcessor] Audio file missing or unreadable: ${audioPathInput} ${e}`)
-    }
+      if (!data.rewardId) {
+        throw new Error(`[RedeemProcessor] No reward id found for reward with data ${JSON.stringify(data)}`)
+      }
+      const def = await this.loadMapping(data.rewardId).catch(err => console.error('[RedeemProcessor] Failed to load mapping:', err))
+      console.debug('[RedeemProcessor] Processing redemption for reward:', data.rewardId, 'Definition:', def)
+      if (!def) {
+        console.debug('[RedeemProcessor] No local audio for reward:', data.rewardId)
+        throw new Error("[RedeemProcessor] No local audio for reward: " + data.rewardId)
+      }
+      const template = await this.loadTemplate(data.templateId)
+      if (!template) {
+        // TODO: implement fallback template
+        console.warn(`[RedeemProcessor] Template ${data.templateId} not found, using fallback`)
+      }
+      let audioBuffer: Buffer = Buffer.from([])
+      if (def.audioPath) {
+        const audioPathInput = def.audioPath
+        try {
+          const { buffer } = fileManager.readFile(this.CONTEXT, { relativePath: audioPathInput });
+          audioBuffer = await buffer;
+        } catch (e) {
+          console.error('[RedeemProcessor] Audio file missing or unreadable:', audioPathInput, '->', e)
+          throw new Error(`[RedeemProcessor] Audio file missing or unreadable: ${audioPathInput} ${e}`)
+        }
+      }
+      const alertText = template?.text ? this.replaceVariables(template.text, data) : `${data.userDisplayName} has redeemed ${data.rewardTitle}!`
+      this.sendToServer({
+        type: 'twitch-redeem',
+        templateId: data.templateId,
+        imageDataUrl: template?.imageDataUrl || undefined,
+        text: alertText,
+        duration: template?.duration || 6000,
 
+        audio: {
+          base64: audioBuffer.toString('base64') || null,
+          volume: def.volume ?? 1.0,
+        },
+        redemption: {
+          id: data.id,
+          user: {
+            id: data.userId,
+            login: data.username,
+            name: data.userDisplayName,
+          },
+          reward: {
+            id: data.rewardId,
+            title: data.rewardTitle,
+            cost: data.rewardCost,
+          },
+          input: data.userInput ?? '',
+          timestamp: data.timestamp,
+          status: data.status,
+        }
+      });
+    } catch (e: any) {
+      console.error("[RedeemProcessor] Error in processTwitchRedemption: ", e)
+    }
+  }
+
+  private async sendToServer(payload: any): Promise<void> {
     const alertServer = this.getAlertServer()
     if (!alertServer) {
       console.error('[RedeemProcessor] Alert server not available')
       throw new Error("[RedeemProcessor] Alert server not available")
     }
 
-    // Build the payload with template data and variable substitution
-    const alertText = template?.text
-      ? this.replaceVariables(template.text, data)
-      : `${data.userDisplayName} has redeemed ${data.rewardTitle}!`
-
-    const payload = {
-      type: 'twitch-redeem',
-      templateId: data.templateId,
-      imageDataUrl: template?.imageDataUrl || undefined,
-      text: alertText,
-      duration: template?.duration || 6000,
-
-      audio: {
-        base64: audioBuffer.toString('base64'),
-        volume: def.volume ?? 1.0,
-      },
-      redemption: {
-        id: data.id,
-        user: {
-          id: data.userId,
-          login: data.username,
-          name: data.userDisplayName,
-        },
-        reward: {
-          id: data.rewardId,
-          title: data.rewardTitle,
-          cost: data.rewardCost,
-        },
-        input: data.userInput ?? '',
-        timestamp: data.timestamp,
-        status: data.status,
-      }
-    }
-
     try {
       alertServer.broadcast(payload)
-      console.debug('[RedeemProcessor] Broadcasted alert for reward', data.rewardId)
     } catch (e) {
       console.error('[RedeemProcessor] Failed to broadcast alert:', e)
       throw new Error(`[RedeemProcessor] Failed to broadcast alert: ${e}`)
