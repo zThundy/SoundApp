@@ -22,6 +22,12 @@ for (let i = 0; i <= 100; i++) {
   backgroundColors[i * 10] = `hsl(225, 40%, ${100 - i}%)`;
 }
 
+let successColors: Record<number | string, string> = {};
+successColors["main"] = "hsl(160, 85%, 40%)";
+for (let i = 0; i <= 100; i++) {
+  successColors[i * 10] = `hsl(160, 85%, ${100 - i}%)`;
+}
+
 const theme = createTheme({
   cssVariables: {
     colorSchemeSelector: 'class',
@@ -41,7 +47,7 @@ const theme = createTheme({
     // },
     secondary: secondaryColors,
     error: { main: '#ef4444' },
-    success: { main: '#10b981' },
+    success: successColors,
     warning: { main: '#f59e0b' },
     info: { main: '#3b82f6' },
     background: backgroundColors,
@@ -113,6 +119,25 @@ const theme = createTheme({
             "&:disabled": {
               background: (theme.palette.secondary as any)["900"],
               border: '1px solid ' + (theme.palette.secondary as any)["800"],
+              color: theme.palette.text.secondary,
+            },
+          }),
+        },
+        {
+          props: {
+            variant: 'contained',
+            color: 'success'
+          },
+          style: ({ theme }) => ({
+            background: (theme.palette.success as any)["800"],
+            border: '1px solid ' + (theme.palette.success as any)["900"],
+            color: '#fff',
+            '&:hover': {
+              background: (theme.palette.success as any)["700"],
+            },
+            "&:disabled": {
+              background: (theme.palette.success as any)["900"],
+              border: '1px solid ' + (theme.palette.success as any)["800"],
               color: theme.palette.text.secondary,
             },
           }),

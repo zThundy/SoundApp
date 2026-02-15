@@ -224,6 +224,7 @@ export default function SoundAlert({
         <Stack direction="row" spacing={2} width={"100%"}>
           <Button
             variant="contained"
+            color="success"
             disabled={sending}
             onClick={() => saveDefaultTemplate()}
             style={{

@@ -201,6 +201,7 @@ export default function FollowAlert({
         <Stack direction="row" spacing={2} width={"100%"}>
           <Button
             variant="contained"
+            color="success"
             disabled={sending}
             onClick={() => saveDefaultTemplate()}
             style={{
