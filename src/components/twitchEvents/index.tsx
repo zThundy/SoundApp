@@ -35,6 +35,14 @@ interface RewardRedemption {
   rewardCost: number;
   userInput?: string;
   timestamp: Date;
+  message?: string;
+  tier?: string;
+  type?: string;
+  bits?: string;
+  total_months?: string;
+  streak_months?: string;
+  cumulative_months?: string;
+  total?: string;
   status: 'unfulfilled' | 'fulfilled' | 'canceled';
 }
 
@@ -74,6 +82,7 @@ export default function TwitchChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [messagesToDisplay, setMessagesToDisplay] = useState<ChatMessage[]>([]);
   const [redemptions, setRedemptions] = useState<RewardRedemption[]>([]);
+  const [events, setEvents] = useState<RewardRedemption[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const { t } = useContext(TranslationContext)
   const { error } = useContext(NotificationContext)
@@ -85,10 +94,14 @@ export default function TwitchChat() {
         const { redemptions } = await window.twitchEvents.getCachedRedemptions();
 
         messages = messages.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+        let redeems = redemptions.filter(r => (r as any).type === "reward")
+        let events = redemptions.filter(r => (r as any).type === "follow" || (r as any).type === "subscriber" || (r as any).type === "bits")
+        console.log(events)
 
         setMessages(messages);
-        setMessagesToDisplay(messages ? messages.slice(0, 10) : []);
-        setRedemptions(redemptions ? redemptions.slice(0, 10) : []);
+        setMessagesToDisplay(messages ? messages.slice(0, 50) : []);
+        setRedemptions(redemptions ? redeems.slice(0, 10) : []);
+        setEvents(redemptions ? events.slice(0, 10) : []);
         console.log(`Loaded ${messages?.length || 0} cached messages and ${redemptions?.length || 0} cached redemptions`);
       } catch (e: any) {
         error(t("twitchChat.loadCacheFailed"), (e as Error).message);
@@ -112,11 +125,20 @@ export default function TwitchChat() {
 
     window.twitchEvents.onChatMessage((message: ChatMessage) => {
       setMessages(prev => [message, ...prev]);
-      setMessagesToDisplay(prev => [message, ...prev].slice(0, 10));
+      setMessagesToDisplay(prev => [message, ...prev].slice(0, 50));
     });
 
-    window.twitchEvents.onRewardRedeemed((redemption: RewardRedemption) => {
-      setRedemptions(prev => [redemption, ...prev].slice(0, 10));
+    window.twitchEvents.onRewardRedeemed((event: RewardRedemption) => {
+      switch(event.type) {
+        case "reward":
+          setRedemptions(prev => [event, ...prev].slice(0, 10));
+          break;
+        case "follow":
+        case "subscriber":
+        case "bits":
+          setEvents(prev => [event, ...prev].slice(0, 10));
+          break;
+      }
     });
 
     return () => {
@@ -140,100 +162,182 @@ export default function TwitchChat() {
         </StyledStack>
       </Grid>
 
-      <Grid size={{ lg: 6, md: 6 }}>
-        <Typography variant="h6" gutterBottom>
-          {t("twitchChat.recentRedeems")}
-        </Typography>
-        <StyledStack>
-          <List>
-            {redemptions.length === 0 ? (
-              <Typography variant="body2" color="text.secondary" sx={{ paddingLeft: "1rem" }}>
-                {t("twitchChat.noRedeemsYet")}
-              </Typography>
-            ) : (
-              redemptions.map((redemption, index) => (
-                <ListItem key={index} className={style.listItem}>
-                  <ListItemText
-                    primary={
-                      <Grid container direction="row" spacing={1} alignItems={"flex-start"} flexWrap={"wrap"}>
-                        <Grid size={{ lg: 6, md: 6 }}>
-                          <Typography variant="body1">
-                            {redemption.userDisplayName}
-                          </Typography>
+      <Grid container spacing={2} padding={2} justifyContent={"center"}>
+        <Grid size={{ lg: 11, md: 11 }}>
+          <Typography variant="h6" gutterBottom>
+            {t("twitchChat.recentRedeems")}
+          </Typography>
+          <StyledStack>
+            <List>
+              {redemptions.length === 0 ? (
+                <Typography variant="body2" color="text.secondary" sx={{ paddingLeft: "1rem" }}>
+                  {t("twitchChat.noRedeemsYet")}
+                </Typography>
+              ) : (
+                redemptions.map((redemption, index) => (
+                  <ListItem key={index} className={style.listItem}>
+                    <ListItemText
+                      primary={
+                        <Grid container direction="row" spacing={1} alignItems={"flex-start"} flexWrap={"wrap"}>
+                          <Grid size={{ lg: 6, md: 6 }}>
+                            <Typography variant="body1">
+                              {redemption.userDisplayName}
+                            </Typography>
+                          </Grid>
+                          <Grid size={{ lg: 6, md: 6 }} display="flex" gap={1} flexWrap={"wrap"} justifyContent={"flex-end"}>
+                            <Chip
+                              label={redemption.rewardTitle}
+                              size="small"
+                              color="primary"
+                            />
+                            <Chip
+                              label={t("twitchChat.points", { points: redemption.rewardCost })}
+                              size="small"
+                              variant="outlined"
+                            />
+                          </Grid>
                         </Grid>
-                        <Grid size={{ lg: 6, md: 6 }} display="flex" gap={1} flexWrap={"wrap"} justifyContent={"flex-end"}>
-                          <Chip
-                            label={redemption.rewardTitle}
-                            size="small"
-                            color="primary"
-                          />
-                          <Chip
-                            label={t("twitchChat.points", { points: redemption.rewardCost })}
-                            size="small"
-                            variant="outlined"
-                          />
-                        </Grid>
-                      </Grid>
-                    }
-                    secondary={
-                      <>
-                        {redemption.userInput && (
-                          <Typography variant="body2">
-                            {t("twitchChat.userInput", { input: redemption.userInput })}
+                      }
+                      secondary={
+                        <>
+                          {redemption.userInput && (
+                            <Typography variant="body2">
+                              {t("twitchChat.userInput", { input: redemption.userInput })}
+                            </Typography>
+                          )}
+                          <Typography variant="caption" color="text.secondary">
+                            {t("twitchChat.redeemedAt", { time: new Date(redemption.timestamp).toLocaleDateString() + ' ' + new Date(redemption.timestamp).toLocaleTimeString() })}
                           </Typography>
-                        )}
-                        <Typography variant="caption" color="text.secondary">
-                          {t("twitchChat.redeemedAt", { time: new Date(redemption.timestamp).toLocaleDateString() + ' ' + new Date(redemption.timestamp).toLocaleTimeString() })}
-                        </Typography>
-                      </>
-                    }
-                  />
-                </ListItem>
-              ))
-            )}
-          </List>
-        </StyledStack>
-      </Grid>
+                        </>
+                      }
+                    />
+                  </ListItem>
+                ))
+              )}
+            </List>
+          </StyledStack>
+        </Grid>
 
-      <Grid size={{ lg: 6, md: 6 }}>
-        <Typography variant="h6" gutterBottom>
-          {t("twitchChat.recentMessages")}
-        </Typography>
-        <StyledStack>
-          <List>
-            {messagesToDisplay.length === 0 ? (
-              <Typography variant="body2" color="text.secondary" sx={{ paddingLeft: "1rem" }}>
-                {t("twitchChat.noMessagesYet")}
-              </Typography>
-            ) : (
-              messagesToDisplay.map((msg, index) => (
-                <ListItem key={`${msg.userId}-${index}`} className={style.listItem}>
-                  <ListItemText
-                    primary={
-                      <Stack direction="row" spacing={1} alignItems={"flex-start"} justifyContent={"flex-start"}>
-                        <Typography
-                          variant="body2"
-                          fontWeight="bold"
-                          sx={{ color: msg.color || 'inherit' }}
-                        >
-                          {msg.displayName}:
+        <Grid size={{ lg: 11, md: 11 }}>
+          <Typography variant="h6" gutterBottom>
+            {t("twitchChat.recentEvents")}
+          </Typography>
+          <StyledStack>
+            <List>
+              {events.length === 0 ? (
+                <Typography variant="body2" color="text.secondary" sx={{ paddingLeft: "1rem" }}>
+                  {t("twitchChat.noEventsYet")}
+                </Typography>
+              ) : (
+                events.map((event, index) => (
+                  <ListItem key={index} className={style.listItem}>
+                    <ListItemText
+                      primary={
+                        <Grid container direction="row" spacing={1} alignItems={"flex-start"} flexWrap={"wrap"}>
+                          <Grid size={{ lg: 6, md: 6 }}>
+                            <Typography variant="body1">
+                              {event.userDisplayName}
+                            </Typography>
+                          </Grid>
+                          <Grid size={{ lg: 6, md: 6 }} display="flex" gap={1} flexWrap={"wrap"} justifyContent={"flex-end"}>
+                            <Chip
+                              label={event.type}
+                              size="small"
+                              color="primary"
+                            />
+                          </Grid>
+                        </Grid>
+                      }
+                      secondary={
+                        <>
+                          {event.message && (
+                            <Typography variant="body2">
+                              {t("twitchChat.userInput", { input: event.message })}
+                            </Typography>
+                          )}
+                          {event.tier && (
+                            <Typography variant="body2">
+                              {t("twitchChat.tier", { tier: event.tier })}
+                            </Typography>
+                          )}
+                          {event.total && (
+                            <Typography variant="body2">
+                              {t("twitchChat.total", { months: event.total })}
+                            </Typography>
+                          )}
+                          {event.cumulative_months && (
+                            <Typography variant="body2">
+                              {t("twitchChat.cumulativeTotalGifted", { months: event.cumulative_months })}
+                            </Typography>
+                          )}
+                          {event.total_months && (
+                            <Typography variant="body2">
+                              {t("twitchChat.totalMonths", { months: event.total_months })}
+                            </Typography>
+                          )}
+                          {event.streak_months && (
+                            <Typography variant="body2">
+                              {t("twitchChat.streakMonths", { months: event.streak_months })}
+                            </Typography>
+                          )}
+                          {event.bits && (
+                            <Typography variant="body2">
+                              {t("twitchChat.bitsAmount", { bits: event.bits })}
+                            </Typography>
+                          )}
+                          <Typography variant="caption" color="text.secondary">
+                            {t("twitchChat.recordedAt", { time: new Date(event.timestamp).toLocaleDateString() + ' ' + new Date(event.timestamp).toLocaleTimeString() })}
+                          </Typography>
+                        </>
+                      }
+                    />
+                  </ListItem>
+                ))
+              )}
+            </List>
+          </StyledStack>
+        </Grid>
+
+        <Grid size={{ lg: 11, md: 11 }}>
+          <Typography variant="h6" gutterBottom>
+            {t("twitchChat.recentMessages")}
+          </Typography>
+          <StyledStack>
+            <List>
+              {messagesToDisplay.length === 0 ? (
+                <Typography variant="body2" color="text.secondary" sx={{ paddingLeft: "1rem" }}>
+                  {t("twitchChat.noMessagesYet")}
+                </Typography>
+              ) : (
+                messagesToDisplay.map((msg, index) => (
+                  <ListItem key={`${msg.userId}-${index}`} className={style.listItem}>
+                    <ListItemText
+                      primary={
+                        <Stack direction="row" spacing={1} alignItems={"flex-start"} justifyContent={"flex-start"}>
+                          <Typography
+                            variant="body2"
+                            fontWeight="bold"
+                            sx={{ color: msg.color || 'inherit' }}
+                          >
+                            {msg.displayName}:
+                          </Typography>
+                          <Typography variant="body2">
+                            {msg.message}
+                          </Typography>
+                        </Stack>
+                      }
+                      secondary={
+                        <Typography variant="caption" color="text.secondary">
+                          {new Date(msg.timestamp).toLocaleTimeString()}
                         </Typography>
-                        <Typography variant="body2">
-                          {msg.message}
-                        </Typography>
-                      </Stack>
-                    }
-                    secondary={
-                      <Typography variant="caption" color="text.secondary">
-                        {new Date(msg.timestamp).toLocaleTimeString()}
-                      </Typography>
-                    }
-                  />
-                </ListItem>
-              ))
-            )}
-          </List>
-        </StyledStack>
+                      }
+                    />
+                  </ListItem>
+                ))
+              )}
+            </List>
+          </StyledStack>
+        </Grid>
       </Grid>
     </Grid>
   );
