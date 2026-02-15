@@ -17,6 +17,7 @@ export interface Alert {
   streak_months?: number;
   duration_months?: number;
   cumulative_total?: number;
+  bits?: number;
   total?: number;
   followed_at?: Date;
   status?: 'unfulfilled' | 'fulfilled' | 'canceled';
