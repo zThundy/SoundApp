@@ -1,0 +1,36 @@
+{
+  "subscription": {
+    "id": "1737bec2-3a24-660e-7cf6-329590b7def1",
+    "status": "enabled",
+    "type": "drop.entitlement.grant",
+    "version": "1",
+    "condition": {
+      "organization_id": "28563307",
+      "category_id": "1802",
+      "campaign_id": "862eadd1-1506-f818-a7a0-45fe7dfffc1e"
+    },
+    "transport": {
+      "method": "webhook",
+      "callback": "null"
+    },
+    "created_at": "2026-02-15T13:42:42.7352745Z",
+    "cost": 0
+  },
+  "events": [
+    {
+      "id": "511b76bb-47f0-946b-cfcc-b7f7d3e836cb",
+      "data": {
+        "entitlement_id": "afefe694-092a-762f-9926-1af31958666d",
+        "benefit_id": "124966c3-94f8-4966-4a43-d7a28c00d4c9",
+        "campaign_id": "862eadd1-1506-f818-a7a0-45fe7dfffc1e",
+        "organization_id": "28563307",
+        "created_at": "2026-02-15T13:42:42.7352745Z",
+        "user_id": "8966328",
+        "user_name": "testBroadcaster",
+        "user_login": "testBroadcaster",
+        "category_id": "1802",
+        "category_name": "Special Events"
+      }
+    }
+  ]
+}
