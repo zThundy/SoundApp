@@ -151,3 +151,6 @@
 - Added more scopes for subscriptions and bits to authentication flow
 
 ## 0.2.7
+
+
+## 0.2.8
