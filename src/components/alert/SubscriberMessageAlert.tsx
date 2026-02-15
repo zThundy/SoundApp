@@ -41,7 +41,7 @@ const StyledVariable = styled(Typography)(({ theme }) => ({
   gap: 10,
 }));
 
-export default function SubscriberAlert({
+export default function SubscriberMessageAlert({
   iframeRef
 }: {
   iframeRef: MutableRefObject<HTMLIFrameElement | null>
@@ -51,7 +51,7 @@ export default function SubscriberAlert({
 
   const [sending, setSending] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imageText, setImageText] = useState('${username} has subscribed to the channel!');
+  const [imageText, setImageText] = useState('${username} has subscribed to the channel for ${streak_months} consecutive months!');
   const [imageDuration, setImageDuration] = useState(6000);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function SubscriberAlert({
 
   async function loadDefaultTemplate() {
     try {
-      const res = await window.alerts?.loadTemplate('default-subscriberAlert');
+      const res = await window.alerts?.loadTemplate('default-subscriberMessageAlert');
       if (res?.ok && res?.template) {
         const template = res.template;
         setImageText(template.text);
@@ -118,7 +118,7 @@ export default function SubscriberAlert({
         imageDataUrl = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
       }
       const template = {
-        id: 'default-subscriberAlert',
+        id: 'default-subscriberMessageAlert',
         imageDataUrl,
         text: imageText,
         duration: imageDuration,
@@ -169,6 +169,30 @@ export default function SubscriberAlert({
           <StyledVariable variant="body2" onClick={() => setImageText((prev: any) => prev + '${tier} ')} style={{ cursor: "pointer" }}>
             <strong>${'{tier}'}</strong>
             <Tooltip title={t("alert.variableTier")} placement="top" arrow style={{ cursor: "pointer" }}>
+              <Info />
+            </Tooltip>
+          </StyledVariable>
+          <StyledVariable variant="body2" onClick={() => setImageText((prev: any) => prev + '${message} ')} style={{ cursor: "pointer" }}>
+            <strong>${'{message}'}</strong>
+            <Tooltip title={t("alert.variableMessage")} placement="top" arrow style={{ cursor: "pointer" }}>
+              <Info />
+            </Tooltip>
+          </StyledVariable>
+          <StyledVariable variant="body2" onClick={() => setImageText((prev: any) => prev + '${cumulative_months} ')} style={{ cursor: "pointer" }}>
+            <strong>${'{cumulative_months}'}</strong>
+            <Tooltip title={t("alert.variableCumulativeMonths")} placement="top" arrow style={{ cursor: "pointer" }}>
+              <Info />
+            </Tooltip>
+          </StyledVariable>
+          <StyledVariable variant="body2" onClick={() => setImageText((prev: any) => prev + '${streak_months} ')} style={{ cursor: "pointer" }}>
+            <strong>${'{streak_months}'}</strong>
+            <Tooltip title={t("alert.variableStreakMonths")} placement="top" arrow style={{ cursor: "pointer" }}>
+              <Info />
+            </Tooltip>
+          </StyledVariable>
+          <StyledVariable variant="body2" onClick={() => setImageText((prev: any) => prev + '${duration_months} ')} style={{ cursor: "pointer" }}>
+            <strong>${'{duration_months}'}</strong>
+            <Tooltip title={t("alert.variableDurationMonths")} placement="top" arrow style={{ cursor: "pointer" }}>
               <Info />
             </Tooltip>
           </StyledVariable>

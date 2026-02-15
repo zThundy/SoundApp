@@ -37,6 +37,8 @@ import { TranslationContext } from '@/i18n/TranslationProvider';
 import SoundAlert from "@/components/alert/SoundAlert";
 import FollowAlert from "@/components/alert/FollowAlert";
 import SubscriberAlert from "@/components/alert/SubscriberAlert";
+import SubscriberGiftAlert from "@/components/alert/SubscriberGiftAlert";
+import SubscriberMessageAlert from "@/components/alert/SubscriberMessageAlert";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
@@ -115,13 +117,17 @@ export default function AlertEditor() {
           <Select
             value={tab}
             onChange={(e) => setTab(e.target.value)}
-          >
+            >
+            <ListSubheader>{t('alert.soundAlertsCategory')}</ListSubheader>
             <MenuItem value={0}>{t('alert.soundAlerts')}</MenuItem>
+            <ListSubheader>{t('alert.alertfollowCategory')}</ListSubheader>
             <MenuItem value={1}>{t('alert.followAlerts')}</MenuItem>
             <ListSubheader>{t('alert.subscriptionCategory')}</ListSubheader>
             <MenuItem value={2}>{t('alert.subAlerts')}</MenuItem>
             <MenuItem value={3}>{t('alert.giftSubAlerts')}</MenuItem>
             <MenuItem value={4}>{t('alert.messageSubAlerts')}</MenuItem>
+            <ListSubheader>{t('alert.bitsCategory')}</ListSubheader>
+            <MenuItem value={5} disabled>{t('alert.bitsAlerts')}</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -141,6 +147,16 @@ export default function AlertEditor() {
             )}
             {tab === 2 && (
               <SubscriberAlert
+                iframeRef={iframeRef}
+              />
+            )}
+            {tab === 3 && (
+              <SubscriberGiftAlert
+                iframeRef={iframeRef}
+              />
+            )}
+            {tab === 4 && (
+              <SubscriberMessageAlert
                 iframeRef={iframeRef}
               />
             )}
