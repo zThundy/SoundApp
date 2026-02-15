@@ -157,6 +157,13 @@
   "twitchChat.loadCacheFailed": "Fehler beim Laden zwischengespeicherter Nachrichten und Einlösungen",
   "twitchChat.checkConnectionFailed": "Fehler beim Überprüfen des Twitch-Chat-Verbindungsstatus",
   "twitchChat.points": "{points} Punkte",
+  "twitchChat.recentEvents": "Neueste Twitch-Events",
+  "twitchChat.noEventsYet": "Noch keine Twitch-Events...",
+  "twitchChat.tier": "Stufe {tier}",
+  "twitchChat.totalMonths": "{months} Monate insgesamt",
+  "twitchChat.streakMonths": "{months} aufeinanderfolgende Monate",
+  "twitchChat.bitsAmount": "{bits} Bits",
+  "twitchChat.recordedAt": "Aufgezeichnet um {time}",
   
   "chatBox.title": "Chatbox-Anpassung",
   "chatBox.templates": "Vorlagen",

@@ -157,6 +157,13 @@
   "twitchChat.loadCacheFailed": "Failed to load cached parley and booty claims",
   "twitchChat.checkConnectionFailed": "Failed to check Twitch crow's nest connection status",
   "twitchChat.points": "{points} Dobloons",
+  "twitchChat.recentEvents": "Recent Twitch Screaches",
+  "twitchChat.noEventsYet": "No Twitch screaches yet, matey...",
+  "twitchChat.tier": "Rank {tier}",
+  "twitchChat.totalMonths": "{months} Total Moons",
+  "twitchChat.streakMonths": "{months} Consecutive Moons",
+  "twitchChat.bitsAmount": "{bits} Bits",
+  "twitchChat.recordedAt": "Logged in the ship's book at {time}",
 
   "chatBox.title": "Chatbox Settings",
   "chatBox.templates": "Templates",

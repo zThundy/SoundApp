@@ -158,6 +158,13 @@
   "twitchChat.loadCacheFailed": "Caricamento dei messaggi e dei riscatti memorizzati nella cache non riuscito",
   "twitchChat.checkConnectionFailed": "Verifica dello stato di connessione della chat di Twitch non riuscita",
   "twitchChat.points": "{points} Punti",
+  "twitchChat.recentEvents": "Eventi Twitch recenti",
+  "twitchChat.noEventsYet": "Ancora nessun evento Twitch...",
+  "twitchChat.tier": "Livello {tier}",
+  "twitchChat.totalMonths": "{months} Mesi Totali",
+  "twitchChat.streakMonths": "{months} Mesi Consecutivi",
+  "twitchChat.bitsAmount": "{bits} Bits",
+  "twitchChat.recordedAt": "Registrato alle {time}",
 
   "chatBox.title": "Editor Chatbox",
   "chatBox.templates": "Template",
