@@ -2,6 +2,7 @@ import { WebSocket } from 'ws';
 import { BrowserWindow } from 'electron';
 import fileManager from './fileManager';
 import { getRedeemProcessor } from './redeemRegistry';
+import { Alert } from "./types/alerts";
 
 interface TwitchEventConfig {
   accessToken: string;
@@ -18,30 +19,6 @@ interface ChatMessage {
   color?: string;
   badges?: string[];
   messageFragment: Object
-}
-
-interface Alert {
-  type: string;
-  templateId: string;
-  id?: string;
-  userId: string;
-  username: string;
-  userDisplayName: string;
-  rewardId?: string;
-  rewardTitle?: string;
-  rewardCost?: number;
-  userInput?: string;
-  timestamp: Date;
-  tier?: number;
-  is_gift?: boolean;
-  message?: string;
-  total_months?: number;
-  streak_months?: number;
-  duration_months?: number;
-  cumulative_total?: number;
-  total?: number;
-  followed_at?: Date;
-  status?: 'unfulfilled' | 'fulfilled' | 'canceled';
 }
 
 interface TwitchCache {
@@ -139,7 +116,8 @@ class TwitchEventListener {
 
   private async connectWebSocket(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
+      // this.ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
+      this.ws = new WebSocket("ws://127.0.0.1:8080/ws");
       console.debug("[TwitchEventListener] WebSocket created");
 
       this.ws.on('open', () => {
@@ -210,9 +188,10 @@ class TwitchEventListener {
 
   private async handleSessionWelcome(message: any): Promise<void> {
     this.sessionId = message.payload.session.id;
+    console.debug('[TwitchEventListener] Welcome - Session:', message.payload.session);
     console.debug('[TwitchEventListener] Welcome - Session ID:', this.sessionId);
 
-    this.resetKeepaliveTimer();
+    this.resetKeepaliveTimer(message.payload.session.keepalive_timeout_seconds);
 
     if (this.config) {
       await this.subscribeToEvents();
@@ -330,7 +309,7 @@ class TwitchEventListener {
       try {
         await this.subscribeToEvent(event);
       } catch (error) {
-        console.error(`Failed to subscribe to ${event.type}:`, error);
+        console.error(`[TwitchEventListener] Failed to subscribe to ${event.type}:`, error);
       }
     }
   }
@@ -338,13 +317,15 @@ class TwitchEventListener {
   private async subscribeToEvent(event: any): Promise<void> {
     if (!this.config || !this.sessionId) return;
 
-    const url = 'https://api.twitch.tv/helix/eventsub/subscriptions';
+    // const url = 'https://api.twitch.tv/helix/eventsub/subscriptions';
+    const url = "http://127.0.0.1:8080/eventsub/subscriptions";
     const headers = {
       'Authorization': `Bearer ${this.config.accessToken}`,
       'Client-Id': this.config.clientId,
       'Content-Type': 'application/json'
     };
 
+    console.debug("[TwitchEventListener] Session ID for registering:", this.sessionId)
     const body = {
       type: event.type,
       version: event.version,
@@ -363,7 +344,7 @@ class TwitchEventListener {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(`Failed to subscribe to ${event.type}: ${JSON.stringify(error)}`);
+      throw new Error(`[TwitchEventListener] Failed to subscribe to ${event.type}: ${JSON.stringify(error)}`);
     }
 
     console.debug(`Subscribed to ${event.type}`);
@@ -552,7 +533,7 @@ class TwitchEventListener {
     }, delay);
   }
 
-  private resetKeepaliveTimer(): void {
+  private resetKeepaliveTimer(timeInSeconds: number = 60): void {
     if (this.keepaliveTimer) {
       clearTimeout(this.keepaliveTimer);
     }
@@ -560,7 +541,7 @@ class TwitchEventListener {
 
     this.keepaliveTimer = setTimeout(() => {
       console.warn('[TwitchEventListener] Keepalive timeout - connection appears dead');
-    }, 60000);
+    }, timeInSeconds * 1000);
   }
 
   disconnect(): void {

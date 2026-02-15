@@ -1,24 +1,10 @@
 import fileManager from './fileManager'
+import { Alert } from "./types/alerts";
 
 type AlertServer = {
   stop: () => Promise<void>
   port: number
   broadcast: (payload: any) => void
-}
-
-interface Alert {
-  type: string;
-  templateId: string;
-  id?: string;
-  userId: string;
-  username: string;
-  userDisplayName: string;
-  rewardId?: string;
-  rewardTitle?: string;
-  rewardCost?: number;
-  userInput?: string;
-  timestamp: Date;
-  status?: 'unfulfilled' | 'fulfilled' | 'canceled';
 }
 
 export class RedeemProcessor {
@@ -67,12 +53,20 @@ export class RedeemProcessor {
   }
 
   private replaceVariables(text: string, redemption: Alert): string {
+    console.debug("[RedeemProcessor] Replacing variables from text", text, "with data", redemption);
     return text
       .replace(/\$\{username\}/g, redemption.username)
       .replace(/\$\{user_display_name\}/g, redemption.userDisplayName)
       .replace(/\$\{reward_title\}/g, redemption.rewardTitle || "Unk title")
       .replace(/\$\{reward_cost\}/g, String(redemption.rewardCost))
       .replace(/\$\{user_input\}/g, redemption.userInput || '')
+      .replace(/\$\{tier\}/g, String(redemption.tier || 1))
+      .replace(/\$\{total\}/g, String(redemption.total || 1))
+      .replace(/\$\{cumulative_total\}/g, String(redemption.cumulative_total || 1))
+      .replace(/\$\{message\}/g, redemption.message || "No message provided")
+      .replace(/\$\{cumulative_months\}/g, String(redemption.cumulative_total || 1))
+      .replace(/\$\{streak_months\}/g, String(redemption.streak_months || 1))
+      .replace(/\$\{duration_months\}/g, String(redemption.duration_months || 1))
   }
 
   process(eventData: Alert): void {

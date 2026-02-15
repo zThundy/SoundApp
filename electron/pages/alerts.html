@@ -147,8 +147,8 @@
                   wrap.remove();
                   isProcessingAlert = false;
                   resolve();
-                  // Process next alert in queue
                   processAlertQueue();
+                  console.log("Processing next alert because audio ended")
                 }, totalDuration);
               });
               
@@ -157,6 +157,16 @@
               });
               
               audio.play().catch(e => console.error('Audio playback failed', e));
+            }
+
+            if (!audioDuration) {
+              setTimeout(() => {
+                wrap.remove();
+                isProcessingAlert = false;
+                resolve();
+                processAlertQueue();
+                console.log("Processing next alert because alert ended")
+              }, data.duration);
             }
           });
         }
@@ -172,6 +182,9 @@
                     processAlertQueue();
                     break;
                   case "twitch-alert":
+                    // Add to queue and process
+                    alertQueue.push(data);
+                    processAlertQueue();
                     console.log("Received twitch alert");
                     break;
                   case "imageTemplate":
