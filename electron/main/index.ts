@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Menu, shell, Tray } from 'electron'
+// import { env } from 'node:process';
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
@@ -13,6 +14,7 @@ import { connectEventSubIfPossible } from './ipc/twitchHandlers'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 process.env.APP_ROOT = path.join(__dirname, '../..')
+process.env.IS_PACKAGED = String(app.isPackaged)
 
 // Initialize logger as early as possible
 initializeLogger()

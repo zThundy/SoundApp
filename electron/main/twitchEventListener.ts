@@ -116,8 +116,11 @@ class TwitchEventListener {
 
   private async connectWebSocket(): Promise<void> {
     return new Promise((resolve, reject) => {
-      // this.ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
-      this.ws = new WebSocket("ws://127.0.0.1:8080/ws");
+      if (process.env.IS_PACKAGED === "true") {
+        this.ws = new WebSocket('wss://eventsub.wss.twitch.tv/ws');
+      } else {
+        this.ws = new WebSocket("ws://127.0.0.1:8080/ws");
+      }
       console.debug("[TwitchEventListener] WebSocket created");
 
       this.ws.on('open', () => {
@@ -316,9 +319,9 @@ class TwitchEventListener {
 
   private async subscribeToEvent(event: any): Promise<void> {
     if (!this.config || !this.sessionId) return;
-
-    // const url = 'https://api.twitch.tv/helix/eventsub/subscriptions';
-    const url = "http://127.0.0.1:8080/eventsub/subscriptions";
+    
+    let url = "http://127.0.0.1:8080/eventsub/subscriptions";
+    if (process.env.IS_PACKAGED === "true") url = "https://api.twitch.tv/helix/eventsub/subscriptions";
     const headers = {
       'Authorization': `Bearer ${this.config.accessToken}`,
       'Client-Id': this.config.clientId,
