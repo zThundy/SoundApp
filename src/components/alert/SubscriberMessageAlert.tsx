@@ -65,11 +65,38 @@ export default function SubscriberMessageAlert({
         const template = res.template;
         setImageText(template.text);
         setImageDuration(template.duration);
+        setImageFile(dataURLtoFile((template.imageDataUrl as string), "uploaded_logo"));
         console.log('[Alert] Loaded default template');
       }
     } catch (err) {
       console.error('[Alert] Failed to load default template:', err);
     }
+  }
+
+  function dataURLtoFile(dataurl: string, filename: string): File {
+    let arr = dataurl.split(',')
+    let mimeArr = arr[0].match(/:(.*?);/)
+    let mime: string | undefined = undefined;
+    if (mimeArr && mimeArr[1]) mime = mimeArr[1];
+    let extension = '';
+    if (mime) {
+      const mimeSubtype = mime.split('/')[1];
+      if (mimeSubtype) {
+        extension = mimeSubtype === 'jpeg' ? 'jpg' : mimeSubtype;
+      }
+    }
+    let finalFilename = filename;
+    const hasExtension = /\.[a-zA-Z0-9]+$/.test(filename);
+    if (extension && !hasExtension) {
+      finalFilename = `${filename}.${extension}`;
+    }
+    let bstr = atob(arr[arr.length - 1]);
+    let n = bstr.length;
+    let u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], finalFilename, { type: mime });
   }
 
   function toDataUrl(file: File): Promise<string> {
@@ -97,10 +124,6 @@ export default function SubscriberMessageAlert({
       } else {
         error(t("common.error"), res?.error);
       }
-
-      if (res?.ok) {
-        await saveDefaultTemplate();
-      }
     } catch (e: any) { error(t("common.error"), e.message); }
     finally {
       setTimeout(() => {
@@ -123,7 +146,12 @@ export default function SubscriberMessageAlert({
         text: imageText,
         duration: imageDuration,
       };
-      await window.alerts?.saveTemplate(template);
+      const res = await window.alerts?.saveTemplate(template);
+      if (res?.ok) {
+        success(t("common.saved"))
+      } else {
+        error(t("common.error"), res?.error);
+      }
       console.log('[Alert] Saved default template');
     } catch (err) {
       console.error('[Alert] Failed to save default template:', err);
@@ -204,12 +232,22 @@ export default function SubscriberMessageAlert({
           <Button
             variant="contained"
             disabled={sending}
+            onClick={() => saveDefaultTemplate()}
+            style={{
+              width: "100%",
+            }}
+          >
+            {t("alert.saveTemplate")}
+          </Button>
+          <Button
+            variant="contained"
+            disabled={sending}
             onClick={() => sendImageTemplate()}
             style={{
               width: "100%",
             }}
           >
-            {t("alert.sendTemplate")}
+            {t("alert.testTemplate")}
           </Button>
           <Button
             component="label"
