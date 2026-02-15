@@ -164,6 +164,8 @@
   "twitchChat.streakMonths": "{months} aufeinanderfolgende Monate",
   "twitchChat.bitsAmount": "{bits} Bits",
   "twitchChat.recordedAt": "Aufgezeichnet um {time}",
+  "twitchChat.cumulativeTotalGifted": "{totalGifted} insgesamt an den Kanal geschenkte Abonnements",
+  "twitchChat.total": "{months} geschenkte Abonnements",
   
   "chatBox.title": "Chatbox-Anpassung",
   "chatBox.templates": "Vorlagen",

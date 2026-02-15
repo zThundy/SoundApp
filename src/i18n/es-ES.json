@@ -165,6 +165,8 @@
   "twitchChat.streakMonths": "{months} meses consecutivos",
   "twitchChat.bitsAmount": "{bits} Bits",
   "twitchChat.recordedAt": "Grabado a las {time}",
+  "twitchChat.cumulativeTotalGifted": "{totalGifted} suscripciones regaladas en total al canal",
+  "twitchChat.total": "{months} suscripciones regaladas",
 
   "chatBox.title": "Personalización del chatbox",
   "chatBox.templates": "Plantillas",

@@ -165,6 +165,8 @@
   "twitchChat.streakMonths": "{months} Mesi Consecutivi",
   "twitchChat.bitsAmount": "{bits} Bits",
   "twitchChat.recordedAt": "Registrato alle {time}",
+  "twitchChat.cumulativeTotalGifted": "{totalGifted} abbonamenti regalati in totale al canale",
+  "twitchChat.total": "{months} abbonamenti regalati",
 
   "chatBox.title": "Editor Chatbox",
   "chatBox.templates": "Template",

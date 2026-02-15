@@ -164,6 +164,8 @@
   "twitchChat.streakMonths": "{months} Consecutive Moons",
   "twitchChat.bitsAmount": "{bits} Bits",
   "twitchChat.recordedAt": "Logged in the ship's book at {time}",
+  "twitchChat.cumulativeTotalGifted": "{totalGifted} Total subscriptions gifted to the crew",
+  "twitchChat.total": "{months} gifted subscriptions",
 
   "chatBox.title": "Chatbox Settings",
   "chatBox.templates": "Templates",
