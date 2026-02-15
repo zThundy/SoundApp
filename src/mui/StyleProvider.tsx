@@ -50,7 +50,7 @@ const theme = createTheme({
     // },
     text: {
       primary: '#e6eef8',
-      secondary: '#6C6F72',
+      secondary: '#909497',
     },
   },
   shape: { borderRadius: 8 },
@@ -161,7 +161,6 @@ const theme = createTheme({
         }),
       }
     },
-
     MuiPopper: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -185,6 +184,20 @@ const theme = createTheme({
         }),
       }
     },
+    MuiListSubheader: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: (theme.palette as any).text.secondary,
+          backgroundColor: (theme.palette as any).background["900"],
+        })
+      }
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+        }),
+      }
+    }
   },
 })
 

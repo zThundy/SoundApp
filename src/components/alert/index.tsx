@@ -15,6 +15,10 @@ import {
   Zoom,
   Alert,
   Collapse,
+  Select,
+  MenuItem,
+  ListSubheader,
+  FormControl
 } from '@mui/material';
 
 import {
@@ -98,17 +102,33 @@ export default function AlertEditor() {
 
   return (
     <Box p={2}>
-      <Typography variant="h5" mb={2}>{t('alert.alert')}</Typography>
-      <Tabs value={tab} onChange={(_, v) => setTab(v)}>
-        <Tab label={t('alert.soundAlerts')} />
-        <Tab label={t('alert.followAlerts')} />
-        <Tab label={t('alert.subAlerts')} />
-      </Tabs>
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        pl={3}
+        pr={3}
+        pt={1}
+        pb={1}
+      >
+        <Typography variant="h5" mb={2}>{t('alert.alert')}</Typography>
+        <FormControl sx={{ m: 1, minWidth: 240 }} size="small">
+          <Select
+            value={tab}
+            onChange={(e) => setTab(e.target.value)}
+          >
+            <MenuItem value={0}>{t('alert.soundAlerts')}</MenuItem>
+            <MenuItem value={1}>{t('alert.followAlerts')}</MenuItem>
+            <ListSubheader>{t('alert.subscriptionCategory')}</ListSubheader>
+            <MenuItem value={2}>{t('alert.subAlerts')}</MenuItem>
+            <MenuItem value={3}>{t('alert.giftSubAlerts')}</MenuItem>
+            <MenuItem value={4}>{t('alert.messageSubAlerts')}</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
 
       <Grid container spacing={{ lg: 2, md: 6 }} height="100%">
         <Grid size={{ lg: 8, md: 12 }} height="100%">
           <Box p={2} className={style.container}>
-
             {tab === 0 && (
               <SoundAlert
                 iframeRef={iframeRef}
