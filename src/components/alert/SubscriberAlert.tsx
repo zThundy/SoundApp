@@ -51,7 +51,7 @@ export default function SubscriberAlert({
 
   const [sending, setSending] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imageText, setImageText] = useState('${username} has redeemed ${reward_title}!');
+  const [imageText, setImageText] = useState('${username} has subscribed to the channel!');
   const [imageDuration, setImageDuration] = useState(6000);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function SubscriberAlert({
 
   async function loadDefaultTemplate() {
     try {
-      const res = await window.alerts?.loadTemplate('default-soundAlert');
+      const res = await window.alerts?.loadTemplate('default-subscriberAlert');
       if (res?.ok && res?.template) {
         const template = res.template;
         setImageText(template.text);
@@ -118,7 +118,7 @@ export default function SubscriberAlert({
         imageDataUrl = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
       }
       const template = {
-        id: 'default-soundAlert',
+        id: 'default-subscriberAlert',
         imageDataUrl,
         text: imageText,
         duration: imageDuration,
@@ -163,24 +163,6 @@ export default function SubscriberAlert({
           <StyledVariable variant="body2" onClick={() => setImageText((prev: any) => prev + '${user_display_name} ')} style={{ cursor: "pointer" }}>
             <strong>${'{user_display_name}'}</strong>
             <Tooltip title={t("alert.variableUserDisplayName")} placement="top" arrow style={{ cursor: "pointer" }}>
-              <Info />
-            </Tooltip>
-          </StyledVariable>
-          <StyledVariable variant="body2" onClick={() => setImageText((prev: any) => prev + '${reward_title} ')} style={{ cursor: "pointer" }}>
-            <strong>${'{reward_title}'}</strong>
-            <Tooltip title={t("alert.variableRewardTitle")} placement="top" arrow style={{ cursor: "pointer" }}>
-              <Info />
-            </Tooltip>
-          </StyledVariable>
-          <StyledVariable variant="body2" onClick={() => setImageText((prev: any) => prev + '${reward_cost} ')} style={{ cursor: "pointer" }}>
-            <strong>${'{reward_cost}'}</strong>
-            <Tooltip title={t("alert.variableRewardCost")} placement="top" arrow style={{ cursor: "pointer" }}>
-              <Info />
-            </Tooltip>
-          </StyledVariable>
-          <StyledVariable variant="body2" onClick={() => setImageText((prev: any) => prev + '${user_input} ')} style={{ cursor: "pointer" }}>
-            <strong>${'{user_input}'}</strong>
-            <Tooltip title={t("alert.variableUserInput")} placement="top" arrow style={{ cursor: "pointer" }}>
               <Info />
             </Tooltip>
           </StyledVariable>
