@@ -108,6 +108,7 @@
   "alert.variableCumulativeMonths": "Le nombre total de mois pendant lesquels l'utilisateur a été abonné à la chaîne.",
   "alert.variableStreakMonths": "Le nombre de mois consécutifs pendant lesquels l'utilisateur a été abonné à la chaîne.",
   "alert.variableDurationMonths": "Le nombre de mois pendant lesquels l'abonnement est valide.",
+  "alert.variableBits": "Le nombre de bits donnés à la chaîne par l'utilisateur.",
 
   "redeems.list": "Liste des récompenses",
   "redeems.selected": "Récompense sélectionnée",

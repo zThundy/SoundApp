@@ -107,6 +107,7 @@
   "alert.variableCumulativeMonths": "Die Gesamtanzahl der Monate, die der Nutzer den Kanal abonniert hat.",
   "alert.variableStreakMonths": "Die Anzahl der aufeinanderfolgenden Monate, die der Nutzer den Kanal abonniert hat.",
   "alert.variableDurationMonths": "Die Anzahl der Monate, für die das Abonnement gültig ist.",
+  "alert.variableBits": "Die Anzahl der vom Nutzer an den Kanal gespendeten Bits.",
 
   "redeems.list": "Belohnungsliste",
   "redeems.selected": "Ausgewählte Belohnung",

@@ -107,6 +107,7 @@
   "alert.variableCumulativeMonths": "The total moons the pirate has sailed with the crew.",
   "alert.variableStreakMonths": "The number o' consecutive moons the scallywag has sailed with the crew.",
   "alert.variableDurationMonths": "The number o' moons the crew membership be valid fer.",
+  "alert.variableBits": "The number o' bits donated to the crew by the scallywag.",
 
   "redeems.list": "Booty Claims List",
   "redeems.selected": "Selected Booty",
