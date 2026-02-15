@@ -38,7 +38,7 @@ class TwitchEventListener {
 
   private chatMessages: ChatMessage[] = [];
   private rewardRedemptions: Alert[] = [];
-  private readonly MAX_CACHE_SIZE = 50;
+  private readonly MAX_CACHE_SIZE = 500;
   private readonly CACHE_FILE = 'twitch-cache.json';
   private readonly CACHE_CONTEXT = 'twitch';
 
