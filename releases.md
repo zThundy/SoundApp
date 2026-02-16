@@ -162,5 +162,9 @@
 
 ## 0.2.8
 
+- Refactor of twitch processor
+- Added capability of translating emotes in messages to URL images
+- Restructure of messages in twitch events for translating emotes to images
+- Small fixes to alerts html static page
 
 ## 0.2.9
