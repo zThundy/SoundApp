@@ -167,26 +167,43 @@ class TwitchEventListener {
     const messageType = message.metadata?.message_type;
     console.debug('[TwitchEventListener] Received message type:', messageType);
 
-    switch (messageType) {
-      case 'session_welcome':
-        await this.handleSessionWelcome(message);
-        break;
+    try {
+      switch (messageType) {
+        case 'session_welcome':
+          await this.handleSessionWelcome(message);
+          break;
 
-      case 'session_keepalive':
-        this.resetKeepaliveTimer();
-        break;
+        case 'session_keepalive':
+          this.resetKeepaliveTimer();
+          break;
 
-      case 'notification':
-        await this.handleNotification(message);
-        break;
+        case 'notification':
+          await this.handleNotification(message);
+          break;
 
-      case 'session_reconnect':
-        await this.handleSessionReconnect(message);
-        break;
+        case 'session_reconnect':
+          await this.handleSessionReconnect(message);
+          break;
 
-      default:
-        console.debug('Unknown message type:', messageType);
+        default:
+          console.debug('Unknown message type:', messageType);
+      }
+    } catch(e: any) {
+      console.error("[TwitchEventListener] Error while handling websocket message: ", e)
+    } finally {
+      console.debug("[TwitchEventListener] Received data: ", message)
     }
+  }
+
+  private resetKeepaliveTimer(timeInSeconds: number = 60): void {
+    if (this.keepaliveTimer) {
+      clearTimeout(this.keepaliveTimer);
+    }
+    console.debug('[TwitchEventListener] Keepalive timer reset');
+
+    this.keepaliveTimer = setTimeout(() => {
+      console.warn('[TwitchEventListener] Keepalive timeout - connection appears dead');
+    }, timeInSeconds * 1000);
   }
 
   private async handleSessionWelcome(message: any): Promise<void> {
@@ -302,6 +319,20 @@ class TwitchEventListener {
       {
         type: 'channel.shared_chat.end',
         version: '1',
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+        }
+      },
+      {
+        type: "stream.online",
+        version: "1",
+        condition: {
+          broadcaster_user_id: this.config.broadcasterId,
+        }
+      },
+      {
+        type: "stream.offline",
+        version: "1",
         condition: {
           broadcaster_user_id: this.config.broadcasterId,
         }
@@ -547,17 +578,6 @@ class TwitchEventListener {
         console.error('[TwitchEventListener] Reconnection failed:', error);
       }
     }, delay);
-  }
-
-  private resetKeepaliveTimer(timeInSeconds: number = 60): void {
-    if (this.keepaliveTimer) {
-      clearTimeout(this.keepaliveTimer);
-    }
-    console.debug('[TwitchEventListener] Keepalive timer reset');
-
-    this.keepaliveTimer = setTimeout(() => {
-      console.warn('[TwitchEventListener] Keepalive timeout - connection appears dead');
-    }, timeInSeconds * 1000);
   }
 
   disconnect(): void {
