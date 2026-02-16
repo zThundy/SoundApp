@@ -18,8 +18,8 @@ const clientId = '64aeehn5qo2902i5c4gvz41yjqd9h2'
 export const getTwitchEventListener = () => twitchEventListener
 
 export const connectEventSubIfPossible = async (safeStore: SafeStorageWrapper | null, mainWindow: BrowserWindow | null) => {
-  console.debug("[Twitch] Attempting to connect to EventSub if possible...")
-  if (!mainWindow || twitchEventListener?.isConnected()) return console.debug("[Twitch] Already connected or no main window.")
+  console.debug("[TwitchHandlers] Attempting to connect to EventSub if possible...")
+  if (!mainWindow || twitchEventListener?.isConnected()) return console.debug("[TwitchHandlers] Already connected or no main window.")
 
   try {
     const accessToken = await safeStore?.get('twitchAccessToken')
@@ -37,9 +37,9 @@ export const connectEventSubIfPossible = async (safeStore: SafeStorageWrapper | 
     }
 
     await twitchEventListener.connect(accessToken, broadcasterId, clientId)
-    console.debug('Twitch EventSub connected')
+    console.debug('[TwitchHandlers] Twitch EventSub connected')
   } catch (error) {
-    console.error('Failed to connect to Twitch EventSub:', error)
+    console.error('[TwitchHandlers] Failed to connect to Twitch EventSub:', error)
   }
 }
 
