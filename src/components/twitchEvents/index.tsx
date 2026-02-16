@@ -164,8 +164,8 @@ export default function TwitchChat() {
         </StyledStack>
       </Grid>
 
-      <Grid container spacing={2} padding={2} justifyContent={"center"}>
-        <Grid size={{ lg: 11, md: 11 }}>
+      <Grid container spacing={2} padding={2} justifyContent={"center"} alignContent={"center"}>
+        <Grid size={{ lg: 12, md: 12 }}>
           <Typography variant="h6" gutterBottom>
             {t("twitchChat.recentRedeems")}
           </Typography>
@@ -220,7 +220,7 @@ export default function TwitchChat() {
           </StyledStack>
         </Grid>
 
-        <Grid size={{ lg: 11, md: 11 }}>
+        <Grid size={{ lg: 12, md: 12 }}>
           <Typography variant="h6" gutterBottom>
             {t("twitchChat.recentEvents")}
           </Typography>
@@ -300,7 +300,7 @@ export default function TwitchChat() {
           </StyledStack>
         </Grid>
 
-        <Grid size={{ lg: 11, md: 11 }}>
+        <Grid size={{ lg: 12, md: 12 }}>
           <Typography variant="h6" gutterBottom>
             {t("twitchChat.recentMessages")}
           </Typography>
