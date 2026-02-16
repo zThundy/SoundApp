@@ -155,5 +155,9 @@
 - Changed logic of image save and get in the alerts editor
 - Changed style of buttons in alerts editor
 - Divided test and save button in alerts editor
+- Added audio functionality to all new alerts
+  + Follow
+  + Subscriber
+  + Bits
 
 ## 0.2.8
