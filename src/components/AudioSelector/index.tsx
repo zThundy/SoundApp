@@ -7,20 +7,13 @@ import {
   Pause as PauseIcon,
   VolumeUp as VolumeUpIcon,
   VolumeOff as VolumeOffIcon,
+  Add,
+  Delete
 } from "@mui/icons-material";
 
 import styled from "@emotion/styled";
 
 import { TranslationContext } from "@/i18n/TranslationProvider";
-
-type Props = {
-  value?: string | null;
-  volume?: number;
-  muted?: boolean;
-  onChange?: (fileUrl: string | null, file?: File | null) => void;
-  onVolumeChange?: (vol: number) => void;
-  onMutedChange?: (muted: boolean) => void;
-};
 
 const StyledControlsContainer = styled(Box)(({ theme }: any) => ({
   display: "flex",
@@ -45,7 +38,23 @@ const formatTime = (sec: number) => {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 };
 
-export default function AudioSelector({ value, volume: volumeProp, muted: mutedProp, onChange, onVolumeChange, onMutedChange }: Props) {
+export default function AudioSelector({
+  value,
+  volume: volumeProp,
+  muted: mutedProp,
+  inline = false,
+  onChange,
+  onVolumeChange,
+  onMutedChange
+}: {
+  value?: string | null;
+  volume?: number;
+  muted?: boolean;
+  inline?: boolean;
+  onChange?: (fileUrl: string | null, file?: File | null) => void;
+  onVolumeChange?: (vol: number) => void;
+  onMutedChange?: (muted: boolean) => void;
+}) {
   const { t } = useContext(TranslationContext);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const [src, setSrc] = React.useState<string | null>(value ?? null);
@@ -96,8 +105,8 @@ export default function AudioSelector({ value, volume: volumeProp, muted: mutedP
 
   const handleFilePick = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const file = ev.target.files?.[0] ?? null;
-    if (!file) return;
-    if (!file.type.startsWith("audio/")) return;
+    if (!file) return console.error("No file found in target");
+    if (!file.type.startsWith("audio/")) return console.error("File type does not starts with /audio");
     const url = URL.createObjectURL(file);
     setSrc(url);
     setIsPlaying(false);
@@ -175,7 +184,7 @@ export default function AudioSelector({ value, volume: volumeProp, muted: mutedP
   return (
     <Box
       display="flex"
-      flexDirection="column"
+      flexDirection={inline ? "row" : "column"}
       gap={2}
       width={"100%"}
     // style={{ backgroundColor: "white" }}
@@ -282,13 +291,13 @@ export default function AudioSelector({ value, volume: volumeProp, muted: mutedP
       </StyledControlsContainer>
 
       <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-        <Button variant="contained" component="label" fullWidth>
-          {t("audio.selectAudioFile")}
+        <Button variant="contained" component="label" fullWidth sx={inline ? { height: "100%" } : {}}>
+          { inline ? <Add fontSize="large" /> : t("audio.selectAudioFile") }
           <input hidden type="file" accept="audio/*" onChange={handleFilePick} />
         </Button>
         {src && (
-          <Button variant="outlined" color="secondary" onClick={clearAudio} fullWidth>
-            {t("audio.removeAudioFile")}
+          <Button variant={inline ? "contained" : "outlined"} color={inline ? "error" : "secondary"} onClick={clearAudio} fullWidth sx={inline ? { height: "100%" } : {}}>
+            { inline ? <Delete fontSize="large" /> : t("audio.removeAudioFile") }
           </Button>
         )}
       </Stack>

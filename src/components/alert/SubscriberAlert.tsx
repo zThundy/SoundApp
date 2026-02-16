@@ -7,6 +7,7 @@ import { Info, AttachFile, Send, Save } from '@mui/icons-material';
 
 import { styled } from '@mui/material/styles';
 
+import AudioSelector from "@/components/AudioSelector";
 import { TranslationContext } from '@/i18n/TranslationProvider';
 import { NotificationContext } from '@/context/NotificationProvider';
 
@@ -51,6 +52,10 @@ export default function SubscriberAlert({
 
   const [sending, setSending] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | undefined | null>(undefined);
+  const [audioFile, setAudioFile] = useState<File | undefined | null>(undefined);
+  const [audioVolume, setAudioVolume] = useState<number>(1);
+  const [audioMuted, setAudioMuted] = useState<boolean>(false);
   const [imageText, setImageText] = useState('${username} has subscribed to the channel!');
   const [imageDuration, setImageDuration] = useState(6000);
 
@@ -65,7 +70,11 @@ export default function SubscriberAlert({
         const template = res.template;
         setImageText(template.text);
         setImageDuration(template.duration);
-        setImageFile(dataURLtoFile((template.imageDataUrl as string), "uploaded_logo"));
+        if (template.imageDataUrl) setImageFile(dataURLtoFile((template.imageDataUrl as string), "uploaded_logo"));
+        if (template.audio && template.audio.base64) setAudioFile(dataURLtoFile((template.audio.base64 as string), "uploaded_audio"));
+        if (template.audio && template.audio.base64) setAudioUrl(template.audio.base64);
+        if (template.audio && template.audio.audioMuted) setAudioMuted(template.audio.audioMuted);
+        if (template.audio && template.audio.volume) setAudioVolume(template.audio.volume);
         console.log('[Alert] Loaded default template');
       }
     } catch (err) {
@@ -111,13 +120,27 @@ export default function SubscriberAlert({
   async function sendImageTemplate() {
     setSending(true);
     try {
-      let image = null;
+      let imageDataUrl: string | undefined = undefined;
+      let audioDataUrl: string | undefined = undefined;
       if (imageFile) {
-        image = await toDataUrl(imageFile);
+        imageDataUrl = await toDataUrl(imageFile);
       } else {
-        image = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
+        imageDataUrl = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
       }
-      const payload = { type: 'imageTemplate', imageDataUrl: image, text: imageText, duration: imageDuration };
+      if (audioFile) {
+        audioDataUrl = await toDataUrl(audioFile);
+      }
+      const payload = {
+        type: 'imageTemplate',
+        imageDataUrl,
+        audio: {
+          base64: audioDataUrl,
+          volume: audioMuted ? 0 : audioVolume,
+          audioMuted
+        },
+        text: imageText,
+        duration: imageDuration,
+      };
       const res = await window.alerts?.broadcast(payload);
       if (res?.ok) {
         success(t("common.sent"));
@@ -135,14 +158,23 @@ export default function SubscriberAlert({
   async function saveDefaultTemplate() {
     try {
       let imageDataUrl: string | undefined = undefined;
+      let audioDataUrl: string | undefined = undefined;
       if (imageFile) {
         imageDataUrl = await toDataUrl(imageFile);
       } else {
         imageDataUrl = await toDataUrl(new File([await (await fetch('logo.png')).blob()], 'logo.png', { type: 'image/png' }));
       }
+      if (audioFile) {
+        audioDataUrl = await toDataUrl(audioFile);
+      }
       const template = {
         id: 'default-subscriberAlert',
         imageDataUrl,
+        audio: {
+          base64: audioDataUrl,
+          volume: audioMuted ? 0 : audioVolume,
+          audioMuted
+        },
         text: imageText,
         duration: imageDuration,
       };
@@ -200,6 +232,21 @@ export default function SubscriberAlert({
             </Tooltip>
           </StyledVariable>
         </Stack>
+      </StyledBox>
+      
+      <StyledBox>
+        <AudioSelector
+          inline={true}
+          value={audioUrl}
+          volume={audioVolume}
+          muted={audioMuted}
+          onChange={async (fileUrl, file) => {
+            setAudioUrl(fileUrl);
+            setAudioFile(file ?? null);
+          }}
+          onVolumeChange={(v) => setAudioVolume(v)}
+          onMutedChange={(m) => setAudioMuted(m)}
+        />
       </StyledBox>
 
       <StyledBox>
