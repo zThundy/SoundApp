@@ -3,6 +3,7 @@ import { BrowserWindow } from 'electron';
 import fileManager from './fileManager';
 import { getRedeemProcessor } from './redeemRegistry';
 import { Alert } from "./types/alerts";
+import { getChannelEmotes } from "./twitchWorker";
 
 interface TwitchEventConfig {
   accessToken: string;
@@ -18,12 +19,32 @@ interface ChatMessage {
   timestamp: Date;
   color?: string;
   badges?: string[];
-  messageFragment: Object
+  messageFragment: {
+    emoteUrl?: string;
+    type: string;
+    text: string;
+    cheerEmote?: object;
+    emote: {
+      id: string;
+      emote_set_id: string;
+      owner_id: string;
+      format: string[];
+    },
+    mention?: object;
+  }[]
 }
 
-interface TwitchCache {
-  messages: ChatMessage[];
-  redemptions: Alert[];
+interface Emote {
+  id: string;
+  name: string;
+  images: { url_1x: string; url_2x: string; url_4x: string };
+  tier: string;
+  emote_type: string;
+  emote_set_id: string;
+  format: string[];
+  scale: string[];
+  theme_mode: string[];
+  template: string;
 }
 
 class TwitchEventListener {
@@ -35,57 +56,89 @@ class TwitchEventListener {
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
   private keepaliveTimer: NodeJS.Timeout | null = null;
+  private safeStore: any | null = null;
 
   private chatMessages: ChatMessage[] = [];
   private rewardRedemptions: Alert[] = [];
+  private emotes: Map<string, Emote> = new Map();
   private readonly MAX_CACHE_SIZE = 50000;
   private readonly CACHE_FILE = 'twitch-cache.json';
+  private readonly EMOTES_CACHE = "twitch-emotes.json";
+  private readonly MESSAGES_CACHE = "twitch-messages.json";
   private readonly CACHE_CONTEXT = 'twitch';
 
-  constructor(mainWindow: BrowserWindow) {
+  constructor(safeStore: any, mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
-    this.loadCache();
+    this.safeStore = safeStore;
+    this.loadAllCache();
   }
 
-  private async loadCache(): Promise<void> {
+  private async loadAllCache(): Promise<void> {
     try {
-      const exists = await fileManager.fileExists(this.CACHE_CONTEXT, { relativePath: this.CACHE_FILE });
-      if (!exists) {
-        console.debug('[TwitchEventListener] No cache file found, starting fresh');
-        return;
+      const redemptionCache = await this.loadCache(this.CACHE_CONTEXT, this.CACHE_FILE);
+      if (redemptionCache) {
+        this.rewardRedemptions = (redemptionCache as Alert[]).map(redemption => ({
+          ...redemption,
+          timestamp: new Date(redemption.timestamp)
+        }));
       }
 
-      const { buffer } = fileManager.readFile(this.CACHE_CONTEXT, { relativePath: this.CACHE_FILE });
-      const data = await buffer;
-      const cache: TwitchCache = JSON.parse(data.toString());
+      const messagesCache = await this.loadCache(this.CACHE_CONTEXT, this.MESSAGES_CACHE);
+      if (messagesCache) {
+        this.chatMessages = (messagesCache as ChatMessage[]).map(msg => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+      }
 
-      this.chatMessages = cache.messages.map(msg => ({
-        ...msg,
-        timestamp: new Date(msg.timestamp)
-      }));
+      const emotesCache = await this.loadCache(this.CACHE_CONTEXT, this.EMOTES_CACHE);
+      if (emotesCache) {
+        for (var i in emotesCache) {
+          this.emotes.set(i, (emotesCache[i] as Emote));
+        }
+      }
 
-      this.rewardRedemptions = cache.redemptions.map(redemption => ({
-        ...redemption,
-        timestamp: new Date(redemption.timestamp)
-      }));
-
-      console.debug(`[TwitchEventListener] Cache loaded: ${this.chatMessages.length} messages, ${this.rewardRedemptions.length} redemptions`);
-    } catch (error) {
-      console.error('[TwitchEventListener] Failed to load cache:', error);
+      console.debug(`[TwitchEventListener] Cache loaded: ${this.chatMessages.length} messages, ${this.rewardRedemptions.length} redemptions, ${this.emotes.size} cached emotes.`);
+    } catch (error: any) {
+      console.error("[TwitchEventListener] Error while loading global cache", error)
     }
   }
 
-  private async saveCache(): Promise<void> {
+  private async loadCache(context: string, path: string): Promise<ChatMessage[] | Emote[] | Alert[] | null> {
     try {
-      const cache: TwitchCache = {
-        messages: this.chatMessages,
-        redemptions: this.rewardRedemptions
-      };
+      const exists = await fileManager.fileExists(context, { relativePath: path });
+      if (!exists) {
+        console.debug('[TwitchEventListener] No cache file found, starting fresh');
+        return null;
+      }
 
-      await fileManager.writeFile(this.CACHE_CONTEXT, { relativePath: this.CACHE_FILE }, JSON.stringify(cache, null, 2));
-      console.debug('[TwitchEventListener] Cache saved');
+      const { buffer } = fileManager.readFile(context, { relativePath: path });
+      const data = await buffer;
+      const cache: ChatMessage[] | Emote[] | Alert[] = JSON.parse(data.toString());
+      return cache;
     } catch (error) {
-      console.error('[TwitchEventListener] Failed to save cache:', error);
+      console.error('[TwitchEventListener] Failed to load cache:', error);
+      return null;
+    }
+  }
+
+  private async saveCache(context: string, path: string): Promise<void> {
+    try {
+      console.debug(`[TwitchEventListener] Saving from context ${context} the cache in path ${path}`);
+      switch (path) {
+        case this.EMOTES_CACHE:
+          await fileManager.writeFile(context, { relativePath: path }, JSON.stringify(Object.fromEntries(this.emotes), null, 2));
+          break;
+        case this.CACHE_FILE:
+          await fileManager.writeFile(context, { relativePath: path }, JSON.stringify(this.rewardRedemptions, null, 2));
+          break;
+        case this.MESSAGES_CACHE:
+          await fileManager.writeFile(context, { relativePath: path }, JSON.stringify(this.chatMessages, null, 2));
+          break;
+      }
+      console.debug(`[TwitchEventListener] Cache from context ${context} in path ${path} saved successfully!`);
+    } catch (error: any) {
+      console.error(`[TwitchEventListener] Error while saving cache from context ${context} in path ${path}`, error);
     }
   }
 
@@ -188,10 +241,10 @@ class TwitchEventListener {
         default:
           console.debug('Unknown message type:', messageType);
       }
-    } catch(e: any) {
+    } catch (e: any) {
       console.error("[TwitchEventListener] Error while handling websocket message: ", e)
-    } finally {
-      console.debug("[TwitchEventListener] Received data: ", message)
+      // } finally {
+      //   console.debug("[TwitchEventListener] Received data: ", message)
     }
   }
 
@@ -350,7 +403,7 @@ class TwitchEventListener {
 
   private async subscribeToEvent(event: any): Promise<void> {
     if (!this.config || !this.sessionId) return;
-    
+
     let url = "http://127.0.0.1:8080/eventsub/subscriptions";
     if (process.env.IS_PACKAGED === "true") url = "https://api.twitch.tv/helix/eventsub/subscriptions";
     const headers = {
@@ -387,7 +440,7 @@ class TwitchEventListener {
   private async handleNotification(message: any): Promise<void> {
     const subscriptionType = message.metadata.subscription_type;
     const event = message.payload.event;
-    
+
     console.debug("[TwitchEventListener] Got notification with data: ", event)
     switch (subscriptionType) {
       case 'channel.channel_points_custom_reward_redemption.add':
@@ -411,7 +464,7 @@ class TwitchEventListener {
       case 'channel.chat.message':
         this.handleChatMessage(event);
         break;
-      
+
       case "channel.follow":
         this.handleAlertNotification({
           type: "follow",
@@ -422,7 +475,7 @@ class TwitchEventListener {
           timestamp: new Date(event.followed_at)
         });
         break;
-      
+
       case "channel.subscribe":
         this.handleAlertNotification({
           type: "subscriber",
@@ -500,14 +553,52 @@ class TwitchEventListener {
       this.rewardRedemptions.pop();
     }
 
-    this.saveCache();
+    this.saveCache(this.CACHE_CONTEXT, this.CACHE_FILE);
 
     if (this.mainWindow) {
       this.mainWindow.webContents.send('twitch:reward-redeemed', alert);
     }
   }
 
-  private handleChatMessage(event: any): void {
+  private async translateEmotes(message: ChatMessage): Promise<ChatMessage["messageFragment"]> {
+    let notFoundIds = []
+    for (var i in message.messageFragment) {
+      const fragment = message.messageFragment[i];
+      if (fragment && fragment.type === "emote") {
+        const emote = this.emotes.get(fragment.emote.id)
+        if (!emote) {
+          notFoundIds.push(fragment.emote.owner_id)
+        }
+      }
+    }
+
+    console.debug(`[TwitchEventListener] Got missing owner ids from fragments and cache: ${JSON.stringify(notFoundIds)}`);
+    const accessToken = await this.safeStore?.get('twitchAccessToken')
+    for (var i in notFoundIds) {
+      console.debug(`[TwitchEventListener] Getting emotes from user ${notFoundIds[i]}`)
+      const channelEmotes = await getChannelEmotes(accessToken, notFoundIds[i])
+      if (channelEmotes && channelEmotes.data) {
+        (channelEmotes.data as Emote[]).forEach((emote, index) => {
+          this.emotes.set(emote.id, emote);
+        })
+      }
+    }
+
+    for (var i in message.messageFragment) {
+      const fragment = message.messageFragment[i];
+      if (fragment.type === "emote") {
+        const cachedEmote = this.emotes.get(fragment.emote.id);
+        if (cachedEmote) {
+          message.messageFragment[i].emoteUrl = cachedEmote.images.url_4x
+        }
+      }
+    }
+
+    this.saveCache(this.CACHE_CONTEXT, this.EMOTES_CACHE);
+    return message.messageFragment;
+  }
+
+  private async handleChatMessage(event: any): Promise<void> {
     console.debug("[TwitchEventListener] Received a new chat message with data: ", event, event.message.fragments)
     const chatMessage: ChatMessage = {
       userId: event.chatter_user_id,
@@ -517,9 +608,11 @@ class TwitchEventListener {
       timestamp: new Date(),
       color: event.color,
       badges: event.badges?.map((b: any) => b.set_id) || [],
-      // TODO: decide if to save messageFragment.type = "emote", to local file system for caching or fetching it every time
       messageFragment: event.message.fragments
     };
+
+    const translatedFragments = await this.translateEmotes(chatMessage);
+    chatMessage.messageFragment = translatedFragments;
 
     console.debug('[TwitchEventListener] Chat message:', chatMessage);
 
@@ -528,7 +621,7 @@ class TwitchEventListener {
       this.chatMessages.shift();
     }
 
-    this.saveCache();
+    this.saveCache(this.CACHE_CONTEXT, this.MESSAGES_CACHE);
 
     if (this.mainWindow) {
       this.mainWindow.webContents.send('twitch:chat-message', chatMessage);
@@ -543,7 +636,8 @@ class TwitchEventListener {
         message: chatMessage.message,
         color: chatMessage.color || '#FFFFFF',
         badges: chatMessage.badges,
-        timestamp: chatMessage.timestamp
+        timestamp: chatMessage.timestamp,
+        fragments: chatMessage.messageFragment
       });
     }
   }

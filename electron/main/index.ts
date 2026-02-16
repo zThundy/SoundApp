@@ -14,8 +14,8 @@ import { connectEventSubIfPossible } from './ipc/twitchHandlers'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 process.env.APP_ROOT = path.join(__dirname, '../..')
-process.env.IS_PACKAGED = String(app.isPackaged)
-// process.env.IS_PACKAGED = "true"
+// process.env.IS_PACKAGED = String(app.isPackaged)
+process.env.IS_PACKAGED = "true"
 
 // Initialize logger as early as possible
 initializeLogger()

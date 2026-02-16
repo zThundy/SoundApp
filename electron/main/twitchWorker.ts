@@ -137,6 +137,22 @@ const deleteCustomReward = async (accessToken: string, broadcasterId: string, re
   return;
 }
 
+const getChannelEmotes = async (accessToken: string, broadcasterId: string) => {
+  const url = `https://api.twitch.tv/helix/chat/emotes?broadcaster_id=${broadcasterId}`
+  const headers = {
+    'Authorization': `Bearer ${accessToken}`,
+    'Client-Id': clientId,
+    'Content-Type': 'application/json'
+  };
+  const response = await fetch(url, { headers });  
+  if (!response.ok) {
+    console.error("Failed to get emotes:", await response.text());
+    throw new Error('Failed to get emotes: ' + response.statusText);
+  }
+  const data = await response.json();
+  return data;
+}
+
 export {
   getTwitchRedemptions,
   getBroadcasterId,
@@ -144,5 +160,6 @@ export {
   updateCustomReward,
   createCustomReward,
   deleteCustomReward,
-  getOnlyManageableRewards
+  getOnlyManageableRewards,
+  getChannelEmotes
 };

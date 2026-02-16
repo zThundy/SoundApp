@@ -6,11 +6,12 @@ import {
   ListItem,
   ListItemText,
   Chip,
-  Stack
+  Stack,
+  Box
 } from '@mui/material';
 
 import style from "./events.module.css";
-import { styled } from '@mui/system';
+import { height, styled } from '@mui/system';
 
 import { TranslationContext } from '@/i18n/TranslationProvider';
 import { NotificationContext } from '@/context/NotificationProvider';
@@ -23,6 +24,7 @@ interface ChatMessage {
   timestamp: Date;
   color?: string;
   badges?: string[];
+  messageFragment?: any[];
 }
 
 interface RewardRedemption {
@@ -313,7 +315,7 @@ export default function TwitchChat() {
                   <ListItem key={`${msg.userId}-${index}`} className={style.listItem}>
                     <ListItemText
                       primary={
-                        <Stack direction="row" spacing={1} alignItems={"flex-start"} justifyContent={"flex-start"}>
+                        <Stack direction="row" spacing={0.5} alignItems={"center"} justifyContent={"flex-start"}>
                           <Typography
                             variant="body2"
                             fontWeight="bold"
@@ -321,9 +323,19 @@ export default function TwitchChat() {
                           >
                             {msg.displayName}:
                           </Typography>
-                          <Typography variant="body2">
-                            {msg.message}
-                          </Typography>
+                          {
+                            msg.messageFragment?.map((fragment, index) => (
+                              <Stack key={index} direction="row" alignItems={"flex-start"} justifyContent={"flex-start"}>
+                                {fragment.type === "emote" ?
+                                    <img src={fragment.emoteUrl} style={{ width: "30px", height: "30px" }} /> 
+                                  : null}
+                                {fragment.type === "text" ?
+                                  <Typography variant="body2">
+                                    {fragment.text}
+                                  </Typography> : null}
+                              </Stack>
+                            ))
+                          }
                         </Stack>
                       }
                       secondary={

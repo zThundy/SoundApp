@@ -33,7 +33,7 @@ export const connectEventSubIfPossible = async (safeStore: SafeStorageWrapper | 
     }
 
     if (!twitchEventListener) {
-      twitchEventListener = new TwitchEventListener(mainWindow)
+      twitchEventListener = new TwitchEventListener(safeStore, mainWindow)
     }
 
     await twitchEventListener.connect(accessToken, broadcasterId, clientId)
