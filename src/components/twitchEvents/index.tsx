@@ -315,7 +315,7 @@ export default function TwitchChat() {
                   <ListItem key={`${msg.userId}-${index}`} className={style.listItem}>
                     <ListItemText
                       primary={
-                        <Stack direction="row" spacing={0.5} alignItems={"center"} justifyContent={"flex-start"}>
+                        <Stack direction="row" spacing={0.5} alignItems={"center"} justifyContent={"flex-start"} flexWrap="wrap">
                           <Typography
                             variant="body2"
                             fontWeight="bold"
@@ -325,7 +325,7 @@ export default function TwitchChat() {
                           </Typography>
                           {
                             msg.messageFragment?.map((fragment, index) => (
-                              <Stack key={index} direction="row" alignItems={"flex-start"} justifyContent={"flex-start"}>
+                              <Stack key={index} direction="row" alignItems={"flex-start"} justifyContent={"flex-start"} display={"flex"}>
                                 {fragment.type === "emote" ?
                                     <img src={fragment.emoteUrl} style={{ width: "30px", height: "30px" }} /> 
                                   : null}

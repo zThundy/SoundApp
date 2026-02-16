@@ -10,7 +10,10 @@
   border-radius: var(--mui-shape-borderRadius);
   padding: 0.5rem 1rem;
   margin-bottom: 0.5rem;
-  width: 100%;
+  max-width: calc(100% - 1rem);
+  overflow-wrap: normal;
+  word-break: normal;
+  display: block;
   transition: background-color 0.2s ease-in-out;
 }
 
