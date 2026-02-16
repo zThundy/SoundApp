@@ -129,10 +129,17 @@
             wrap.appendChild(caption);
             document.getElementById('container').appendChild(wrap);
             
+            console.log("Processing audio", data.audio)
             // Play audio if present
             let audioDuration = 0;
             if (data.audio?.base64) {
-              const audio = new Audio('data:audio/mpeg;base64,' + data.audio.base64);
+              let base64Audio = "";
+              if (data.audio.base64.includes("audio/")) {
+                base64Audio = data.audio.base64;
+              } else {
+                base64Audio = 'data:audio/mpeg;base64,' + data.audio.base64;
+              }
+              const audio = new Audio(base64Audio);
               audio.volume = data.audio.volume || 1.0;
               
               // Get audio duration to wait for it
@@ -159,7 +166,8 @@
               audio.play().catch(e => console.error('Audio playback failed', e));
             }
 
-            if (!audioDuration) {
+            if (!data.audio && !data.audio.base64) {
+              console.log("override duration")
               setTimeout(() => {
                 wrap.remove();
                 isProcessingAlert = false;
@@ -175,34 +183,25 @@
             try {
                 const data = JSON.parse(ev.data);
                 console.log('Received alert data:', data);
-                switch(data.type) {
-                  case "twitch-redeem":
-                    // Add to queue and process
-                    alertQueue.push(data);
-                    processAlertQueue();
-                    break;
-                  case "twitch-alert":
-                    // Add to queue and process
-                    alertQueue.push(data);
-                    processAlertQueue();
-                    console.log("Received twitch alert");
-                    break;
-                  case "imageTemplate":
-                    const wrap = document.createElement('div');
-                    wrap.className = 'fadeImageWrap';
-                    wrap.style.animation = 'fade ' + ((data.duration || 6000) / 1000) + 's cubic-bezier(0.3, 0.6, 0.3, 1) forwards';
-                    const img = document.createElement('img');
-                    if (!data.imageDataUrl) data.imageDataUrl = "logo.png";
-                    img.src = data.imageDataUrl;
-                    const caption = document.createElement('div');
-                    caption.className = 'caption';
-                    caption.textContent = data.text || '';
-                    wrap.appendChild(img);
-                    wrap.appendChild(caption);
-                    document.getElementById('container').appendChild(wrap);
-                    setTimeout(() => wrap.remove(), (data.duration || 6000));
-                    break;
-                }
+
+                alertQueue.push(data);
+                processAlertQueue();
+                // switch(data.type) {
+                //   case "twitch-redeem":
+                //     // Add to queue and process
+                //     alertQueue.push(data);
+                //     processAlertQueue();
+                //     break;
+                //   case "twitch-alert":
+                //     // Add to queue and process
+                //     alertQueue.push(data);
+                //     processAlertQueue();
+                //     break;
+                //   case "imageTemplate":
+                //     alertQueue.push(data);
+                //     processAlertQueue();
+                //     break;
+                // }
             } catch (e) {
                 console.error('Bad alert payload', e, ev.data);
             }
