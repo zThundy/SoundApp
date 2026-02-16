@@ -166,7 +166,7 @@
               audio.play().catch(e => console.error('Audio playback failed', e));
             }
 
-            if (!data.audio && !data.audio.base64) {
+            if (!data.audio || !(data.audio && data.audio.base64)) {
               console.log("override duration")
               setTimeout(() => {
                 wrap.remove();
