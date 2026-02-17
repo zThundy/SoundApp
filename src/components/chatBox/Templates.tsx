@@ -10,9 +10,11 @@ import { styled } from '@mui/material/styles';
 import ChangeTemplateModal from './ChangeTemplateModal';
 
 import DefaultTemplate, { ChatBoxTemplate } from "@/components/chatBox/templates/default";
-import GreenTemplate from "@/components/chatBox/templates/green";
-import RedTemplate from "@/components/chatBox/templates/red";
-import YellowTemplate from "@/components/chatBox/templates/yellow";
+
+// Automatically import all templates except default
+const templateModules = import.meta.glob<{ default: ChatBoxTemplate }>('@/components/chatBox/templates/*.ts', {
+  eager: true,
+});
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
@@ -44,10 +46,18 @@ const Templates = ({
   const [selectedTemplate, setSelectedTemplate] = useState<ChatBoxTemplate | null>(null);
 
   useEffect(() => {
-    setTemplates((prev) => [...prev, DefaultTemplate]);
-    setTemplates((prev) => [...prev, GreenTemplate]);
-    setTemplates((prev) => [...prev, RedTemplate]);
-    setTemplates((prev) => [...prev, YellowTemplate]);
+    // Add default template first
+    const allTemplates: ChatBoxTemplate[] = [DefaultTemplate];
+    
+    // Add all other templates automatically
+    Object.entries(templateModules).forEach(([path, module]) => {
+      // Skip the default template since we're importing it manually
+      if (!path.includes('default.ts')) {
+        allTemplates.push(module.default);
+      }
+    });
+    
+    setTemplates(allTemplates);
   }, []);
 
   const handleSelectTemplate = (template: ChatBoxTemplate) => {
