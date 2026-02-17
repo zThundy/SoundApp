@@ -169,5 +169,8 @@
 
 ## 0.2.9
 
+- Added some different templates to the chat component
+- Changed import logic inside the chat template
+
 
 ## 0.2.10
