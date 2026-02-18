@@ -10,7 +10,7 @@ const template: ChatBoxTemplate = {
   html: "",
   css: "",
   js: "",
-  name: "Default Template",
+  name: "Default Template (disappearing messages)",
 };
 
 template.html = `<div id="messages"></div>
@@ -56,7 +56,18 @@ body {
   display: inline;
 }`
 
-template.js = ``
+template.js = `const MESSAGE_TTL_MS = 5000;
+
+onChatMessage = function() {
+  const messageEl = document.querySelector('.message:last-child');
+  if (!messageEl) return;
+
+  setTimeout(() => {
+    if (messageEl.parentElement) {
+      messageEl.remove();
+    }
+  }, MESSAGE_TTL_MS);
+}`
 
 export default template;
 export type { ChatBoxTemplate };

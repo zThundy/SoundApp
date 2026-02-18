@@ -77,6 +77,8 @@ const Templates = ({
         onClose={() => setShowModal(false)}
         onConfirm={() => handleChangeToTemplate(selectedTemplate!)}
         templateName={selectedTemplate ? selectedTemplate.name : "Unknown Template"}
+        templateHtml={selectedTemplate ? selectedTemplate.html : ''}
+        templateCss={selectedTemplate ? selectedTemplate.css : ''}
       />
 
       {templates.map((template, index) => (
@@ -98,6 +100,61 @@ const Templates = ({
                 </head>
                 <body>
                   ${template.html}
+                  <script>
+                    (function () {
+                      const messagesRoot = document.getElementById('messages');
+                      if (!messagesRoot) return;
+
+                      const users = [
+                        { name: 'chattycat' },
+                        { name: 'pixelpirate' },
+                        { name: 'soundwave' },
+                        { name: 'nightowl' },
+                        { name: 'sparkbyte' }
+                      ];
+
+                      const texts = [
+                        'Hello everyone!',
+                        'This overlay is clean.',
+                        'Testing, testing.',
+                        'Nice stream!',
+                        'Love this template.'
+                      ];
+
+                      const randomColor = () => {
+                        const hex = Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+                        return '#' + hex;
+                      };
+
+                      const addMessage = () => {
+                        const user = users[Math.floor(Math.random() * users.length)];
+                        const text = texts[Math.floor(Math.random() * texts.length)];
+
+                        const messageEl = document.createElement('div');
+                        messageEl.className = 'message';
+
+                        const usernameEl = document.createElement('span');
+                        usernameEl.className = 'username';
+                        usernameEl.textContent = user.name + ':';
+                        usernameEl.style.color = randomColor();
+                        messageEl.appendChild(usernameEl);
+
+                        const textEl = document.createElement('span');
+                        textEl.className = 'message-text';
+                        textEl.textContent = text;
+                        messageEl.appendChild(textEl);
+
+                        messagesRoot.appendChild(messageEl);
+
+                        while (messagesRoot.children.length > 6) {
+                          messagesRoot.removeChild(messagesRoot.firstChild);
+                        }
+                      };
+
+                      addMessage();
+                      setInterval(addMessage, 1800 + Math.floor(Math.random() * 1200));
+                    })();
+                  </script>
                 </body>
                 </html>
               `}
