@@ -22,7 +22,7 @@
         console.log('Received chat data:', data);
         
         if (data.type === "twitch-chat") {
-          addMessage(data.username, data.message, data.color);
+          addMessage(data.username, data.message, data.color, data.fragments);
           if (onChatMessage) onChatMessage(data);
         }
       } catch (e) {
@@ -30,7 +30,55 @@
       }
     };
 
-    function addMessage(username, message, color = '#FFFFFF') {
+    /**
+     * Builds a message div from fragments array
+     * @param {Array} fragments - Array of message fragments with type, text, and emoteUrl
+     * @returns {HTMLElement} - A div containing the built message
+     */
+    function buildMessageFromFragments(fragments) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message-content';
+      messageDiv.style = "display: flex; flex-direction: row; justify-content: flex-start; align-content: center;"
+      
+      if (!fragments || !Array.isArray(fragments)) {
+        messageDiv.textContent = '';
+        return messageDiv;
+      }
+
+      fragments.forEach((fragment) => {
+        if (fragment.type === 'emote' && fragment.emoteUrl) {
+          // Create img tag for emote
+          const emoteImg = document.createElement('img');
+          emoteImg.src = fragment.emoteUrl;
+          emoteImg.className = 'emote';
+          emoteImg.style = "width: 2rem; height: 2rem;"
+          emoteImg.alt = fragment.text || 'emote';
+          emoteImg.title = fragment.text || 'emote';
+          messageDiv.appendChild(emoteImg);
+        } else if (fragment.type === 'text') {
+          // Create text node
+          const textSpan = document.createElement('span');
+          textSpan.className = 'text';
+          textSpan.textContent = fragment.text || '';
+          messageDiv.appendChild(textSpan);
+        } else if (fragment.type === 'mention') {
+          // Create mention node
+          const mentionSpan = document.createElement('span');
+          mentionSpan.className = 'mention';
+          mentionSpan.textContent = fragment.text || '';
+          messageDiv.appendChild(mentionSpan);
+        } else {
+          // Fallback for unknown types
+          const span = document.createElement('span');
+          span.textContent = fragment.text || '';
+          messageDiv.appendChild(span);
+        }
+      });
+
+      return messageDiv;
+    }
+
+    function addMessage(username, message, color = '#FFFFFF', fragments = null) {
       const messageEl = document.createElement('div');
       messageEl.className = 'message';
       
@@ -38,13 +86,21 @@
       usernameEl.className = 'username';
       usernameEl.textContent = username + ':';
       usernameEl.style.color = color;
-      
-      const textEl = document.createElement('span');
-      textEl.className = 'message-text';
-      textEl.textContent = message;
-      
       messageEl.appendChild(usernameEl);
-      messageEl.appendChild(textEl);
+      
+      // Use fragments if available, otherwise fall back to plain text message
+      if (fragments) {
+        const contentEl = buildMessageFromFragments(fragments);
+        contentEl.className = 'message-text';
+        contentEl.style = "display: flex; flex-direction: row; justify-content: flex-start; align-content: center; width: fit-content; flex-wrap: wrap;"
+        messageEl.appendChild(contentEl);
+      } else {
+        const textEl = document.createElement('span');
+        textEl.className = 'message-text';
+        textEl.textContent = message;
+        messageEl.appendChild(textEl);
+      }
+      
       messagesContainer.appendChild(messageEl);
       
       // Scroll to bottom

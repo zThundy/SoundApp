@@ -285,6 +285,10 @@ body {
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .message::before {
@@ -305,13 +309,6 @@ body {
   100% {
     left: 100%;
   }
-}
-
-.message:hover {
-  background: linear-gradient(90deg, rgba(0, 255, 255, 0.15), rgba(255, 0, 255, 0.15));
-  border-left-color: #ff00ff;
-  transform: translateX(5px);
-  box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
 }
 
 @keyframes messageEnter {

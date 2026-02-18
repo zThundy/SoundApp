@@ -310,11 +310,10 @@ body {
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
-}
-
-.message:hover {
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
-  transform: translateX(5px);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .message::before {
@@ -327,10 +326,6 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
-}
-
-.message:hover::before {
-  opacity: 1;
 }
 
 @keyframes messageSlideIn {

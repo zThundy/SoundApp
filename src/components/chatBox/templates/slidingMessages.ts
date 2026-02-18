@@ -59,11 +59,10 @@ body {
   line-height: 1.4;
   opacity: 0;
   transition: all 0.3s ease;
-}
-
-.message:hover {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
-  transform: translateX(-5px);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 @keyframes slideInFromRight {

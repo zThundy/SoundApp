@@ -65,6 +65,10 @@ body {
   animation: slideIn 0.3s ease-out;
   font-size: 1.5rem;
   line-height: 1.3;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 @keyframes slideIn {
