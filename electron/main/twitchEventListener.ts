@@ -573,11 +573,16 @@ class TwitchEventListener {
       }
     }
 
+    if (!this.config?.accessToken) {
+      console.error("[TwitchEventListener] Access token is not defined in config.")
+      return []
+    }
+
     console.debug(`[TwitchEventListener] Got missing owner ids from fragments and cache: ${JSON.stringify(notFoundIds)}`);
-    const accessToken = await this.safeStore?.get('twitchAccessToken')
+    // const accessToken = await this.safeStore?.get('twitchAccessToken')
     for (var i in notFoundIds) {
       console.debug(`[TwitchEventListener] Getting emotes from user ${notFoundIds[i]}`)
-      const channelEmotes = await getChannelEmotes(accessToken, notFoundIds[i])
+      const channelEmotes = await getChannelEmotes(this.config.accessToken, notFoundIds[i])
       if (channelEmotes && channelEmotes.data) {
         (channelEmotes.data as Emote[]).forEach((emote, index) => {
           this.emotes.set(emote.id, emote);
