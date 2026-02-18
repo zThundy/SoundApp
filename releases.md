@@ -183,3 +183,6 @@
 - Small changes to the chat.html and alerts.html
 
 ## 0.2.10
+
+
+## 0.2.11
