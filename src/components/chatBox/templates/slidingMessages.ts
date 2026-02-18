@@ -162,6 +162,12 @@ function getContrastColor(hex) {
   return brightness > 128 ? '#000000' : '#FFFFFF';
 }
 
+function isWhiteOrCloseToWhite(hex) {
+  const rgb = hexToRgb(hex);
+  // Check if all RGB values are above 200 (close to white)
+  return rgb.r > 200 && rgb.g > 200 && rgb.b > 200;
+}
+
 function removeOldestMessage() {
   const messagesContainer = document.getElementById('messages');
   const messages = messagesContainer.querySelectorAll('.message:not(.removing)');
@@ -209,12 +215,13 @@ onChatMessage = function(data) {
   
   // Set border color based on username color
   const userColor = data.color || '#667eea';
-  messageEl.style.borderLeftColor = userColor;
+  const displayColor = isWhiteOrCloseToWhite(userColor) ? '#6b7280' : userColor;
+  messageEl.style.borderLeftColor = displayColor;
   
-  // Apply contrast color to username
+  // Apply username color (use gray if color is white or close to white)
   const usernameEl = messageEl.querySelector('.username');
   if (usernameEl) {
-    usernameEl.style.color = userColor;
+    usernameEl.style.color = displayColor;
   }
   
   // Schedule removal

@@ -21,6 +21,7 @@ interface ChatMessage {
   badges?: string[];
   messageFragment: {
     emoteUrl?: string;
+    isGif?: boolean;
     type: string;
     text: string;
     cheerEmote?: object;
@@ -589,7 +590,13 @@ class TwitchEventListener {
       if (fragment.type === "emote") {
         const cachedEmote = this.emotes.get(fragment.emote.id);
         if (cachedEmote) {
-          message.messageFragment[i].emoteUrl = cachedEmote.images.url_4x
+          const isAnimated = Array.isArray(cachedEmote.format) && cachedEmote.format.includes("animated");
+          const emoteUrl = isAnimated
+            ? cachedEmote.images.url_4x.replace("/static/", "/animated/")
+            : cachedEmote.images.url_4x;
+
+          message.messageFragment[i].emoteUrl = emoteUrl;
+          message.messageFragment[i].isGif = isAnimated;
         }
       }
     }
