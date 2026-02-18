@@ -171,6 +171,15 @@
 
 - Added some different templates to the chat component
 - Changed import logic inside the chat template
-
+- Added fake messages to chatbox
+- Changed style of twitch events
+- Added emotes to chatboxes
+  + First crude implementation, to be reviewed
+- Added emotes to twitch events list
+  + First crude implementation, to be reviewed
+- Added animated emotes type
+- Restructure of caching in twitch event listner
+- Moved types to separate files in electron/main
+- Small changes to the chat.html and alerts.html
 
 ## 0.2.10
