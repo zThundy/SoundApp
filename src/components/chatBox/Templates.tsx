@@ -94,7 +94,8 @@ const Templates = ({
                 <head>
                   <style>
                     * { margin: 0; padding: 0; box-sizing: border-box; }
-                    body { width: 100%; height: 100%; overflow: hidden; }
+                    body { width: 100%; height: 100%; overflow: hidden; position: relative; }
+                    body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('./logo.png'); background-repeat: repeat; background-size: 120px 120px; opacity: 0.2; pointer-events: none; z-index: -1; }
                     ${template.css}
                   </style>
                 </head>
