@@ -36,7 +36,7 @@
     "@types/ws": "^8.18.1",
     "@uiw/react-textarea-code-editor": "^3.1.1",
     "@vitejs/plugin-react": "^4.7.0",
-    "autoprefixer": "^10.4.25",
+    "autoprefixer": "^10.4.27",
     "bufferutil": "^4.1.0",
     "electron": "^39.6.1",
     "electron-builder": "^26.8.1",
