@@ -11,6 +11,7 @@ import SafeStorageWrapper from './safeStorageWrapper'
 import { registerAllIPCHandlers } from './ipc'
 import windowStateManager from './windowStateManager'
 import { connectEventSubIfPossible } from './ipc/twitchHandlers'
+import { connectYouTubeIfPossible } from './ipc/youtubeHandlers'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 process.env.APP_ROOT = path.join(__dirname, '../..')
@@ -110,6 +111,7 @@ async function createWindow() {
     
     // Try to connect Twitch EventSub on window load
     connectEventSubIfPossible(safeStore, win)
+    connectYouTubeIfPossible(safeStore, win)
   })
 
   // Show window after a small delay to ensure preload screen is visible

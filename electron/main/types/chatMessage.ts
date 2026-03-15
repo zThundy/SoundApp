@@ -6,6 +6,8 @@ export interface ChatMessage {
   timestamp: Date;
   color?: string;
   badges?: string[];
+  platform?: 'twitch' | 'youtube';
+  avatarUrl?: string;
   messageFragment: {
     emoteUrl?: string;
     isGif?: boolean;

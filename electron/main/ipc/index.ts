@@ -9,8 +9,10 @@ import { registerFileHandlers } from './fileHandlers'
 import { registerMiscHandlers } from './miscHandlers'
 import { registerLanguageHandlers } from './languageHandlers'
 import { registerTwitchEventHandlers } from './twitchEventHandlers'
+import { registerYouTubeEventHandlers } from './youtubeEventHandlers'
 import { RedeemProcessor } from '../redeemProcessor'
 import { setRedeemProcessor } from '../redeemRegistry'
+import { registerYouTubeHandlers, getYouTubeChatListener } from './youtubeHandlers'
 
 type AlertServer = {
   stop: () => Promise<void>
@@ -50,6 +52,8 @@ export function registerAllIPCHandlers(context: IPCContext) {
   )
   registerLanguageHandlers()
   registerTwitchEventHandlers(getTwitchEventListener)
+  registerYouTubeHandlers(context.safeStore, context.getMainWindow())
+  registerYouTubeEventHandlers(getYouTubeChatListener)
 
   const rp = new RedeemProcessor(context.getAlertServer)
   setRedeemProcessor(rp)

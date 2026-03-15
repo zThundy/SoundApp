@@ -42,6 +42,8 @@ export default function Settings({ isLoggedIn, onLoginSuccess, onLogout }: Setti
   const [enableBackground, setEnableBackground] = useState(true)
   const [startupEnabled, setStartupEnabled] = useState(false)
   const [authLoading, setAuthLoading] = useState(false)
+  const [youtubeConnected, setYoutubeConnected] = useState(false)
+  const [youtubeLoading, setYoutubeLoading] = useState(false)
 
   useEffect(() => {
     (window.alerts as any).getPort().then((res: any) => {
@@ -59,16 +61,24 @@ export default function Settings({ isLoggedIn, onLoginSuccess, onLogout }: Setti
     }).catch(() => {
       // ignore
     })
-    
-    
+
+
     window.windowManager.isTrayEnabled()
       .then((enabled: boolean) => {
         setEnableBackground(enabled)
       })
-    
+
     window.windowManager.isStartupEnabled()
       .then((enabled: boolean) => {
         setStartupEnabled(enabled);
+      })
+
+    window.ipcRenderer.invoke('safe-store:has', 'youtubeRefreshToken')
+      .then((hasToken: boolean) => {
+        setYoutubeConnected(Boolean(hasToken))
+      })
+      .catch(() => {
+        setYoutubeConnected(false)
       })
 
     return () => {
@@ -163,6 +173,34 @@ export default function Settings({ isLoggedIn, onLoginSuccess, onLogout }: Setti
     }
   }
 
+  const handleYouTubeLogin = async () => {
+    setYoutubeLoading(true)
+    try {
+      await window.ipcRenderer.invoke('oauth:start-youtube')
+      setYoutubeConnected(true)
+      success(t('settings.youtubeConnected'))
+    } catch (err: any) {
+      error(t('settings.youtubeConnectFailed'), err.message || '')
+      console.error('Error during YouTube OAuth:', err)
+    } finally {
+      setYoutubeLoading(false)
+    }
+  }
+
+  const handleYouTubeLogout = async () => {
+    setYoutubeLoading(true)
+    try {
+      await window.ipcRenderer.invoke('oauth:logout-youtube')
+      setYoutubeConnected(false)
+      success(t('settings.youtubeDisconnected'))
+    } catch (err: any) {
+      error(t('settings.youtubeDisconnectFailed'), err.message || '')
+      console.error('Error during YouTube logout:', err)
+    } finally {
+      setYoutubeLoading(false)
+    }
+  }
+
   return (
     <Box p={3}>
       <Typography variant="h5" gutterBottom>{t('settings.title')}</Typography>
@@ -222,6 +260,57 @@ export default function Settings({ isLoggedIn, onLoginSuccess, onLogout }: Setti
                   onClick={handleLogout}
                 >
                   {t('sidebar.logout')}
+                </Button>
+              </Stack>
+            </Stack>
+          </StyledBox>
+        </Grid>
+
+        <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2}>
+          <StyledBox>
+            <Stack spacing={2} width="100%">
+              <Stack direction="row" justifyContent="space-between" alignItems="center" gap={2} flexWrap="wrap">
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Box
+                    component="img"
+                    src="youtube.png"
+                    alt={t('login.youtubeLogoAlt')}
+                    sx={{ width: 32, height: 32 }}
+                  />
+                  <Box>
+                    <Typography variant="subtitle1">{t('settings.youtubeTitle')}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {t('settings.youtubeDescription')}
+                    </Typography>
+                  </Box>
+                </Stack>
+
+                <Chip
+                  color={youtubeConnected ? 'success' : 'warning'}
+                  label={youtubeConnected ? t('settings.accountConnected') : t('settings.accountDisconnected')}
+                  variant={youtubeConnected ? 'filled' : 'outlined'}
+                />
+              </Stack>
+
+              <Alert severity="info">{t('settings.youtubeAuthHelp')}</Alert>
+
+              <Stack direction="row" spacing={2} flexWrap="wrap">
+                <Button
+                  variant="contained"
+                  color="error"
+                  disabled={youtubeLoading}
+                  onClick={handleYouTubeLogin}
+                >
+                  {youtubeConnected ? t('settings.youtubeReconnect') : t('settings.youtubeConnect')}
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  disabled={youtubeLoading || !youtubeConnected}
+                  onClick={handleYouTubeLogout}
+                >
+                  {t('settings.youtubeDisconnect')}
                 </Button>
               </Stack>
             </Stack>

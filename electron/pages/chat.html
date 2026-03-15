@@ -21,7 +21,7 @@
         const data = JSON.parse(ev.data);
         console.log('Received chat data:', data);
         
-        if (data.type === "twitch-chat") {
+        if (data.type === "twitch-chat" || data.type === "youtube-chat") {
           addMessage(data.username, data.message, data.color, data.fragments);
           if (onChatMessage) onChatMessage(data);
         }

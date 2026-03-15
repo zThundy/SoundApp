@@ -25,6 +25,7 @@ interface ChatMessage {
   color?: string;
   badges?: string[];
   messageFragment?: any[];
+  platform?: 'twitch' | 'youtube';
 }
 
 interface RewardRedemption {
@@ -56,7 +57,7 @@ const StyledStack = styled(Stack)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
 }));
 
-const ConnectedDiv = ({ isConnected }: { isConnected: boolean }) => {
+const ConnectedDiv = ({ isConnected, label }: { isConnected: boolean; label: string }) => {
   const { t } = useContext(TranslationContext)
 
   if (isConnected) {
@@ -64,7 +65,7 @@ const ConnectedDiv = ({ isConnected }: { isConnected: boolean }) => {
       <Stack direction="row" spacing={2} alignItems="center" width={"100%"} justifyContent={"flex-end"} pr={2} pt={1} pb={1}>
         <div className={style.connectedDot} />
         <Typography variant="h6">
-          {t("twitchChat.connected")}
+          {label}: {t("twitchChat.connectedGeneric")}
         </Typography>
       </Stack>
     )
@@ -74,7 +75,7 @@ const ConnectedDiv = ({ isConnected }: { isConnected: boolean }) => {
     <Stack direction="row" spacing={2} alignItems="center" width={"100%"} justifyContent={"flex-end"} pr={2} pt={1} pb={1}>
       <div className={style.disconnectedDot} />
       <Typography variant="h6">
-        {t("twitchChat.disconnected")}
+        {label}: {t("twitchChat.disconnectedGeneric")}
       </Typography>
     </Stack>
   )
@@ -86,16 +87,19 @@ export default function TwitchChat() {
   const [redemptions, setRedemptions] = useState<RewardRedemption[]>([]);
   const [events, setEvents] = useState<RewardRedemption[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [isYouTubeConnected, setIsYouTubeConnected] = useState(false);
   const { t } = useContext(TranslationContext)
   const { error } = useContext(NotificationContext)
 
   useEffect(() => {
     const loadCache = async () => {
       try {
-        let { messages } = await window.twitchEvents.getCachedMessages();
+        let { messages: twitchMessages } = await window.twitchEvents.getCachedMessages();
+        let { messages: youtubeMessages } = await window.youtubeEvents.getCachedMessages();
         const { redemptions } = await window.twitchEvents.getCachedRedemptions();
 
-        messages = messages.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+        const messages = [...(twitchMessages || []), ...(youtubeMessages || [])]
+          .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
         let redeems = redemptions.filter(r => (r as any).type === "reward")
         let events = redemptions.filter(r => (r as any).type === "follow" || (r as any).type === "subscriber" || (r as any).type === "bits")
         console.log(events)
@@ -116,7 +120,9 @@ export default function TwitchChat() {
     const checkConnection = async () => {
       try {
         const { connected } = await window.twitchEvents.isConnected();
+        const { connected: youtubeConnected } = await window.youtubeEvents.isConnected();
         setIsConnected(connected);
+        setIsYouTubeConnected(youtubeConnected)
       } catch (e: any) {
         error(t("twitchChat.checkConnectionFailed"), (e as Error).message);
         console.error('Error checking connection:', e);
@@ -126,6 +132,11 @@ export default function TwitchChat() {
     checkConnection();
 
     window.twitchEvents.onChatMessage((message: ChatMessage) => {
+      setMessages(prev => [message, ...prev]);
+      setMessagesToDisplay(prev => [message, ...prev].slice(0, 50));
+    });
+
+    window.youtubeEvents.onChatMessage((message: ChatMessage) => {
       setMessages(prev => [message, ...prev]);
       setMessagesToDisplay(prev => [message, ...prev].slice(0, 50));
     });
@@ -146,11 +157,15 @@ export default function TwitchChat() {
     return () => {
       window.twitchEvents.removeChatMessageListener();
       window.twitchEvents.removeRewardRedeemedListener();
+      window.youtubeEvents.removeChatMessageListener();
     };
   }, []);
 
   useEffect(() => {
-    setMessagesToDisplay(prev => [...prev].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()));
+    setMessagesToDisplay([...messages]
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, 50)
+    );
   }, [messages]);
 
   return (
@@ -160,7 +175,10 @@ export default function TwitchChat() {
           <Typography variant="h6" width={"100%"} pl={3} pt={1} pb={1}>
             {t("twitchChat.status")}
           </Typography>
-          <ConnectedDiv isConnected={isConnected} />
+          <Stack direction="column" spacing={1} width="100%" alignItems="flex-end">
+            <ConnectedDiv isConnected={isConnected} label="Twitch" />
+            <ConnectedDiv isConnected={isYouTubeConnected} label="YouTube" />
+          </Stack>
         </StyledStack>
       </Grid>
 
@@ -323,6 +341,12 @@ export default function TwitchChat() {
                           >
                             {msg.displayName}:
                           </Typography>
+                          <Chip
+                            label={(msg.platform || 'twitch').toUpperCase()}
+                            size="small"
+                            color={msg.platform === 'youtube' ? 'error' : 'primary'}
+                            variant="outlined"
+                          />
                           {
                             msg.messageFragment?.map((fragment, index) => (
                               <Stack key={index} direction="row" alignItems={"flex-start"} justifyContent={"flex-start"} display={"flex"}>

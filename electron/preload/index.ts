@@ -146,6 +146,27 @@ contextBridge.exposeInMainWorld('twitchEvents', {
   }
 })
 
+contextBridge.exposeInMainWorld('youtubeEvents', {
+  connect() {
+    return ipcRenderer.invoke('youtube-events:connect')
+  },
+  disconnect() {
+    return ipcRenderer.invoke('youtube-events:disconnect')
+  },
+  isConnected() {
+    return ipcRenderer.invoke('youtube-events:is-connected')
+  },
+  getCachedMessages() {
+    return ipcRenderer.invoke('youtube-events:get-cached-messages')
+  },
+  onChatMessage(callback: (message: any) => void) {
+    ipcRenderer.on('youtube:chat-message', (_event, message) => callback(message))
+  },
+  removeChatMessageListener() {
+    ipcRenderer.removeAllListeners('youtube:chat-message')
+  }
+})
+
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise(resolve => {
     if (condition.includes(document.readyState)) {

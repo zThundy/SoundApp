@@ -25,6 +25,27 @@ declare global {
       loadHtml(): Promise<{ ok: boolean; html?: string; css?: string; js?: string; error?: string }>;
     }
 
+    twitchEvents: {
+      connect(accessToken: string, broadcasterId: string, clientId: string): Promise<{ success: boolean; error?: string }>;
+      disconnect(): Promise<{ success: boolean; error?: string }>;
+      isConnected(): Promise<{ connected: boolean }>;
+      getCachedMessages(): Promise<{ messages: any[] }>;
+      getCachedRedemptions(): Promise<{ redemptions: any[] }>;
+      onChatMessage(callback: (message: any) => void): void;
+      onRewardRedeemed(callback: (redemption: any) => void): void;
+      removeChatMessageListener(): void;
+      removeRewardRedeemedListener(): void;
+    }
+
+    youtubeEvents: {
+      connect(): Promise<{ success: boolean; error?: string }>;
+      disconnect(): Promise<{ success: boolean; error?: string }>;
+      isConnected(): Promise<{ connected: boolean }>;
+      getCachedMessages(): Promise<{ messages: any[] }>;
+      onChatMessage(callback: (message: any) => void): void;
+      removeChatMessageListener(): void;
+    }
+
     version: string;
     appVersion: string;
     ipcRenderer: {
