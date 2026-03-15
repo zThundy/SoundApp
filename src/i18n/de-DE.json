@@ -18,6 +18,13 @@
   "settings.enableBackgroundInfo": "Aktivieren Sie diese Option, um die App in den Systemtray zu minimieren, anstatt sie zu schließen. Sie können die App wiederherstellen, indem Sie auf das Tray-Symbol klicken.",
   "settings.enableStartup": "Beim Systemstart starten",
   "settings.enableStartupInfo": "Die App wird nach dem Start Ihres Betriebssystems automatisch geöffnet",
+  "settings.accountTitle": "Twitch-Konto",
+  "settings.accountConnected": "Verbunden",
+  "settings.accountDisconnected": "Nicht verbunden",
+  "settings.accountDescriptionLoggedIn": "Ihr Twitch-Konto ist verbunden. Sie können den Rest der App über die Seitenleiste verwalten.",
+  "settings.accountDescriptionLoggedOut": "Verbinden Sie hier Ihr Twitch-Konto, um den Rest der App freizuschalten.",
+  "settings.loginRequiredDescription": "Sie müssen sich mit Twitch anmelden, bevor Sie Redeems, Alerts, Chatbox, Events oder Dateiverwaltung nutzen können.",
+  "settings.reconnectTwitch": "Twitch erneut verbinden",
 
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Einstellungen",

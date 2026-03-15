@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from 'react'
-import { Box, Button, Grid, TextField, Typography, Select, MenuItem, Stack, Tooltip, Switch, SvgIcon } from '@mui/material'
+import { Alert, Box, Button, Chip, Grid, MenuItem, Select, Stack, Switch, SvgIcon, TextField, Tooltip, Typography } from '@mui/material'
 import { GitHub, Info, LinkedIn } from '@mui/icons-material'
-import TwitchSvg from '@/assets/twitch.svg'
 
 import { TranslationContext } from '@/i18n/TranslationProvider'
 import { NotificationContext } from '@/context/NotificationProvider'
@@ -28,7 +27,13 @@ const StyledBox = styled(Box)(({ theme }) => ({
   }
 }));
 
-export default function Settings() {
+interface SettingsProps {
+  isLoggedIn: boolean
+  onLoginSuccess?: () => Promise<boolean> | boolean
+  onLogout?: () => Promise<void> | void
+}
+
+export default function Settings({ isLoggedIn, onLoginSuccess, onLogout }: SettingsProps) {
   const { t, language, setLanguage, availableLanguages } = useContext(TranslationContext)
   const { success, error } = useContext(NotificationContext)
   const [port, setPort] = useState<string>('')
@@ -36,6 +41,7 @@ export default function Settings() {
   const [version, setVersion] = useState<string>('')
   const [enableBackground, setEnableBackground] = useState(true)
   const [startupEnabled, setStartupEnabled] = useState(false)
+  const [authLoading, setAuthLoading] = useState(false)
 
   useEffect(() => {
     (window.alerts as any).getPort().then((res: any) => {
@@ -130,10 +136,98 @@ export default function Settings() {
     }
   }
 
+  const handleLogin = async () => {
+    setAuthLoading(true)
+    try {
+      await window.ipcRenderer?.invoke('oauth:start-twitch')
+      await onLoginSuccess?.()
+    } catch (err: any) {
+      error(t('login.oauthFailed'), err.message)
+      console.error('Error during Twitch OAuth:', err)
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  const handleLogout = async () => {
+    if (!onLogout) return
+
+    setAuthLoading(true)
+    try {
+      await onLogout()
+    } catch (err: any) {
+      error(t('sidebar.logoutFailed'), err.message)
+      console.error('Error during logout:', err)
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
   return (
     <Box p={3}>
       <Typography variant="h5" gutterBottom>{t('settings.title')}</Typography>
       <Grid container spacing={2} className={style.container} p={2}>
+        <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2}>
+          <StyledBox>
+            <Stack spacing={2} width="100%">
+              <Stack direction="row" justifyContent="space-between" alignItems="center" gap={2} flexWrap="wrap">
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Box
+                    component="img"
+                    src="twitch.png"
+                    alt={t('login.twitchLogoAlt')}
+                    sx={{ width: 32, height: 32 }}
+                  />
+                  <Box>
+                    <Typography variant="subtitle1">{t('settings.accountTitle')}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {isLoggedIn ? t('settings.accountDescriptionLoggedIn') : t('settings.accountDescriptionLoggedOut')}
+                    </Typography>
+                  </Box>
+                </Stack>
+
+                <Chip
+                  color={isLoggedIn ? 'success' : 'warning'}
+                  label={isLoggedIn ? t('settings.accountConnected') : t('settings.accountDisconnected')}
+                  variant={isLoggedIn ? 'filled' : 'outlined'}
+                />
+              </Stack>
+
+              {!isLoggedIn && (
+                <Alert severity="info">{t('settings.loginRequiredDescription')}</Alert>
+              )}
+
+              <Stack direction="row" spacing={2} flexWrap="wrap">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={authLoading}
+                  onClick={handleLogin}
+                  startIcon={
+                    <Box
+                      component="img"
+                      src="twitch.png"
+                      alt={t('login.twitchLogoAlt')}
+                      sx={{ width: 18, height: 18, filter: 'brightness(0) invert(1)' }}
+                    />
+                  }
+                >
+                  {isLoggedIn ? t('settings.reconnectTwitch') : t('login.withTwitch')}
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  disabled={authLoading || !isLoggedIn}
+                  onClick={handleLogout}
+                >
+                  {t('sidebar.logout')}
+                </Button>
+              </Stack>
+            </Stack>
+          </StyledBox>
+        </Grid>
+
         <StyledBox>
           <Grid size={{ lg: 12, md: 12 }}>
             <TextField

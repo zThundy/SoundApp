@@ -18,6 +18,13 @@
   "settings.enableBackgroundInfo": "Enable this option to minimize the app to the system tray instead of closing it. You can restore the app by clicking the tray icon.",
   "settings.enableStartup": "Launch on startup",
   "settings.enableStartupInfo": "Open the app after the startup of your operating system",
+  "settings.accountTitle": "Twitch account",
+  "settings.accountConnected": "Connected",
+  "settings.accountDisconnected": "Not connected",
+  "settings.accountDescriptionLoggedIn": "Your Twitch account is connected. You can manage the rest of the app from the sidebar.",
+  "settings.accountDescriptionLoggedOut": "Connect your Twitch account here to unlock the rest of the app.",
+  "settings.loginRequiredDescription": "You need to log in with Twitch before using redeems, alerts, chatbox, events, or file management.",
+  "settings.reconnectTwitch": "Reconnect Twitch",
 
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Settings",

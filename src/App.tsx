@@ -7,9 +7,8 @@ import { ThemeProvider } from '@mui/material'
 import { TranslationProvider } from '@/i18n/TranslationProvider'
 import { NotificationProvider } from '@/context/NotificationProvider'
 
-import { HashRouter, Routes, Route, useNavigate } from 'react-router'
+import { HashRouter, Navigate, Route, Routes, useNavigate } from 'react-router'
 
-import Login from "@/components/login"
 import Home from "@/components/home"
 import UpdateRoutePage from "@/components/update"
 import NotFound from "@/components/error/404"
@@ -55,7 +54,7 @@ function App() {
             <HashRouter>
               <UpdateNavigator />
               <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/" element={<Navigate to="/home" replace />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/update" element={<UpdateRoutePage />} />
                 <Route path="*" element={<NotFound />} />

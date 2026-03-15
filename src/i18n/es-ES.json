@@ -18,6 +18,13 @@
   "settings.enableBackgroundInfo": "Habilita esta opción para minimizar la aplicación en la bandeja del sistema en lugar de cerrarla. Puedes restaurar la aplicación haciendo clic en el icono de la bandeja.",
   "settings.enableStartup": "Iniciar al arrancar el sistema",
   "settings.enableStartupInfo": "Abrir la aplicación automáticamente después del inicio de tu sistema operativo",
+  "settings.accountTitle": "Cuenta de Twitch",
+  "settings.accountConnected": "Conectada",
+  "settings.accountDisconnected": "No conectada",
+  "settings.accountDescriptionLoggedIn": "Tu cuenta de Twitch está conectada. Puedes gestionar el resto de la aplicación desde la barra lateral.",
+  "settings.accountDescriptionLoggedOut": "Conecta aquí tu cuenta de Twitch para desbloquear el resto de la aplicación.",
+  "settings.loginRequiredDescription": "Debes iniciar sesión con Twitch antes de usar canjes, alertas, chatbox, eventos o el gestor de archivos.",
+  "settings.reconnectTwitch": "Reconectar Twitch",
 
   "sidebar.redeems": "Canjes",
   "sidebar.settings": "Configuración",

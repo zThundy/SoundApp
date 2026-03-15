@@ -43,3 +43,22 @@
     filter: drop-shadow(0 0 30px var(--mui-palette-primary-100)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
   }
 }
+
+.iconContainer.disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+
+  svg,
+  span {
+    color: var(--mui-palette-text-disabled) !important;
+    filter: none !important;
+  }
+}
+
+.iconContainer.disabled:hover {
+  svg,
+  span {
+    color: var(--mui-palette-text-disabled) !important;
+    filter: none !important;
+  }
+}

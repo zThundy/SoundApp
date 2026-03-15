@@ -18,6 +18,13 @@
   "settings.enableBackgroundInfo": "When ye close the main window, the vessel will keep sailin' in the background via the system tray icon.",
   "settings.enableStartup": "Hoist the sails at dawn",
   "settings.enableStartupInfo": "Set the vessel sailin' when yer ship's system starts up, arr!",
+  "settings.accountTitle": "Twitch crew account",
+  "settings.accountConnected": "Hooked to Twitch",
+  "settings.accountDisconnected": "Not yet aboard",
+  "settings.accountDescriptionLoggedIn": "Yer Twitch account be connected. Ye can steer the rest o' the app from the sidebar.",
+  "settings.accountDescriptionLoggedOut": "Hook yer Twitch account here to unlock the rest o' the vessel.",
+  "settings.loginRequiredDescription": "Ye must sign in with Twitch before usin' booty claims, signal flares, chatbox, events, or the file hold.",
+  "settings.reconnectTwitch": "Reconnect Twitch",
 
   "sidebar.redeems": "Booty Claims",
   "sidebar.settings": "Ship's Settings",

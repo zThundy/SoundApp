@@ -1,27 +1,26 @@
-
-
-import { Grid, Tooltip, Typography } from '@mui/material'
-import { useContext, useState } from 'react'
+import { Grid, Typography } from '@mui/material'
+import { useContext } from 'react'
 
 import style from './sidebar.module.css'
 
 import { Settings, LogoutOutlined, Tv, VideoLibrary, Forum, CloudUpload, BrowserUpdated } from '@mui/icons-material'
-import { useNavigate } from 'react-router'
 
 import { TranslationContext } from '@/i18n/TranslationProvider'
 import { NotificationContext } from '@/context/NotificationProvider'
 
-export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: string) => void }) {
+interface SidebarProps {
+  isLoggedIn: boolean
+  onLogout: () => Promise<void>
+  selectedPage?: string
+  setSelectedPage?: (page: string) => void
+}
+
+export default function Sidebar({ isLoggedIn, onLogout, selectedPage, setSelectedPage }: SidebarProps) {
   const { t } = useContext(TranslationContext)
   const { error } = useContext(NotificationContext)
-  const [currentView, setCurrentView] = useState<string>('redeems')
-  const navigate = useNavigate()
 
   const logout = () => {
-    window.ipcRenderer.invoke('oauth:logout-twitch')
-      .then(() => {
-        navigate('/')
-      })
+    onLogout()
       .catch((err) => {
         error(t('sidebar.logoutFailed'), err.message);
         console.error('Error during logout:', err)
@@ -32,43 +31,52 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
     {
       icon: <VideoLibrary />,
       text: t('sidebar.redeems'),
-      onSelect: "redeems"
+      onSelect: "redeems",
+      disabled: !isLoggedIn
     },
     {
       icon: <Settings />,
       text: t('sidebar.settings'),
-      onSelect: "settings"
+      onSelect: "settings",
+      disabled: false
     },
     {
       icon: <Tv />,
       text: t('sidebar.alert'),
-      onSelect: "alert"
+      onSelect: "alert",
+      disabled: !isLoggedIn
     },
     {
       icon: <Forum />,
       text: t('sidebar.chatbox'),
-      onSelect: "chatbox"
+      onSelect: "chatbox",
+      disabled: !isLoggedIn
     },
     {
       icon: <BrowserUpdated />,
       text: t('sidebar.twitchEvents'),
-      onSelect: "twitchEvents"
+      onSelect: "twitchEvents",
+      disabled: !isLoggedIn
     },
     {
       icon: <CloudUpload />,
       text: t('sidebar.fileManager'),
-      onSelect: "filemanager"
+      onSelect: "filemanager",
+      disabled: !isLoggedIn
     },
     {
       icon: <LogoutOutlined />,
       text: t('sidebar.logout'),
-      onSelect: "logout"
+      onSelect: "logout",
+      disabled: !isLoggedIn
     }
   ]
 
-  const handleNavigation = (page: string) => {
+  const currentView = selectedPage ?? 'settings'
+
+  const handleNavigation = (page: string, disabled?: boolean) => {
+    if (disabled) return
     if (page === "logout") return logout();
-    setCurrentView(page)
     setSelectedPage?.(page)
   }
 
@@ -82,8 +90,12 @@ export default function Sidebar({ setSelectedPage }: { setSelectedPage?: (page: 
             flexDirection={"row"}
             display={"flex"}
             justifyContent={"flex-start"}
-            className={style.iconContainer + ' ' + (currentView === element.onSelect ? style.current : "")}
-            onClick={() => handleNavigation(element.onSelect)}
+            className={[
+              style.iconContainer,
+              currentView === element.onSelect ? style.current : '',
+              element.disabled ? style.disabled : ''
+            ].filter(Boolean).join(' ')}
+            onClick={() => handleNavigation(element.onSelect, element.disabled)}
           >
             {element.icon}
             <Typography>

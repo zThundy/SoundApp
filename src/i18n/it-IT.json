@@ -18,6 +18,13 @@
   "settings.enableBackgroundInfo": "Quando chiudi la finestra principale, l'app continuerà a funzionare in background tramite l'icona di sistema.",
   "settings.enableStartup": "Avvia all'avvio del sistema",
   "settings.enableStartupInfo": "Apri automaticamente l'app dopo l'avvio del sistema operativo",
+  "settings.accountTitle": "Account Twitch",
+  "settings.accountConnected": "Connesso",
+  "settings.accountDisconnected": "Non connesso",
+  "settings.accountDescriptionLoggedIn": "Il tuo account Twitch è connesso. Puoi gestire il resto dell'app dalla barra laterale.",
+  "settings.accountDescriptionLoggedOut": "Collega qui il tuo account Twitch per sbloccare il resto dell'app.",
+  "settings.loginRequiredDescription": "Devi accedere con Twitch prima di usare redeems, alert, chatbox, eventi o gestione file.",
+  "settings.reconnectTwitch": "Ricollega Twitch",
   
   "sidebar.redeems": "Redeems",
   "sidebar.settings": "Impostazioni",
