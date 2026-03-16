@@ -7,6 +7,14 @@ interface SseClient {
   res: http.ServerResponse;
 }
 
+type TwitchAuthPayload = {
+  accessToken?: string | null
+  state?: string | null
+  error?: string | null
+}
+
+type TwitchAuthCompletionHandler = (payload: TwitchAuthPayload) => Promise<{ ok: boolean; error?: string }> | { ok: boolean; error?: string }
+
 export interface AlertServer {
   port: number;
   broadcast: (payload: unknown) => void;
@@ -41,6 +49,128 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
       if (!req.socket.remoteAddress || req.socket.remoteAddress !== '127.0.0.1') {
         res.writeHead(403, { 'Content-Type': 'text/plain' });
         res.end('Forbidden');
+        return;
+      }
+
+      if (pathname === '/twitch-auth/callback') {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
+        res.end(`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitch Login</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0e0e10;
+        color: #efeff1;
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+      }
+      .card {
+        width: min(420px, calc(100vw - 32px));
+        padding: 24px;
+        border-radius: 16px;
+        background: #18181b;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+        text-align: center;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0 0 12px;
+      }
+      p {
+        margin: 0;
+        color: #adadb8;
+        line-height: 1.5;
+      }
+      .ok { color: #00db84; }
+      .error { color: #ff6b6b; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1 id="title">Completing Twitch login…</h1>
+      <p id="message">You can return to the app after this page finishes.</p>
+    </div>
+    <script>
+      const titleEl = document.getElementById('title');
+      const messageEl = document.getElementById('message');
+
+      const setState = (title, message, className) => {
+        titleEl.textContent = title;
+        titleEl.className = className || '';
+        messageEl.textContent = message;
+      };
+
+      const hash = new URLSearchParams(window.location.hash.slice(1));
+      const payload = {
+        accessToken: hash.get('access_token'),
+        state: hash.get('state'),
+        error: hash.get('error_description') || hash.get('error')
+      };
+
+      if (!payload.accessToken && !payload.error) {
+        setState('Login failed', 'No Twitch access token was returned.', 'error');
+      } else {
+        fetch('/twitch-auth/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+          .then(async (response) => {
+            const result = await response.json().catch(() => ({ ok: false, error: 'Invalid server response' }));
+            if (!response.ok || !result.ok) {
+              throw new Error(result.error || 'Failed to complete Twitch login');
+            }
+            setState('Login completed', 'You can close this tab and return to the app, or wait 60 seconds so that the page will close auto-magically.', 'ok');
+            window.setTimeout(() => window.close(), 60 * 1000);
+          })
+          .catch((error) => {
+            setState('Login failed', error.message || 'Unable to notify the app about Twitch login.', 'error');
+          });
+      }
+    </script>
+  </body>
+</html>`)
+        return;
+      }
+
+      if (pathname === '/twitch-auth/complete' && req.method === 'POST') {
+        try {
+          const body = await new Promise<string>((resolveBody, rejectBody) => {
+            let raw = '';
+            req.setEncoding('utf8');
+            req.on('data', chunk => {
+              raw += chunk;
+              if (raw.length > 1024 * 1024) {
+                rejectBody(new Error('Request body too large'));
+                req.destroy();
+              }
+            });
+            req.on('end', () => resolveBody(raw));
+            req.on('error', rejectBody);
+          });
+
+          const payload = (body ? JSON.parse(body) : {}) as TwitchAuthPayload;
+          const completionHandler = (globalThis as any).completeTwitchOAuth as TwitchAuthCompletionHandler | undefined;
+
+          if (!completionHandler) {
+            res.writeHead(409, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ ok: false, error: 'No pending Twitch login request' }));
+            return;
+          }
+
+          const result = await completionHandler(payload);
+          res.writeHead(result.ok ? 200 : 400, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify(result));
+        } catch (error: any) {
+          res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ ok: false, error: error?.message ?? 'Failed to process Twitch login callback' }));
+        }
         return;
       }
 

@@ -1,4 +1,5 @@
-import { ipcMain, BrowserWindow } from 'electron'
+import { ipcMain, BrowserWindow, shell } from 'electron'
+import { randomBytes } from 'node:crypto'
 import SafeStorageWrapper from '../safeStorageWrapper'
 import {
   getBroadcasterId,
@@ -14,6 +15,55 @@ import { RewardSettings } from '../twitchWorker'
 
 let twitchEventListener: TwitchEventListener | null = null
 const clientId = '64aeehn5qo2902i5c4gvz41yjqd9h2'
+const TWITCH_AUTH_TIMEOUT_MS = 60 * 1000
+
+type PendingTwitchAuth = {
+  state: string
+  safeStore: SafeStorageWrapper | null
+  mainWindow: BrowserWindow | null
+  resolve: () => void
+  reject: (error: Error) => void
+  timeout: NodeJS.Timeout
+}
+
+let pendingTwitchAuth: PendingTwitchAuth | null = null
+
+function clearPendingTwitchAuth() {
+  if (!pendingTwitchAuth) return
+  clearTimeout(pendingTwitchAuth.timeout)
+  pendingTwitchAuth = null
+}
+
+async function completeTwitchOAuth(payload: { accessToken?: string | null, state?: string | null, error?: string | null }) {
+  const activeAuth = pendingTwitchAuth
+  if (!activeAuth) {
+    return { ok: false, error: 'No pending Twitch OAuth request' }
+  }
+
+  if (payload.error) {
+    clearPendingTwitchAuth()
+    activeAuth.reject(new Error(payload.error))
+    return { ok: false, error: payload.error }
+  }
+
+  if (!payload.accessToken || payload.state !== activeAuth.state) {
+    return { ok: false, error: 'Invalid Twitch OAuth callback payload' }
+  }
+
+  try {
+    activeAuth.safeStore?.set('twitchAccessToken', payload.accessToken)
+    await connectEventSubIfPossible(activeAuth.safeStore, activeAuth.mainWindow)
+    clearPendingTwitchAuth()
+    activeAuth.resolve()
+    return { ok: true }
+  } catch (error: any) {
+    clearPendingTwitchAuth()
+    activeAuth.reject(error instanceof Error ? error : new Error(String(error)))
+    return { ok: false, error: error?.message ?? 'Failed to complete Twitch OAuth' }
+  }
+}
+
+(globalThis as any).completeTwitchOAuth = completeTwitchOAuth
 
 export const getTwitchEventListener = () => twitchEventListener
 
@@ -45,19 +95,14 @@ export const connectEventSubIfPossible = async (safeStore: SafeStorageWrapper | 
 
 export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mainWindow: BrowserWindow | null) {
   connectEventSubIfPossible(safeStore, mainWindow)
-  ipcMain.handle('oauth:start-twitch', (_evt) => {
-    return new Promise<void>((resolve, reject) => {
-      const authWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
-        frame: true,
-        autoHideMenuBar: true,
-        webPreferences: {
-          contextIsolation: true,
-        },
-      })
+  ipcMain.handle('oauth:start-twitch', async (_evt) => {
+    if (pendingTwitchAuth) {
+      throw new Error('A Twitch login is already in progress')
+    }
 
-      const stateString = Math.random().toString(36).substring(2, 15)
+    return new Promise<void>(async (resolve, reject) => {
+      const stateString = randomBytes(24).toString('hex')
+      const alertServerPort = Number(safeStore?.get('alertServerPort') ?? '4823') || 4823
       const scopes = [
         "channel:read:redemptions",
         "channel:manage:redemptions",
@@ -73,7 +118,7 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
       ].join(' ')
 
       const forceVerify = false
-      const redirectUri = 'http://localhost/'
+      const redirectUri = `http://localhost:${alertServerPort}/twitch-auth/callback`
       const responseType = 'token'
 
       const authUrl = new URL('https://id.twitch.tv/oauth2/authorize')
@@ -86,28 +131,42 @@ export function registerTwitchHandlers(safeStore: SafeStorageWrapper | null, mai
       authUrl.searchParams.set('scope', scopes)
       authUrl.searchParams.set('state', stateString)
 
-      authWindow.loadURL(authUrl.toString())
+      pendingTwitchAuth = {
+        state: stateString,
+        safeStore,
+        mainWindow,
+        resolve,
+        reject,
+        timeout: setTimeout(() => {
+          const activeAuth = pendingTwitchAuth
+          if (!activeAuth) return
 
-      const { session: { webRequest } } = authWindow.webContents
-      const filter = { urls: ['http://localhost/*'] }
+          void (async () => {
+            try {
+              const storedToken = activeAuth.safeStore?.get('twitchAccessToken')
+              if (storedToken) {
+                await connectEventSubIfPossible(activeAuth.safeStore, activeAuth.mainWindow)
+                clearPendingTwitchAuth()
+                activeAuth.resolve()
+                return
+              }
 
-      webRequest.onBeforeRequest(filter, async ({ url }) => {
-        const urlObj = new URL(url)
-        const hashParams = new URLSearchParams(urlObj.hash.substring(1))
-        const accessToken = hashParams.get('access_token')
-        const returnedState = hashParams.get('state')
-        if (accessToken && returnedState === stateString) {
-          safeStore?.set('twitchAccessToken', accessToken)
-          authWindow.close()
-          
-          connectEventSubIfPossible(safeStore, mainWindow)
-          resolve()
-        }
-      })
+              clearPendingTwitchAuth()
+              activeAuth.reject(new Error('Twitch login timed out'))
+            } catch (error: any) {
+              clearPendingTwitchAuth()
+              activeAuth.reject(new Error(error?.message ?? 'Twitch login timed out'))
+            }
+          })()
+        }, TWITCH_AUTH_TIMEOUT_MS),
+      }
 
-      authWindow.on('closed', () => {
-        reject(new Error('User closed the OAuth window'))
-      })
+      try {
+        await shell.openExternal(authUrl.toString())
+      } catch (error: any) {
+        clearPendingTwitchAuth()
+        reject(new Error(error?.message ?? 'Failed to open browser for Twitch login'))
+      }
     })
   })
 
