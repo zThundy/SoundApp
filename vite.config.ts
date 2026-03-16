@@ -14,6 +14,7 @@ export default defineConfig(({ command }) => {
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG
 
   return {
+    base: "./",
     resolve: {
       alias: {
         '@': path.join(__dirname, 'src')
@@ -78,6 +79,11 @@ export default defineConfig(({ command }) => {
       return {
         host: url.hostname,
         port: +url.port,
+        strictPort: true,
+        hmr: {
+          host: url.hostname,
+          port: +url.port,
+        }
       }
     })(),
     clearScreen: false,

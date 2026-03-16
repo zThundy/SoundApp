@@ -14,8 +14,8 @@ import { connectEventSubIfPossible } from './ipc/twitchHandlers'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 process.env.APP_ROOT = path.join(__dirname, '../..')
-// process.env.IS_PACKAGED = String(app.isPackaged)
-process.env.IS_PACKAGED = "true"
+process.env.IS_PACKAGED = String(app.isPackaged)
+// process.env.IS_PACKAGED = "true"
 
 // Initialize logger as early as possible
 initializeLogger()
@@ -42,6 +42,10 @@ if (!app.requestSingleInstanceLock()) {
   app.quit()
   process.exit(0)
 }
+
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+app.commandLine.appendSwitch('disable-site-isolation-trials')
+app.commandLine.appendSwitch('disable-web-security')
 
 let win: BrowserWindow | null = null
 let safeStore: SafeStorageWrapper | null = null
