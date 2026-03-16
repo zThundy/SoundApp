@@ -10,8 +10,7 @@ import {
   Typography,
   LinearProgress,
   Stack,
-  Box,
-  TextField
+  Box
 } from '@mui/material'
 
 import style from "./update.module.css"
@@ -53,6 +52,68 @@ function formatReleaseNotes(releaseNotes?: VersionInfo['releaseNotes']) {
     .join('\n\n')
 }
 
+function escapeHtml(input: string) {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function sanitizeReleaseNotesHtml(input: string) {
+  const parser = new DOMParser()
+  const document = parser.parseFromString(input, 'text/html')
+  const allowedTags = new Set(['ul', 'ol', 'li', 'p', 'br', 'strong', 'em', 'code', 'pre', 'a'])
+  const elements = Array.from(document.body.querySelectorAll('*'))
+
+  for (const element of elements) {
+    const tag = element.tagName.toLowerCase()
+
+    if (!allowedTags.has(tag)) {
+      const textNode = document.createTextNode(element.textContent ?? '')
+      element.replaceWith(textNode)
+      continue
+    }
+
+    for (const attribute of Array.from(element.attributes)) {
+      const attributeName = attribute.name.toLowerCase()
+      if (tag === 'a' && attributeName === 'href') {
+        continue
+      }
+
+      element.removeAttribute(attribute.name)
+    }
+
+    if (tag === 'a') {
+      const href = element.getAttribute('href') ?? ''
+      const isSafeHref = href.startsWith('http://') || href.startsWith('https://')
+      if (!isSafeHref) {
+        element.removeAttribute('href')
+      } else {
+        element.setAttribute('target', '_blank')
+        element.setAttribute('rel', 'noopener noreferrer')
+      }
+    }
+  }
+
+  return document.body.innerHTML.trim()
+}
+
+function toChangelogHtml(input: string) {
+  const normalized = input.trim()
+  if (!normalized) {
+    return ''
+  }
+
+  const containsHtml = /<[a-z][\s\S]*>/i.test(normalized)
+  if (!containsHtml) {
+    return `<p>${escapeHtml(normalized).replace(/\n/g, '<br />')}</p>`
+  }
+
+  return sanitizeReleaseNotesHtml(normalized)
+}
+
 // A full-page route to show updater status and progress
 const UpdateRoutePage = () => {
   const navigate = useNavigate()
@@ -67,7 +128,8 @@ const UpdateRoutePage = () => {
   const [progressInfo, setProgressInfo] = useState<Partial<ProgressInfo>>({ percent: 0 })
   const [downloaded, setDownloaded] = useState(false)
 
-  const changelog = formatReleaseNotes(versionInfo?.releaseNotes) || t('update.noChangelog')
+  const changelog = formatReleaseNotes(versionInfo?.releaseNotes)
+  const changelogHtml = toChangelogHtml(changelog || t('update.noChangelog'))
 
   const onUpdateCanAvailable = useCallback((_event: Electron.IpcRendererEvent, info: VersionInfo) => {
     setVersionInfo(info)
@@ -230,18 +292,15 @@ const UpdateRoutePage = () => {
                     {t('update.newVersionAvailable', { version: versionInfo?.newVersion || '' })}
                   </Typography>
 
-                  <TextField
-                    className={style.changelogField}
-                    fullWidth
-                    multiline
-                    minRows={8}
-                    maxRows={16}
-                    label={t('update.changelog')}
-                    value={changelog}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+                  <Stack spacing={1} width="100%">
+                    <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                      {t('update.changelog')}
+                    </Typography>
+                    <Box
+                      className={style.changelogHtml}
+                      dangerouslySetInnerHTML={{ __html: changelogHtml }}
+                    />
+                  </Stack>
 
                   {downloaded && (
                     <Button

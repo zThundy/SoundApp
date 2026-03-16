@@ -17,9 +17,42 @@
   width: min(720px, 100%);
 }
 
-.changelogField :global(.MuiInputBase-inputMultiline) {
+.changelogHtml {
   max-height: 22rem;
-  overflow-y: auto !important;
+  overflow-y: auto;
+  width: 100%;
+  /* border: 1px solid var(--mui-palette-primary-main); */
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.changelogHtml p,
+.changelogHtml ul,
+.changelogHtml ol,
+.changelogHtml pre {
+  margin: 0 0 0.65rem;
+}
+
+.changelogHtml p:last-child,
+.changelogHtml ul:last-child,
+.changelogHtml ol:last-child,
+.changelogHtml pre:last-child {
+  margin-bottom: 0;
+}
+
+.changelogHtml ul,
+.changelogHtml ol {
+  padding-left: 1.2rem;
+}
+
+.changelogHtml pre,
+.changelogHtml code {
   font-family: Consolas, "Courier New", monospace;
+}
+
+.changelogHtml pre {
   white-space: pre-wrap;
+  word-break: break-word;
 }
