@@ -44,6 +44,8 @@
   "update.noUpdate": "Ye be sailin' with the finest edition already!",
   "update.goBack": "Return to Ship",
   "update.newVersionAvailable": "A finer edition be available: v{version}",
+  "update.changelog": "Captain's Log",
+  "update.noChangelog": "No captain's log be posted fer this release.",
   "update.downloaded": "Update plundered successfully, arr!",
   "update.checkFailed": "Failed to scout fer updates",
 

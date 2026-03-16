@@ -45,6 +45,8 @@
   "update.noUpdate": "Estás usando la última versión.",
   "update.goBack": "Volver",
   "update.newVersionAvailable": "Nueva versión disponible: v{version}",
+  "update.changelog": "Registro de cambios",
+  "update.noChangelog": "No se proporcionó un registro de cambios para esta versión.",
   "update.downloaded": "¡Actualización descargada con éxito!",
   "update.checkFailed": "Error al buscar actualizaciones",
 

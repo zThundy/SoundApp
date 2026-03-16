@@ -10,7 +10,8 @@ import {
   Typography,
   LinearProgress,
   Stack,
-  Box
+  Box,
+  TextField
 } from '@mui/material'
 
 import style from "./update.module.css"
@@ -37,6 +38,21 @@ const StyledBox = styled(Box)(({ theme }) => ({
   }
 }));
 
+function formatReleaseNotes(releaseNotes?: VersionInfo['releaseNotes']) {
+  if (!releaseNotes) {
+    return ''
+  }
+
+  if (typeof releaseNotes === 'string') {
+    return releaseNotes.trim()
+  }
+
+  return releaseNotes
+    .map((releaseNote) => releaseNote.note?.trim())
+    .filter((note): note is string => Boolean(note))
+    .join('\n\n')
+}
+
 // A full-page route to show updater status and progress
 const UpdateRoutePage = () => {
   const navigate = useNavigate()
@@ -50,6 +66,8 @@ const UpdateRoutePage = () => {
   const [updateError, setUpdateError] = useState<ErrorType>()
   const [progressInfo, setProgressInfo] = useState<Partial<ProgressInfo>>({ percent: 0 })
   const [downloaded, setDownloaded] = useState(false)
+
+  const changelog = formatReleaseNotes(versionInfo?.releaseNotes) || t('update.noChangelog')
 
   const onUpdateCanAvailable = useCallback((_event: Electron.IpcRendererEvent, info: VersionInfo) => {
     setVersionInfo(info)
@@ -211,6 +229,19 @@ const UpdateRoutePage = () => {
                   <Typography variant="body1" style={{ opacity: 0.8 }}>
                     {t('update.newVersionAvailable', { version: versionInfo?.newVersion || '' })}
                   </Typography>
+
+                  <TextField
+                    className={style.changelogField}
+                    fullWidth
+                    multiline
+                    minRows={8}
+                    maxRows={16}
+                    label={t('update.changelog')}
+                    value={changelog}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
 
                   {downloaded && (
                     <Button

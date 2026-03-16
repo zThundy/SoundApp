@@ -45,6 +45,8 @@
   "update.noUpdate": "Vous utilisez la dernière version.",
   "update.goBack": "Retourner",
   "update.newVersionAvailable": "Une nouvelle version est disponible : v{version}",
+  "update.changelog": "Journal des modifications",
+  "update.noChangelog": "Aucun journal des modifications n’a été fourni pour cette version.",
   "update.downloaded": "Mise à jour téléchargée avec succès !",
   "update.checkFailed": "Échec de la vérification des mises à jour",
 

@@ -5,6 +5,8 @@
   justify-content: center;
   height: 100%;
   width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
 .updateCard {
@@ -12,5 +14,12 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   border-radius: 8px;
-  min-width: 500px;
+  width: min(720px, 100%);
+}
+
+.changelogField :global(.MuiInputBase-inputMultiline) {
+  max-height: 22rem;
+  overflow-y: auto !important;
+  font-family: Consolas, "Courier New", monospace;
+  white-space: pre-wrap;
 }
