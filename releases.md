@@ -184,5 +184,14 @@
 
 ## 0.2.10
 
+- Fixed issue on login - moved to external browser
+  + The entire app would lose all references to static files in React Router
+  + Sometimes the redirect would not work properly
+- Changed auth flow and moved login to the settings page
+- Added new chat templates
+- Minor fixes to static files
+
+*New branch*
+- Started working on youtube integration for livestreams
 
 ## 0.2.11
