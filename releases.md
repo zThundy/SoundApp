@@ -197,5 +197,7 @@
 ## 0.2.11
 
 - Added raid alert
+- Added list of changes to update page
+- Fixed GH workflow
 
 ## 0.2.12
