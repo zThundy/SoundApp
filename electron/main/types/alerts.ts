@@ -19,6 +19,7 @@ export interface Alert {
   cumulative_total?: number;
   bits?: number;
   total?: number;
+  viewers?: number;
   followed_at?: Date;
   status?: 'unfulfilled' | 'fulfilled' | 'canceled';
 }

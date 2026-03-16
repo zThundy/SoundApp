@@ -501,6 +501,18 @@ class TwitchEventListener {
         });
         break;
 
+      case "channel.raid":
+        this.handleAlertNotification({
+          type: "raid",
+          templateId: "default-raidAlert",
+          userId: event.from_broadcaster_user_id,
+          username: event.from_broadcaster_user_login,
+          userDisplayName: event.from_broadcaster_user_name,
+          viewers: event.viewers,
+          timestamp: new Date()
+        });
+        break;
+
       default:
         console.debug('Unhandled subscription type:', subscriptionType);
     }

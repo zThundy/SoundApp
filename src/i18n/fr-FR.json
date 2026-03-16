@@ -92,6 +92,8 @@
   "alert.giftSubAlerts": "Subscription Gift Alerts",
   "alert.messageSubAlerts": "Subscription Message Alerts",
   "alert.bitsAlerts": "Bits Alerts",
+  "alert.raidCategory": "Raids",
+  "alert.raidAlerts": "Raid Alerts",
   "alert.customHtmlCssJs": "HTML/CSS/JS personnalisés",
   "alert.comingSoon": "Bientôt disponible...",
   "alert.textFieldLabel": "Texte",
@@ -117,6 +119,7 @@
   "alert.variableStreakMonths": "Le nombre de mois consécutifs pendant lesquels l'utilisateur a été abonné à la chaîne.",
   "alert.variableDurationMonths": "Le nombre de mois pendant lesquels l'abonnement est valide.",
   "alert.variableBits": "Le nombre de bits donnés à la chaîne par l'utilisateur.",
+  "alert.variableViewers": "Le nombre de spectateurs amenés par la chaîne qui a fait le raid.",
 
   "redeems.list": "Liste des récompenses",
   "redeems.selected": "Récompense sélectionnée",

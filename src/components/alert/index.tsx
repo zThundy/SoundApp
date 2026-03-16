@@ -40,6 +40,7 @@ import SubscriberAlert from "@/components/alert/SubscriberAlert";
 import SubscriberGiftAlert from "@/components/alert/SubscriberGiftAlert";
 import SubscriberMessageAlert from "@/components/alert/SubscriberMessageAlert";
 import BitsAlert from "@/components/alert/BitsAlert";
+import RaidAlert from "@/components/alert/RaidAlert";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: (theme.palette as any).background["850"],
@@ -129,6 +130,8 @@ export default function AlertEditor() {
             <MenuItem value={4}>{t('alert.messageSubAlerts')}</MenuItem>
             <ListSubheader>{t('alert.bitsCategory')}</ListSubheader>
             <MenuItem value={5}>{t('alert.bitsAlerts')}</MenuItem>
+            <ListSubheader>{t('alert.raidCategory')}</ListSubheader>
+            <MenuItem value={6}>{t('alert.raidAlerts')}</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -163,6 +166,11 @@ export default function AlertEditor() {
             )}
             {tab === 5 && (
               <BitsAlert
+                iframeRef={iframeRef}
+              />
+            )}
+            {tab === 6 && (
+              <RaidAlert
                 iframeRef={iframeRef}
               />
             )}

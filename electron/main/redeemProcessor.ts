@@ -68,6 +68,7 @@ export class RedeemProcessor {
       .replace(/\$\{streak_months\}/g, String(redemption.streak_months || 1))
       .replace(/\$\{duration_months\}/g, String(redemption.duration_months || 1))
       .replace(/\$\{bits\}/g, String(redemption.bits || 1))
+      .replace(/\$\{viewers\}/g, String(redemption.viewers || 0))
   }
 
   process(eventData: Alert): void {
@@ -88,9 +89,33 @@ export class RedeemProcessor {
         case "bits":
           this.processBitsAlert(eventData);
           break;
+
+        case "raid":
+          this.processRaidAlert(eventData);
+          break;
       }
     } catch (e: any) {
       console.error("[RedeemProcessor] Error in .process function: ", e)
+    }
+  }
+
+  private async processRaidAlert(data: Alert): Promise<void> {
+    try {
+      console.debug("[RedeemProcessor] Processing raid alert with data", data)
+      const template = await this.loadTemplate(data.templateId)
+      if (!template) {
+        console.warn(`[RedeemProcessor] Template ${data.templateId} not found, using fallback`)
+      }
+      const alertText = template?.text ? this.replaceVariables(template.text, data) : `${data.userDisplayName} has raided with ${data.viewers} viewers!`
+      this.sendToServer({
+        type: 'twitch-alert',
+        templateId: data.templateId,
+        imageDataUrl: template?.imageDataUrl || undefined,
+        text: alertText,
+        duration: template?.duration || 6000,
+      });
+    } catch (e: any) {
+      console.error("[RedeemProcessor] Error in processRaidAlert: ", e)
     }
   }
 

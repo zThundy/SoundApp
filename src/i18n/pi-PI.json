@@ -91,6 +91,8 @@
   "alert.giftSubAlerts": "Subscription Gift Alerts",
   "alert.messageSubAlerts": "Subscription Message Alerts",
   "alert.bitsAlerts": "Bits Alerts",
+  "alert.raidCategory": "Raids",
+  "alert.raidAlerts": "Raid Alerts",
   "alert.customHtmlCssJs": "Custom HTML/CSS/JS (Landlubber stuff)",
   "alert.comingSoon": "Sailin' to ye soon...",
   "alert.textFieldLabel": "Message",
@@ -116,6 +118,7 @@
   "alert.variableStreakMonths": "The number o' consecutive moons the scallywag has sailed with the crew.",
   "alert.variableDurationMonths": "The number o' moons the crew membership be valid fer.",
   "alert.variableBits": "The number o' bits donated to the crew by the scallywag.",
+  "alert.variableViewers": "The number o' landlubbers the raiding ship brought aboard.",
 
   "redeems.list": "Booty Claims List",
   "redeems.selected": "Selected Booty",

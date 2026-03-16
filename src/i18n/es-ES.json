@@ -92,6 +92,8 @@
   "alert.giftSubAlerts": "Subscription Gift Alerts",
   "alert.messageSubAlerts": "Subscription Message Alerts",
   "alert.bitsAlerts": "Bits Alerts",
+  "alert.raidCategory": "Raids",
+  "alert.raidAlerts": "Raid Alerts",
   "alert.customHtmlCssJs": "HTML/CSS/JS personalizado",
   "alert.comingSoon": "Próximamente...",
   "alert.textFieldLabel": "Texto",
@@ -117,6 +119,7 @@
   "alert.variableStreakMonths": "El número de meses consecutivos que el usuario ha estado suscrito al canal.",
   "alert.variableDurationMonths": "El número de meses durante los cuales la suscripción es válida.",
   "alert.variableBits": "La cantidad de bits donados al canal por el usuario.",
+  "alert.variableViewers": "El número de espectadores que trajo el canal que realizó el raid.",
 
   "redeems.list": "Lista de recompensas",
   "redeems.selected": "Recompensa seleccionada",
