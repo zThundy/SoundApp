@@ -202,5 +202,6 @@
 
 ## 0.2.12
 
+- Fixed styling of release page
 
 ## 0.2.13
