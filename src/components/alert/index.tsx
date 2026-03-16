@@ -251,7 +251,8 @@ export default function AlertEditor() {
                   ref={iframeRef}
                   title={t("alert.previewIframeTitle")}
                   src={serverUrl}
-                  style={{ width: '100%', height: '100%', minHeight: '300px', border: 'none' }}
+                  allowTransparency={true}
+                  style={{ width: '100%', height: '100%', minHeight: '300px', border: 'none', background: 'transparent', backgroundColor: "transparent" }}
                 />
                 {iframeError && (
                   <Box
