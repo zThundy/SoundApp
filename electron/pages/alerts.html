@@ -2,211 +2,216 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>Twitch Alerts</title>
-    <style>
-        html,
-        body {
-          margin: 0;
-          padding: 0;
-          background: none transparent;
-          color: #000;
-          font-family: system-ui, Arial, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <title>Twitch Alerts</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: none transparent;
+      color: #000;
+      font-family: system-ui, Arial, sans-serif;
+    }
 
-        #container {
-          position: relative;
-          width: 100vw;
-          height: 100vh;
-          overflow: hidden;
-          /* animation: fade 6s ease-in-out forwards; */
-        }
+    #container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      /* animation: fade 6s ease-in-out forwards; */
+    }
 
-        .alert {
-          position: absolute;
-          top: 90%;
-          left: 90%;
-          transform: translate(-50%, -50%);
-          font-size: 1rem;
-          font-weight: 600;
-        }
+    .alert {
+      position: absolute;
+      top: 90%;
+      left: 90%;
+      transform: translate(-50%, -50%);
+      font-size: 1rem;
+      font-weight: 600;
+    }
 
-        .fadeImageWrap {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          text-align: center;
-        }
+    .fadeImageWrap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
 
-        .fadeImageWrap img {
-          max-width: 50%;
-          height: auto;
-          display: block;
-          margin: 0 auto .5rem;
-        }
+    .fadeImageWrap img {
+      max-width: 50%;
+      height: auto;
+      display: block;
+      margin: 0 auto .5rem;
+    }
 
-        .fadeImageWrap .caption {
-          background: linear-gradient(210deg, hsl(298, 80%, 40%), hsl(248, 80%, 20%));
-          padding: 0.5rem 1rem;
-          color: #fff;
-          border-radius: 4px;
-          font-size: 1rem;
-          font-weight: 600;
-        }
+    .fadeImageWrap .caption {
+      background: linear-gradient(210deg, hsl(298, 80%, 40%), hsl(248, 80%, 20%));
+      padding: 0.5rem 1rem;
+      color: #fff;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
 
-        @keyframes fade {
-            0% {
-              opacity: 0;
-              transform: translate(-50%, -40%);
-            }
+    @keyframes fade {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+      }
 
-            5% {
-              opacity: 1;
-              transform: translate(-50%, -50%);
-            }
+      5% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
 
-            8% {
-              opacity: 1;
-              transform: translate(-50%, -50%) scale(1.1);
-            }
+      8% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
 
-            12% {
-              opacity: 1;
-              transform: translate(-50%, -50%) scale(1);
-            }
+      12% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
 
-            50% {
-              opacity: 1;
-              transform: translate(-50%, -50%) scale(1);
-            }
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
 
-            95% {
-              opacity: 0;
-              transform: translate(-50%, -40%);
-            }
+      95% {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+      }
 
-            100% {
-              opacity: 0;
-              transform: translate(-50%, -40%);
-            }
-        }
-    </style>
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <div id="container"></div>
-    <script>
-        const es = new EventSource('/events');
-        
-        // Queue system for twitch-redeem alerts
-        const alertQueue = [];
-        let isProcessingAlert = false;
-        
-        async function processAlertQueue() {
-          if (isProcessingAlert || alertQueue.length === 0) return;
-          
-          isProcessingAlert = true;
-          const data = alertQueue.shift();
-          
-          return new Promise((resolve) => {
-            const wrap = document.createElement('div');
-            wrap.className = 'fadeImageWrap';
-            wrap.style.animation = 'fade ' + ((data.duration || 6000) / 1000) + 's cubic-bezier(0.3, 0.6, 0.3, 1) forwards';
-            const img = document.createElement('img');
-            // Use imageDataUrl from template if available, otherwise use default
-            if (data.imageDataUrl) {
-              img.src = data.imageDataUrl;
-            } else if (data.image?.base64) {
-              img.src = 'data:image/png;base64,' + data.image.base64;
-            } else {
-              img.src = "logo.png";
-            }
-            const caption = document.createElement('div');
-            caption.className = 'caption';
-            caption.textContent = data.text || '';
-            wrap.appendChild(img);
-            wrap.appendChild(caption);
-            document.getElementById('container').appendChild(wrap);
-            
-            console.log("Processing audio", data.audio)
-            // Play audio if present
-            let audioDuration = 0;
-            if (data.audio?.base64) {
-              let base64Audio = "";
-              if (data.audio.base64.includes("audio/")) {
-                base64Audio = data.audio.base64;
-              } else {
-                base64Audio = 'data:audio/mpeg;base64,' + data.audio.base64;
-              }
-              const audio = new Audio(base64Audio);
-              audio.volume = data.audio.volume || 1.0;
-              
-              // Get audio duration to wait for it
-              audio.addEventListener('loadedmetadata', () => {
-                audioDuration = audio.duration * 1000; // Convert to ms
-            
-                console.log('Audio duration (ms):', audioDuration);
-                const totalDuration = Math.max(data.duration || 6000, audioDuration);
-                console.log('Displaying alert for', totalDuration, 'ms');
-                
-                setTimeout(() => {
-                  wrap.remove();
-                  isProcessingAlert = false;
-                  resolve();
-                  processAlertQueue();
-                  console.log("Processing next alert because audio ended")
-                }, totalDuration);
-              });
-              
-              audio.addEventListener('ended', () => {
-                console.log('Audio playback completed');
-              });
-              
-              audio.play().catch(e => console.error('Audio playback failed', e));
-            }
+  <div id="container"></div>
+  <script>
+    const es = new EventSource('/events');
 
-            if (!data.audio || !(data.audio && data.audio.base64)) {
-              console.log("override duration")
-              setTimeout(() => {
-                wrap.remove();
-                isProcessingAlert = false;
-                resolve();
-                processAlertQueue();
-                console.log("Processing next alert because alert ended")
-              }, data.duration);
-            }
-          });
+    // Queue system for twitch-redeem alerts
+    const alertQueue = [];
+    let isProcessingAlert = false;
+
+    async function processAlertQueue() {
+      if (isProcessingAlert || alertQueue.length === 0) return;
+
+      isProcessingAlert = true;
+      const data = alertQueue.shift();
+
+      return new Promise((resolve) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'fadeImageWrap';
+        wrap.style.animation = 'fade ' + ((data.duration || 6000) / 1000) + 's cubic-bezier(0.3, 0.6, 0.3, 1) forwards';
+        const img = document.createElement('img');
+        // Use imageDataUrl from template if available, otherwise use default
+        if (data.imageDataUrl) {
+          img.src = data.imageDataUrl;
+        } else if (data.image?.base64) {
+          img.src = 'data:image/png;base64,' + data.image.base64;
+        } else {
+          img.src = "logo.png";
         }
-        
-        es.onmessage = (ev) => {
-            try {
-                const data = JSON.parse(ev.data);
-                console.log('Received alert data:', data);
+        const caption = document.createElement('div');
+        caption.className = 'caption';
+        caption.textContent = data.text || '';
+        wrap.appendChild(img);
+        wrap.appendChild(caption);
+        document.getElementById('container').appendChild(wrap);
 
-                alertQueue.push(data);
-                processAlertQueue();
-                // switch(data.type) {
-                //   case "twitch-redeem":
-                //     // Add to queue and process
-                //     alertQueue.push(data);
-                //     processAlertQueue();
-                //     break;
-                //   case "twitch-alert":
-                //     // Add to queue and process
-                //     alertQueue.push(data);
-                //     processAlertQueue();
-                //     break;
-                //   case "imageTemplate":
-                //     alertQueue.push(data);
-                //     processAlertQueue();
-                //     break;
-                // }
-            } catch (e) {
-                console.error('Bad alert payload', e, ev.data);
-            }
-        };
-    </script>
+        console.log("Processing audio", data.audio)
+        // Play audio if present
+        let audioDuration = 0;
+        if (data.audio?.base64) {
+          let base64Audio = "";
+          if (data.audio.base64.includes("audio/")) {
+            base64Audio = data.audio.base64;
+          } else {
+            base64Audio = 'data:audio/mpeg;base64,' + data.audio.base64;
+          }
+          const audio = new Audio(base64Audio);
+          audio.volume = data.audio.volume || 1.0;
+
+          // Get audio duration to wait for it
+          audio.addEventListener('loadedmetadata', () => {
+            audioDuration = audio.duration * 1000; // Convert to ms
+
+            console.log('Audio duration (ms):', audioDuration);
+            const totalDuration = Math.max(data.duration || 6000, audioDuration);
+            console.log('Displaying alert for', totalDuration, 'ms');
+
+            setTimeout(() => {
+              wrap.remove();
+              isProcessingAlert = false;
+              resolve();
+              processAlertQueue();
+              console.log("Processing next alert because audio ended")
+            }, totalDuration);
+          });
+
+          audio.addEventListener('ended', () => {
+            console.log('Audio playback completed');
+          });
+
+          audio.play().catch(e => console.error('Audio playback failed', e));
+        }
+
+        if (!data.audio || !(data.audio && data.audio.base64)) {
+          console.log("override duration")
+          setTimeout(() => {
+            wrap.remove();
+            isProcessingAlert = false;
+            resolve();
+            processAlertQueue();
+            console.log("Processing next alert because alert ended")
+          }, data.duration);
+        }
+      });
+    }
+
+    es.onmessage = (ev) => {
+      try {
+        const data = JSON.parse(ev.data);
+        console.log('Received alert data:', data);
+
+        if (data.type === 'overlay-refresh') {
+          window.location.reload();
+          return;
+        }
+
+        alertQueue.push(data);
+        processAlertQueue();
+        // switch(data.type) {
+        //   case "twitch-redeem":
+        //     // Add to queue and process
+        //     alertQueue.push(data);
+        //     processAlertQueue();
+        //     break;
+        //   case "twitch-alert":
+        //     // Add to queue and process
+        //     alertQueue.push(data);
+        //     processAlertQueue();
+        //     break;
+        //   case "imageTemplate":
+        //     alertQueue.push(data);
+        //     processAlertQueue();
+        //     break;
+        // }
+      } catch (e) {
+        console.error('Bad alert payload', e, ev.data);
+      }
+    };
+  </script>
 </body>
 
 </html>

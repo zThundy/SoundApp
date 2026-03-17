@@ -20,7 +20,12 @@
       try {
         const data = JSON.parse(ev.data);
         console.log('Received chat data:', data);
-        
+
+        if (data.type === 'overlay-refresh') {
+          window.location.reload();
+          return;
+        }
+
         if (data.type === "twitch-chat") {
           addMessage(data.username, data.message, data.color, data.fragments);
           if (onChatMessage) onChatMessage(data);
@@ -39,7 +44,7 @@
       const messageDiv = document.createElement('div');
       messageDiv.className = 'message-content';
       messageDiv.style = "display: flex; flex-direction: row; justify-content: flex-start; align-content: center;"
-      
+
       if (!fragments || !Array.isArray(fragments)) {
         messageDiv.textContent = '';
         return messageDiv;
@@ -81,13 +86,13 @@
     function addMessage(username, message, color = '#FFFFFF', fragments = null) {
       const messageEl = document.createElement('div');
       messageEl.className = 'message';
-      
+
       const usernameEl = document.createElement('span');
       usernameEl.className = 'username';
       usernameEl.textContent = username + ':';
       usernameEl.style.color = color;
       messageEl.appendChild(usernameEl);
-      
+
       // Use fragments if available, otherwise fall back to plain text message
       if (fragments) {
         const contentEl = buildMessageFromFragments(fragments);
@@ -100,12 +105,12 @@
         textEl.textContent = message;
         messageEl.appendChild(textEl);
       }
-      
+
       messagesContainer.appendChild(messageEl);
-      
+
       // Scroll to bottom
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      
+
       // Remove old messages if we exceed max
       while (messagesContainer.children.length > MAX_MESSAGES) {
         messagesContainer.removeChild(messagesContainer.firstChild);

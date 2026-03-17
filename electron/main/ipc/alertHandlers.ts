@@ -24,6 +24,18 @@ export function registerAlertHandlers(
 ) {
   const UUID_PATTERN = /\{([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\}/g
 
+  function broadcastOverlayRefresh(reason: string): void {
+    const alertServer = getAlertServer()
+    const broadcaster = alertServer?.broadcast ?? (globalThis as any).alertBroadcast
+    if (typeof broadcaster !== 'function') return
+
+    broadcaster({
+      type: 'overlay-refresh',
+      reason,
+      timestamp: Date.now(),
+    })
+  }
+
   function extnameFromPath(p?: string | null): string {
     if (!p) return ''
     const idx = p.lastIndexOf('.')
@@ -164,6 +176,7 @@ export function registerAlertHandlers(
       }
       const templatePath = `templates/${template.id}.json`
       await fileManager.writeFile('alerts', { relativePath: templatePath }, JSON.stringify(template, null, 2))
+      broadcastOverlayRefresh('alerts-template-saved')
       console.debug('[AlertHandlers] Template saved:', template.id)
       return { ok: true }
     } catch (err: any) {
@@ -200,6 +213,7 @@ export function registerAlertHandlers(
       await fileManager.writeFile('chat', { relativePath: 'custom.html' }, html)
       await fileManager.writeFile('chat', { relativePath: 'custom.css' }, css)
       await fileManager.writeFile('chat', { relativePath: 'custom.js' }, js)
+      broadcastOverlayRefresh('chat-customization-saved')
       console.debug('[ChatHandlers] Chat HTML/CSS/JS saved (with UUID placeholders preserved)')
       return { ok: true }
     } catch (err: any) {
