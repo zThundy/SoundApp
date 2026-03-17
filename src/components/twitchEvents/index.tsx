@@ -16,6 +16,47 @@ import { height, styled } from '@mui/system';
 import { TranslationContext } from '@/i18n/TranslationProvider';
 import { NotificationContext } from '@/context/NotificationProvider';
 
+const BASE_EMOTE_HEIGHT_PX = 30;
+const MIN_EMOTE_WIDTH_PX = 16;
+const MAX_EMOTE_WIDTH_PX = 72;
+
+const EmoteImage = ({ src, alt }: { src: string; alt: string }) => {
+  const [width, setWidth] = useState(BASE_EMOTE_HEIGHT_PX);
+
+  const handleLoad = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = event.currentTarget;
+    const { naturalWidth, naturalHeight } = img;
+
+    if (!naturalWidth || !naturalHeight) {
+      setWidth(BASE_EMOTE_HEIGHT_PX);
+      return;
+    }
+
+    const ratio = naturalWidth / naturalHeight;
+    const nextWidth = Math.min(
+      MAX_EMOTE_WIDTH_PX,
+      Math.max(MIN_EMOTE_WIDTH_PX, BASE_EMOTE_HEIGHT_PX * ratio)
+    );
+
+    setWidth(nextWidth);
+  };
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      title={alt}
+      loading="lazy"
+      onLoad={handleLoad}
+      style={{
+        width: `${width}px`,
+        height: `${BASE_EMOTE_HEIGHT_PX}px`,
+        objectFit: 'contain'
+      }}
+    />
+  );
+};
+
 interface ChatMessage {
   userId: string;
   username: string;
@@ -327,7 +368,7 @@ export default function TwitchChat() {
                             msg.messageFragment?.map((fragment, index) => (
                               <Stack key={index} direction="row" alignItems={"flex-start"} justifyContent={"flex-start"} display={"flex"}>
                                 {fragment.type === "emote" ?
-                                    <img src={fragment.emoteUrl} style={{ width: "30px", height: "30px" }} /> 
+                                    <EmoteImage src={fragment.emoteUrl} alt={fragment.text || 'emote'} /> 
                                   : null}
                                 {fragment.type === "text" ?
                                   <Typography variant="body2">

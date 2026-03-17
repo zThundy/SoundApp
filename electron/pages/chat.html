@@ -15,6 +15,30 @@
     const es = new EventSource('/events');
     const messagesContainer = document.getElementById('messages');
     const MAX_MESSAGES = 50;
+    const BASE_EMOTE_HEIGHT_REM = 2;
+    const MIN_EMOTE_WIDTH_REM = 1;
+    const MAX_EMOTE_WIDTH_REM = 4;
+
+    function applyEmoteAspectRatio(emoteImg) {
+      const naturalWidth = emoteImg.naturalWidth;
+      const naturalHeight = emoteImg.naturalHeight;
+
+      if (!naturalWidth || !naturalHeight) {
+        emoteImg.style.width = BASE_EMOTE_HEIGHT_REM + 'rem';
+        emoteImg.style.height = BASE_EMOTE_HEIGHT_REM + 'rem';
+        return;
+      }
+
+      const ratio = naturalWidth / naturalHeight;
+      const widthRem = Math.min(
+        MAX_EMOTE_WIDTH_REM,
+        Math.max(MIN_EMOTE_WIDTH_REM, BASE_EMOTE_HEIGHT_REM * ratio)
+      );
+
+      emoteImg.style.width = widthRem + 'rem';
+      emoteImg.style.height = BASE_EMOTE_HEIGHT_REM + 'rem';
+      emoteImg.style.objectFit = 'contain';
+    }
 
     es.onmessage = (ev) => {
       try {
@@ -56,7 +80,11 @@
           const emoteImg = document.createElement('img');
           emoteImg.src = fragment.emoteUrl;
           emoteImg.className = 'emote';
-          emoteImg.style = "width: 2rem; height: 2rem;"
+          emoteImg.style = `height: ${BASE_EMOTE_HEIGHT_REM}rem; width: ${BASE_EMOTE_HEIGHT_REM}rem; object-fit: contain;`
+          emoteImg.onload = () => applyEmoteAspectRatio(emoteImg);
+          if (emoteImg.complete) {
+            applyEmoteAspectRatio(emoteImg);
+          }
           emoteImg.alt = fragment.text || 'emote';
           emoteImg.title = fragment.text || 'emote';
           messageDiv.appendChild(emoteImg);
