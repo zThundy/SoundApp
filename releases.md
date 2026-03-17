@@ -209,3 +209,6 @@
 - Added global twitch emote fetching and caching
 
 ## 0.2.13
+
+
+## 0.2.14
