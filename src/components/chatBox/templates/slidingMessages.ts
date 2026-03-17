@@ -105,7 +105,7 @@ body {
 }
 
 .message-text {
-  color: #2a2a2a;
+  color: white;
   word-wrap: break-word;
   display: inline;
 }

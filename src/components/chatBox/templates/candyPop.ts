@@ -54,6 +54,10 @@ body {
   animation: slideInLeft 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
+.message.removing {
+  animation: fadeOutUp 0.45s ease forwards;
+}
+
 .username {
   display: inline-block;
   padding: 4px 10px 3px;
@@ -81,6 +85,8 @@ body {
   border-radius: 14px;
   box-shadow: 0 6px 0 rgba(215, 111, 232, 0.35), 0 10px 18px rgba(96, 39, 114, 0.15);
   word-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .message-text .mention {
@@ -111,9 +117,38 @@ body {
     transform: translateX(0);
   }
 }
+
+@keyframes fadeOutUp {
+  0% {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(0) translateY(-16px);
+  }
+}
 `;
 
-template.js = ``;
+template.js = `const MESSAGE_TTL_MS = 10000;
+const REMOVE_ANIMATION_MS = 450;
+
+onChatMessage = function() {
+  const messageEl = document.querySelector('.message:last-child');
+  if (!messageEl) return;
+
+  setTimeout(() => {
+    if (!messageEl.parentElement) return;
+
+    messageEl.classList.add('removing');
+
+    setTimeout(() => {
+      if (messageEl.parentElement) {
+        messageEl.remove();
+      }
+    }, REMOVE_ANIMATION_MS);
+  }, MESSAGE_TTL_MS);
+};`;
 
 export default template;
 export type { ChatBoxTemplate };
