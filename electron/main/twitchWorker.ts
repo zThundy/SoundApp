@@ -137,20 +137,51 @@ const deleteCustomReward = async (accessToken: string, broadcasterId: string, re
   return;
 }
 
-const getChannelEmotes = async (accessToken: string, broadcasterId: string) => {
-  const url = `https://api.twitch.tv/helix/chat/emotes?broadcaster_id=${broadcasterId}`
+const getGlobalEmotes = async (accessToken: string) => {
+  const url = 'https://api.twitch.tv/helix/chat/emotes/global';
   const headers = {
     'Authorization': `Bearer ${accessToken}`,
     'Client-Id': clientId,
     'Content-Type': 'application/json'
   };
-  const response = await fetch(url, { headers });  
+
+  const response = await fetch(url, { headers });
   if (!response.ok) {
-    console.error("Failed to get emotes:", await response.text());
-    throw new Error('Failed to get emotes: ' + response.statusText);
+    console.error("Failed to get global emotes:", await response.text());
+    throw new Error('Failed to get global emotes: ' + response.statusText);
   }
-  const data = await response.json();
-  return data;
+
+  return response.json();
+}
+
+const getChannelEmotes = async (accessToken: string, broadcasterId: string) => {
+  const trimmedBroadcasterId = broadcasterId?.toString().trim() ?? '';
+
+  // The Helix channel emotes endpoint accepts only numeric broadcaster IDs.
+  if (!/^\d+$/.test(trimmedBroadcasterId)) {
+    console.warn(`[TwitchWorker] Invalid broadcaster_id "${trimmedBroadcasterId}". Falling back to global emotes.`);
+    return getGlobalEmotes(accessToken);
+  }
+
+  const url = `https://api.twitch.tv/helix/chat/emotes?broadcaster_id=${trimmedBroadcasterId}`
+  const headers = {
+    'Authorization': `Bearer ${accessToken}`,
+    'Client-Id': clientId,
+    'Content-Type': 'application/json'
+  };
+
+  try {
+    const response = await fetch(url, { headers });
+    if (!response.ok) {
+      const body = await response.text();
+      console.error("Failed to get channel emotes:", body);
+      throw new Error('Failed to get channel emotes: ' + response.statusText);
+    }
+    return response.json();
+  } catch (error) {
+    console.warn('[TwitchWorker] Falling back to global emotes after channel emotes failure:', error);
+    return getGlobalEmotes(accessToken);
+  }
 }
 
 export {
