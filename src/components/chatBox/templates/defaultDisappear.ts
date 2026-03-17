@@ -29,20 +29,20 @@ body {
 #messages {
   position: fixed;
   inset: 0;
-  padding: 12px;
+  padding: clamp(8px, 2vw, 14px);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: clamp(4px, 1vw, 8px);
   box-sizing: border-box;
   overflow: hidden;
 }
 
 .message {
-  font-size: 1.2rem;
+  font-size: clamp(0.85rem, 2.1vw, 1.2rem);
   line-height: 1.4;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
 }
 
@@ -53,7 +53,15 @@ body {
 .message-text {
   color: #fff;
   word-wrap: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
   display: inline;
+
+}
+
+.message-text .text,
+.message-text .mention {
+  white-space: pre-line;
 }`
 
 template.js = `const MESSAGE_TTL_MS = 5000;

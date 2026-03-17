@@ -79,10 +79,10 @@ body {
 
 #container {
   position: fixed;
-  top: 1rem;
-  left: 1rem;
-  width: calc(100% - 2rem);
-  height: calc(100% - 2rem);
+  top: clamp(6px, 1.8vw, 16px);
+  left: clamp(6px, 1.8vw, 16px);
+  width: calc(100% - (clamp(6px, 1.8vw, 16px) * 2));
+  height: calc(100% - (clamp(6px, 1.8vw, 16px) * 2));
   display: flex;
   flex-direction: column;
   background: rgba(0, 0, 0, 0.85);
@@ -164,14 +164,14 @@ body {
 
 #header {
   position: relative;
-  padding: 15px 20px;
+  padding: clamp(10px, 2.3vw, 15px) clamp(10px, 3vw, 20px);
   background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(255, 0, 255, 0.15));
   border-bottom: 2px solid #00ffff;
   font-weight: 900;
   color: #fff;
-  font-size: 2rem;
+  font-size: clamp(0.95rem, 4.2vw, 2rem);
   text-align: center;
-  letter-spacing: 4px;
+  letter-spacing: clamp(1px, 0.8vw, 4px);
   overflow: hidden;
 }
 
@@ -238,10 +238,10 @@ body {
 
 #messages {
   flex: 1;
-  padding: 15px;
+  padding: clamp(8px, 2vw, 15px);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: clamp(6px, 1.4vw, 12px);
   overflow: hidden;
   position: relative;
 }
@@ -276,9 +276,9 @@ body {
 
 .message {
   animation: messageEnter 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  font-size: 1.5rem;
+  font-size: clamp(0.85rem, 3.1vw, 1.5rem);
   line-height: 1.4;
-  padding: 12px 16px;
+  padding: clamp(8px, 1.8vw, 12px) clamp(10px, 2.3vw, 16px);
   background: linear-gradient(90deg, rgba(0, 255, 255, 0.08), rgba(255, 0, 255, 0.08));
   border-left: 3px solid #00ffff;
   border-radius: 0 8px 8px 0;
@@ -287,8 +287,10 @@ body {
   transition: all 0.3s ease;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.4em;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .message::before {
@@ -329,9 +331,10 @@ body {
 
 .username {
   font-weight: 700;
-  margin-right: 8px;
+  margin-right: 0;
   display: inline-block;
-  padding: 4px 10px;
+  padding: clamp(3px, 0.9vw, 4px) clamp(8px, 1.8vw, 10px);
+  font-size: clamp(0.72rem, 1.6vw, 1rem);
   border-radius: 6px;
   background: linear-gradient(135deg, #00ffff, #0088ff);
   color: #000;
@@ -380,9 +383,29 @@ body {
 .message-text {
   color: #e0e0e0;
   word-wrap: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
   display: inline;
+  min-width: 0;
   text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
   animation: textFadeIn 0.8s ease-out 0.2s backwards;
+}
+
+.message-text .text,
+.message-text .mention {
+  white-space: pre-line;
+}
+
+@media (max-width: 640px) {
+  #container {
+    border-radius: 8px;
+    border-width: 1px;
+  }
+
+  .message {
+    border-left-width: 2px;
+    border-radius: 0 6px 6px 0;
+  }
 }
 
 @keyframes textFadeIn {

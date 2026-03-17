@@ -39,8 +39,8 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 40px;
-  gap: 12px;
+  padding: clamp(10px, 3vw, 40px);
+  gap: clamp(6px, 1.2vw, 12px);
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -49,20 +49,23 @@ body {
   animation: slideInFromRight 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   animation-delay: 0s;
   padding: 12px 18px;
-  background: rgba(255, 255, 255, 0.95);
+  background: #ffffff;
   border-left: 4px solid #667eea;
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  max-width: 500px;
+  width: min(100%, 46rem);
+  max-width: min(92vw, 46rem);
   word-wrap: break-word;
-  font-size: 1.1rem;
+  font-size: clamp(0.85rem, 1.8vw, 1.1rem);
   line-height: 1.4;
   opacity: 0;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.35em;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
 }
 
 @keyframes slideInFromRight {
@@ -99,20 +102,38 @@ body {
 
 .username {
   font-weight: 700;
-  margin-right: 8px;
+  margin-right: 0;
   display: inline-block;
   font-size: 1.05em;
+  flex: 0 0 auto;
 }
 
 .message-text {
-  color: white;
+  color: #111827;
   word-wrap: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
   display: inline;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.message-text .text,
+.message-text .mention {
+  white-space: pre-line;
+}
+
+@media (max-width: 640px) {
+  .message {
+    border-left-width: 3px;
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
 }
 
 /* Special message types */
 .message.moderator {
-  background: linear-gradient(135deg, rgba(15, 155, 15, 0.1) 0%, rgba(0, 176, 155, 0.1) 100%);
+  background: #ffffff;
   border-left-color: #0f9b0f;
 }
 
@@ -121,7 +142,7 @@ body {
 }
 
 .message.vip {
-  background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(238, 90, 111, 0.1) 100%);
+  background: #ffffff;
   border-left-color: #ff6b6b;
 }
 
@@ -130,7 +151,7 @@ body {
 }
 
 .message.subscriber {
-  background: linear-gradient(135deg, rgba(168, 237, 234, 0.1) 0%, rgba(254, 214, 227, 0.1) 100%);
+  background: #ffffff;
   border-left-color: #a8edea;
 }
 

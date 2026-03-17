@@ -30,10 +30,10 @@ body {
 
 #container {
   position: fixed;
-  top: 1rem;
-  left: 1rem;
-  width: calc(100% - 2rem);
-  height: calc(100% - 2rem);
+  top: clamp(6px, 1.8vw, 16px);
+  left: clamp(6px, 1.8vw, 16px);
+  width: calc(100% - (clamp(6px, 1.8vw, 16px) * 2));
+  height: calc(100% - (clamp(6px, 1.8vw, 16px) * 2));
   display: flex;
   flex-direction: column;
   background: rgba(0, 0, 0, 0.9);
@@ -44,31 +44,33 @@ body {
 }
 
 #header {
-  padding: 10px 15px;
+  padding: clamp(8px, 1.8vw, 10px) clamp(10px, 2.6vw, 15px);
   background: linear-gradient(135deg, rgba(145, 70, 255, 0.6), rgba(75, 0, 130, 0.6));
   border-bottom: 1px solid rgba(145, 70, 255, 0.3);
   font-weight: bold;
   color: #fff;
-  font-size: 2rem;
+  font-size: clamp(1rem, 4.6vw, 2rem);
 }
 
 #messages {
   flex: 1;
-  padding: 10px;
+  padding: clamp(8px, 2vw, 12px);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: clamp(5px, 1.1vw, 10px);
   overflow: hidden;
 }
 
 .message {
   animation: slideIn 0.3s ease-out;
-  font-size: 1.5rem;
+  font-size: clamp(0.95rem, 3.2vw, 1.5rem);
   line-height: 1.3;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.35em;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
 }
 
 @keyframes slideIn {
@@ -84,19 +86,36 @@ body {
 
 .username {
   font-weight: 600;
-  margin-right: 5px;
+  margin-right: 0;
   display: inline;
 }
 
 .message-text {
   color: #e0e0e0;
   word-wrap: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
   display: inline;
-}`
+  min-width: 0;
+}
+
+.message-text .text,
+.message-text .mention {
+  white-space: pre-line;
+}
+
+@media (max-width: 640px) {
+  #container {
+    border-radius: 6px;
+    border-width: 1px;
+  }
+}
+`;
 
 template.js = `onChatMessage = function(data) {
   // add any custom logic here
-}`
+}
+`;
 
 export default template;
 export type { ChatBoxTemplate };

@@ -32,10 +32,10 @@ body {
 #messages {
   position: fixed;
   inset: 0;
-  padding: 18px 16px;
+  padding: clamp(10px, 2.2vw, 18px) clamp(8px, 2vw, 16px);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: clamp(6px, 1.4vw, 10px);
   box-sizing: border-box;
   overflow: hidden;
   align-items: flex-start;
@@ -44,10 +44,10 @@ body {
 
 .message {
   position: relative;
-  max-width: 86%;
+  max-width: min(92vw, 86%);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: clamp(4px, 1vw, 8px);
   align-items: flex-start;
   opacity: 0;
   transform: translateX(-60px);
@@ -60,8 +60,8 @@ body {
 
 .username {
   display: inline-block;
-  padding: 4px 10px 3px;
-  font-size: 0.95rem;
+  padding: clamp(3px, 0.8vw, 4px) clamp(8px, 1.8vw, 10px) clamp(2px, 0.7vw, 3px);
+  font-size: clamp(0.75rem, 1.8vw, 0.95rem);
   font-weight: 700;
   color: #ffffff !important;
   background: linear-gradient(90deg, #c665e3 0%, #f07bd5 100%);
@@ -76,8 +76,8 @@ body {
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  padding: 10px 14px;
-  font-size: 1.05rem;
+  padding: clamp(8px, 1.8vw, 10px) clamp(10px, 2.4vw, 14px);
+  font-size: clamp(0.85rem, 2vw, 1.05rem);
   line-height: 1.35;
   color: #5a3f6f;
   background: #ffffff;
@@ -87,6 +87,12 @@ body {
   word-wrap: break-word;
   overflow-wrap: anywhere;
   word-break: break-word;
+  white-space: pre-line;
+}
+
+.message-text .text,
+.message-text .mention {
+  white-space: pre-line;
 }
 
 .message-text .mention {
@@ -102,9 +108,20 @@ body {
 }
 
 .message-text .emote {
-  width: 26px;
-  height: 26px;
+  width: clamp(18px, 4.2vw, 26px);
+  height: clamp(18px, 4.2vw, 26px);
   object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .message {
+    max-width: 100%;
+  }
+
+  .message-text {
+    border-width: 1px;
+    border-radius: 10px;
+  }
 }
 
 @keyframes slideInLeft {
