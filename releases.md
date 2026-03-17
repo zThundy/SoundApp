@@ -203,5 +203,9 @@
 ## 0.2.12
 
 - Fixed styling of release page
+- Minor restyling to the alerts and chats templates
+- Added automatic refresh to pages on template change
+- Added Auto resize of twitch emotes
+- Added global twitch emote fetching and caching
 
 ## 0.2.13
