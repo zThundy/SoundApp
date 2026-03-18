@@ -11,8 +11,9 @@ import Settings from "@/components/settings"
 import TwitchEvents from "@/components/twitchEvents"
 import ChatBoxEditor from "@/components/chatBox"
 import FileManager from "@/components/FileManager"
+import EmoteWall from "@/components/emoteWall"
 
-type HomePage = "redeems" | "alert" | "settings" | "twitchEvents" | "chatbox" | "filemanager"
+type HomePage = "redeems" | "alert" | "settings" | "twitchEvents" | "chatbox" | "filemanager" | "emoteWall"
 
 const SETTINGS_PAGE: HomePage = "settings"
 const DEFAULT_PAGE: HomePage = "redeems"
@@ -92,6 +93,9 @@ export default function Home() {
       <Grid size={{ lg: 10.5, md: 10 }}>
         {activePage === "redeems" && <Reedems />}
         {activePage === "alert" && <AlertEditor />}
+        {activePage === "emoteWall" && <EmoteWall />}
+        {activePage === "chatbox" && <ChatBoxEditor />}
+        {activePage === "filemanager" && <FileManager />}
         {activePage === "settings" && (
           <Settings
             isLoggedIn={isLoggedIn}
@@ -100,8 +104,6 @@ export default function Home() {
           />
         )}
         {activePage === "twitchEvents" && <TwitchEvents />}
-        {activePage === "chatbox" && <ChatBoxEditor />}
-        {activePage === "filemanager" && <FileManager />}
       </Grid>
     </Grid>
   )

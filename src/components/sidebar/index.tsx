@@ -3,7 +3,7 @@ import { useContext } from 'react'
 
 import style from './sidebar.module.css'
 
-import { Settings, LogoutOutlined, Tv, VideoLibrary, Forum, CloudUpload, BrowserUpdated } from '@mui/icons-material'
+import { Settings, LogoutOutlined, Tv, VideoLibrary, Forum, CloudUpload, BrowserUpdated, InsertEmoticon } from '@mui/icons-material'
 
 import { TranslationContext } from '@/i18n/TranslationProvider'
 import { NotificationContext } from '@/context/NotificationProvider'
@@ -29,16 +29,16 @@ export default function Sidebar({ isLoggedIn, onLogout, selectedPage, setSelecte
 
   const elements = [
     {
-      icon: <VideoLibrary />,
-      text: t('sidebar.redeems'),
-      onSelect: "redeems",
-      disabled: !isLoggedIn
-    },
-    {
       icon: <Settings />,
       text: t('sidebar.settings'),
       onSelect: "settings",
       disabled: false
+    },
+    {
+      icon: <VideoLibrary />,
+      text: t('sidebar.redeems'),
+      onSelect: "redeems",
+      disabled: !isLoggedIn
     },
     {
       icon: <Tv />,
@@ -50,6 +50,12 @@ export default function Sidebar({ isLoggedIn, onLogout, selectedPage, setSelecte
       icon: <Forum />,
       text: t('sidebar.chatbox'),
       onSelect: "chatbox",
+      disabled: !isLoggedIn
+    },
+    {
+      icon: <InsertEmoticon />,
+      text: t('sidebar.emoteWall'),
+      onSelect: "emoteWall",
       disabled: !isLoggedIn
     },
     {

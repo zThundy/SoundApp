@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emote Wall Overlay</title>
+  <style>
+    :root {
+      --emote-min-size: 42px;
+      --emote-max-size: 90px;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    #stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    .emote {
+      position: absolute;
+      bottom: -7rem;
+      transform: translateX(-50%);
+      object-fit: contain;
+      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35));
+      animation-name: riseAndSway;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+      will-change: transform, opacity;
+    }
+
+    @keyframes riseAndSway {
+      0% {
+        opacity: 0;
+        transform: translateX(calc(-50% - var(--drift))) translateY(0) rotate(calc(var(--rotation) * -1));
+      }
+
+      12% {
+        opacity: 1;
+      }
+
+      50% {
+        transform: translateX(calc(-50% + var(--drift))) translateY(-45vh) rotate(var(--rotation));
+      }
+
+      85% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateX(calc(-50% - var(--drift))) translateY(-95vh) rotate(calc(var(--rotation) * -1));
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="stage"></div>
+
+  <script>
+    const es = new EventSource('/events');
+    const stage = document.getElementById('stage');
+    const MAX_ACTIVE_EMOTES = 45;
+
+    const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    function cleanupOverflow() {
+      while (stage.children.length > MAX_ACTIVE_EMOTES) {
+        stage.removeChild(stage.firstChild);
+      }
+    }
+
+    function spawnEmote(src, alt) {
+      if (!src) return;
+
+      const emote = document.createElement('img');
+      const size = getRandomInt(42, 90);
+      const durationMs = getRandomInt(3600, 6200);
+
+      emote.className = 'emote';
+      emote.src = src;
+      emote.alt = alt || 'emote';
+      emote.title = alt || 'emote';
+      emote.style.left = getRandomInt(2, 92) + '%';
+      emote.style.width = size + 'px';
+      emote.style.height = size + 'px';
+      emote.style.animationDuration = durationMs + 'ms';
+      emote.style.setProperty('--drift', getRandomInt(16, 68) + 'px');
+      emote.style.setProperty('--rotation', getRandomInt(-20, 20) + 'deg');
+
+      stage.appendChild(emote);
+      cleanupOverflow();
+
+      window.setTimeout(() => {
+        if (emote.parentNode) {
+          emote.remove();
+        }
+      }, durationMs + 400);
+    }
+
+    function handleChatPayload(data) {
+      const fragments = Array.isArray(data.fragments) ? data.fragments : [];
+      const emoteFragments = fragments.filter((fragment) => fragment && fragment.type === 'emote' && fragment.emoteUrl);
+      if (emoteFragments.length === 0) return;
+
+      // Spawn every emote from the message so repeated emotes all appear on screen.
+      emoteFragments.forEach((fragment, index) => {
+        window.setTimeout(() => {
+          spawnEmote(fragment.emoteUrl, fragment.text);
+        }, index * 45);
+      });
+    }
+
+    es.onmessage = (ev) => {
+      try {
+        const data = JSON.parse(ev.data);
+
+        if (data.type === 'overlay-refresh') {
+          window.location.reload();
+          return;
+        }
+
+        if (data.type === 'twitch-chat') {
+          handleChatPayload(data);
+        }
+      } catch (e) {
+        console.error('Bad overlay payload', e, ev.data);
+      }
+    };
+
+    es.onerror = (err) => {
+      console.error('EventSource error:', err);
+    };
+  </script>
+</body>
+
+</html>

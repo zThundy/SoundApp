@@ -31,6 +31,7 @@
   "sidebar.alert": "Alert",
   "sidebar.logout": "Abmelden",
   "sidebar.twitchEvents": "Twitch-Events",
+  "sidebar.emoteWall": "Emote-Wand",
   "sidebar.chatbox": "Chatbox",
   "sidebar.fileManager": "Datei-Manager",
   "sidebar.logoutFailed": "Abmeldung fehlgeschlagen",
@@ -179,6 +180,14 @@
   "twitchChat.recordedAt": "Aufgezeichnet um {time}",
   "twitchChat.cumulativeTotalGifted": "{totalGifted} insgesamt an den Kanal geschenkte Abonnements",
   "twitchChat.total": "{months} geschenkte Abonnements",
+
+  "emoteWall.title": "Emote-Wand",
+  "emoteWall.subtitle": "Immer wenn im Chat ein Emote gesendet wird, steigt zufaellig ein Emote auf.",
+  "emoteWall.connected": "Twitch-Chat wird abgehort",
+  "emoteWall.disconnected": "Nicht mit Twitch-Chat verbunden",
+  "emoteWall.emptyState": "Warte auf Chat-Emotes...",
+  "emoteWall.openInBrowser": "Im Browser oeffnen",
+  "emoteWall.previewIframeTitle": "Emote-Wand Vorschau Iframe",
   
   "chatBox.title": "Chatbox-Anpassung",
   "chatBox.templates": "Vorlagen",

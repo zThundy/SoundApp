@@ -31,7 +31,9 @@
   "sidebar.alert": "Signal Flare",
   "sidebar.logout": "Abandon ship",
   "sidebar.twitchEvents": "Twitch screaches",
+  "sidebar.emoteWall": "Emote Deck",
   "sidebar.chatbox": "Chatbox",
+  "sidebar.fileManager": "File Hold",
   "sidebar.logoutFailed": "Can't abandon ship, arr!",
 
   "update.title": "Ship's Upgrade",
@@ -179,6 +181,14 @@
   "twitchChat.recordedAt": "Logged in the ship's book at {time}",
   "twitchChat.cumulativeTotalGifted": "{totalGifted} Total subscriptions gifted to the crew",
   "twitchChat.total": "{months} gifted subscriptions",
+
+  "emoteWall.title": "Emote Deck",
+  "emoteWall.subtitle": "When the crew sends emotes in chat, a random one sails across the deck.",
+  "emoteWall.connected": "Listenin' to Twitch parley",
+  "emoteWall.disconnected": "Not hooked to Twitch parley",
+  "emoteWall.emptyState": "Waitin' fer emotes from the crew...",
+  "emoteWall.openInBrowser": "Open in the spyglass",
+  "emoteWall.previewIframeTitle": "Emote Deck Preview Porthole",
 
   "chatBox.title": "Chatbox Settings",
   "chatBox.templates": "Templates",

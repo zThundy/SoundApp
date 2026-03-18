@@ -31,6 +31,7 @@
   "sidebar.alert": "Alert",
   "sidebar.logout": "Esci",
   "sidebar.twitchEvents": "Eventi da Twitch",
+  "sidebar.emoteWall": "Muro Emote",
   "sidebar.chatbox": "Chatbox",
   "sidebar.fileManager": "Gestione File",
   "sidebar.logoutFailed": "Logout fallito",
@@ -180,6 +181,14 @@
   "twitchChat.recordedAt": "Registrato alle {time}",
   "twitchChat.cumulativeTotalGifted": "{totalGifted} abbonamenti regalati in totale al canale",
   "twitchChat.total": "{months} abbonamenti regalati",
+
+  "emoteWall.title": "Muro Emote",
+  "emoteWall.subtitle": "Un'emote casuale appare sul muro ogni volta che la chat invia emote.",
+  "emoteWall.connected": "In ascolto della chat Twitch",
+  "emoteWall.disconnected": "Non connesso alla chat Twitch",
+  "emoteWall.emptyState": "In attesa delle emote della chat...",
+  "emoteWall.openInBrowser": "Apri nel browser",
+  "emoteWall.previewIframeTitle": "Iframe anteprima Muro Emote",
 
   "chatBox.title": "Editor Chatbox",
   "chatBox.templates": "Template",

@@ -31,6 +31,7 @@
   "sidebar.alert": "Alerte",
   "sidebar.logout": "Déconnexion",
   "sidebar.twitchEvents": "Événements Twitch",
+  "sidebar.emoteWall": "Mur d'emotes",
   "sidebar.chatbox": "Chatbox",
   "sidebar.fileManager": "Gestionnaire de fichiers",
   "sidebar.logoutFailed": "Échec de la déconnexion",
@@ -180,6 +181,14 @@
   "twitchChat.recordedAt": "Enregistré à {time}",
   "twitchChat.cumulativeTotalGifted": "{totalGifted} Abonnements offerts au total à la chaîne",
   "twitchChat.total": "{months} abonnements offerts",
+
+  "emoteWall.title": "Mur d'emotes",
+  "emoteWall.subtitle": "Quand le chat envoie des emotes, une emote aléatoire flotte sur l'ecran.",
+  "emoteWall.connected": "Ecoute du chat Twitch active",
+  "emoteWall.disconnected": "Chat Twitch non connecte",
+  "emoteWall.emptyState": "En attente d'emotes du chat...",
+  "emoteWall.openInBrowser": "Ouvrir dans le navigateur",
+  "emoteWall.previewIframeTitle": "Iframe d'aperçu du Mur d'emotes",
 
   "chatBox.title": "Éditeur de chatbox",
   "chatBox.templates": "Modèles",

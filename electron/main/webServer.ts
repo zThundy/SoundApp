@@ -223,6 +223,18 @@ export function startAlertServer(preferredPort = 3137): Promise<AlertServer> {
         return;
       }
 
+      if (pathname === "/emote-wall") {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        try {
+          const htmlContent = await loadHtmlPage('emote-wall');
+          res.end(htmlContent);
+        } catch (err) {
+          console.error('Failed to load emote wall page:', err);
+          res.writeHead(500, { 'Content-Type': 'text/plain' });
+        }
+        return;
+      }
+
       if (pathname === "/" || pathname === '/index.html') {
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         try {

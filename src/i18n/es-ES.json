@@ -31,6 +31,7 @@
   "sidebar.alert": "Alerta",
   "sidebar.logout": "Cerrar sesión",
   "sidebar.twitchEvents": "Eventos de contracción",
+  "sidebar.emoteWall": "Muro de Emotes",
   "sidebar.chatbox": "Chatbox",
   "sidebar.fileManager": "Gestor de archivos",
   "sidebar.logoutFailed": "Error al cerrar sesión",
@@ -180,6 +181,14 @@
   "twitchChat.recordedAt": "Grabado a las {time}",
   "twitchChat.cumulativeTotalGifted": "{totalGifted} suscripciones regaladas en total al canal",
   "twitchChat.total": "{months} suscripciones regaladas",
+
+  "emoteWall.title": "Muro de Emotes",
+  "emoteWall.subtitle": "Cuando el chat envia emotes, aparece uno aleatorio flotando por la pantalla.",
+  "emoteWall.connected": "Escuchando el chat de Twitch",
+  "emoteWall.disconnected": "Sin conexion al chat de Twitch",
+  "emoteWall.emptyState": "Esperando emotes del chat...",
+  "emoteWall.openInBrowser": "Abrir en el navegador",
+  "emoteWall.previewIframeTitle": "Iframe de vista previa del Muro de Emotes",
 
   "chatBox.title": "Personalización del chatbox",
   "chatBox.templates": "Plantillas",
