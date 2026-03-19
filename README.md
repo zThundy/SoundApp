@@ -6,16 +6,19 @@
 ## Tests
 
 [![Audit Deps](https://github.com/zThundy/SoundApp/actions/workflows/update-dependencies.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/update-dependencies.yml)
-
-Do you care about your privacy?
-Do you care about your Twitch account?
+<br>
+<br>
+Do you care about your privacy?<br>
+Do you care about your Twitch account?<br>
 Are you aware of the fact that most of the services that offer overlays, chat, alerts, etc. request more permission than they need just to have full access to your Twitch accounts through API calls?
-
-WELL THEN. This app is for you!
+<br>
+WELL THEN. This app is for you!<br>
 With this application you will be able to have all the tools to make your stream unique and engaging to viewers, having everything HOSTED LOCALLY!
-
+<br>
+<br>
 [<img src=".github/screenshots/download.png" alt="drawing" width="250"/>](https://github.com/zThundy/SoundApp/releases/latest)
-
+<br>
+<br>
 ![Application Screenshot](.github/screenshots/settings.png)
 
 ## Alerts Page for OBS
