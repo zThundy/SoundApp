@@ -14,7 +14,7 @@ Are you aware of the fact that most of the services that offer overlays, chat, a
 WELL THEN. This app is for you!
 With this application you will be able to have all the tools to make your stream unique and engaging to viewers, having everything HOSTED LOCALLY!
 
-[![Download](.github/screenshots/download.png)](https://github.com/zThundy/SoundApp/releases/latest)
+[<img src=".github/screenshots/download.png" alt="drawing" width="250"/>](https://github.com/zThundy/SoundApp/releases/latest)
 
 ![Application Screenshot](.github/screenshots/settings.png)
 
