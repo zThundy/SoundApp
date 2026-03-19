@@ -57,6 +57,7 @@ body {
   padding: clamp(8px, 2vw, 12px);
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: clamp(5px, 1.1vw, 10px);
   overflow: hidden;
 }
@@ -70,7 +71,8 @@ body {
   flex-wrap: wrap;
   gap: 0.35em;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+  text-align: left;
 }
 
 @keyframes slideIn {
@@ -88,6 +90,7 @@ body {
   font-weight: 600;
   margin-right: 0;
   display: inline;
+  text-align: left;
 }
 
 .message-text {
@@ -97,6 +100,7 @@ body {
   white-space: pre-line;
   display: inline;
   min-width: 0;
+  text-align: left;
 }
 
 .message-text .text,

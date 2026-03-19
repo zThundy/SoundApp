@@ -32,6 +32,7 @@ body {
   padding: clamp(8px, 2vw, 14px);
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: clamp(4px, 1vw, 8px);
   box-sizing: border-box;
   overflow: hidden;
@@ -42,12 +43,15 @@ body {
   line-height: 1.4;
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
   gap: 6px;
 }
 
 .username {
   font-weight: 600;
+  text-align: left;
 }
 
 .message-text {
@@ -56,6 +60,7 @@ body {
   overflow-wrap: anywhere;
   white-space: pre-line;
   display: inline;
+  text-align: left;
 
 }
 

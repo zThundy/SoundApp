@@ -241,6 +241,7 @@ body {
   padding: clamp(8px, 2vw, 15px);
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: clamp(6px, 1.4vw, 12px);
   overflow: hidden;
   position: relative;
@@ -290,7 +291,8 @@ body {
   flex-wrap: wrap;
   gap: 0.4em;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+  text-align: left;
 }
 
 .message::before {
@@ -342,6 +344,7 @@ body {
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
   animation: usernameBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   position: relative;
+  text-align: left;
 }
 
 .username::after {
@@ -389,6 +392,7 @@ body {
   min-width: 0;
   text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
   animation: textFadeIn 0.8s ease-out 0.2s backwards;
+  text-align: left;
 }
 
 .message-text .text,

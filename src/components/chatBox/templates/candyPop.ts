@@ -49,6 +49,7 @@ body {
   flex-direction: column;
   gap: clamp(4px, 1vw, 8px);
   align-items: flex-start;
+  text-align: left;
   opacity: 0;
   transform: translateX(-60px);
   animation: slideInLeft 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
@@ -69,12 +70,14 @@ body {
   border-radius: 999px;
   box-shadow: 0 2px 0 rgba(166, 83, 200, 0.35), 0 4px 12px rgba(145, 65, 170, 0.25);
   text-transform: lowercase;
+  text-align: left;
 }
 
 .message-text {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-start;
   gap: 6px;
   padding: clamp(8px, 1.8vw, 10px) clamp(10px, 2.4vw, 14px);
   font-size: clamp(0.85rem, 2vw, 1.05rem);
@@ -88,6 +91,7 @@ body {
   overflow-wrap: anywhere;
   word-break: break-word;
   white-space: pre-line;
+  text-align: left;
 }
 
 .message-text .text,

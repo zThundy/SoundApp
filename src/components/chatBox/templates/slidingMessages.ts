@@ -56,7 +56,7 @@ body {
   width: min(100%, 46rem);
   max-width: min(92vw, 46rem);
   word-wrap: break-word;
-  font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+  font-size: clamp(1.5rem, 1.8vw, 1.5rem);
   line-height: 1.4;
   opacity: 0;
   transition: all 0.3s ease;
@@ -65,7 +65,9 @@ body {
   flex-wrap: wrap;
   gap: 0.35em;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+  align-content: center;
+  text-align: left;
 }
 
 @keyframes slideInFromRight {
@@ -104,8 +106,9 @@ body {
   font-weight: 700;
   margin-right: 0;
   display: inline-block;
-  font-size: 1.05em;
+  font-size: 1.3em;
   flex: 0 0 auto;
+  text-align: left;
 }
 
 .message-text {
@@ -116,6 +119,7 @@ body {
   display: inline;
   min-width: 0;
   flex: 1 1 auto;
+  text-align: left;
 }
 
 .message-text .text,

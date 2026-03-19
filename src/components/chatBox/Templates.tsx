@@ -115,11 +115,12 @@ const Templates = ({
                       ];
 
                       const texts = [
-                        'Hello everyone!',
-                        'This overlay is clean.',
-                        'Testing, testing.',
-                        'Nice stream!',
-                        'Love this template.'
+                        'Hello everyone, just dropping in to test how this chat overlay handles longer sentences with natural punctuation and spacing.',
+                        'This overlay looks super clean so far, and now I am checking whether long messages wrap nicely without breaking usernames or layout.',
+                        'Testing, testing: one, two, three. Can this preview handle a full-length message that keeps flowing across multiple lines smoothly?',
+                        'Nice stream today. I really like how readable the chat is even when the message content gets more detailed and descriptive.',
+                        'Love this template already. I am sending a longer message to verify padding, alignment, line-height, and overall visual balance.',
+                        'Quick stress test message with mixed content: numbers 1234567890, symbols !@#$%^&*(), and enough words to force line wrapping.'
                       ];
 
                       const randomColor = () => {
