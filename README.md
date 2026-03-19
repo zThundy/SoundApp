@@ -2,10 +2,6 @@
 
 [![Build and Release](https://github.com/zThundy/SoundApp/actions/workflows/build.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/build.yml)
 [![Version - v0.3.0](https://img.shields.io/badge/Version-v0.3.0-2ea44f)](https://github.com/zThundy/SoundApp/releases)
-
-## Tests
-
-[![Audit Deps](https://github.com/zThundy/SoundApp/actions/workflows/update-dependencies.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/update-dependencies.yml)
 <br>
 <br>
 Do you care about your privacy?<br>
@@ -70,6 +66,10 @@ Different tools have been designed to be used in the app, and these are:
 ### Emote Wall
 
 ![Emote Wall](.github/screenshots/emotewall.png)
+
+## Tests
+
+[![Audit Deps](https://github.com/zThundy/SoundApp/actions/workflows/update-dependencies.yml/badge.svg)](https://github.com/zThundy/SoundApp/actions/workflows/update-dependencies.yml)
 
 ## Issues / ideas
 For issues or ideas: open an issue in the repository.
