@@ -1,5 +1,4 @@
 import { ipcMain, BrowserWindow, shell, app } from 'electron'
-import path from 'node:path'
 import { getLogger } from '../logger'
 import { getDebugLoggingEnabled, setDebugLoggingEnabled } from '../logger'
 
@@ -102,21 +101,18 @@ export function registerMiscHandlers(
     return { ok: true, enabled: activeValue }
   })
 
-  // Open the folder where the app executable is installed.
   ipcMain.handle('app:open-install-folder', async () => {
     try {
-      const installFolder = app.isPackaged
-        ? path.dirname(app.getPath('exe'))
-        : app.getAppPath()
+      const userDataFolder = app.getPath('userData')
 
-      const openResult = await shell.openPath(installFolder)
+      const openResult = await shell.openPath(userDataFolder)
       if (openResult) {
         return { ok: false, error: openResult }
       }
 
-      return { ok: true, folder: installFolder }
+      return { ok: true, folder: userDataFolder }
     } catch (err: any) {
-      return { ok: false, error: err?.message ?? 'Failed to open app install folder' }
+      return { ok: false, error: err?.message ?? 'Failed to open app data folder' }
     }
   })
 }
