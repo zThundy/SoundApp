@@ -2,6 +2,15 @@
 
 const clientId = '64aeehn5qo2902i5c4gvz41yjqd9h2';
 
+const getApiPath = (url: string): string => {
+  try {
+    const parsed = new URL(url);
+    return `${parsed.pathname}${parsed.search}`;
+  } catch {
+    return url;
+  }
+};
+
 export type RewardSettings = {
   title?: string;
   prompt?: string;
@@ -21,13 +30,16 @@ export type RewardSettings = {
 
 const getTwitchRedemptions = async (accessToken: string, broadcasterId: string) => {
   const url = 'https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions';
+  const requestUrl = `${url}?broadcaster_id=${broadcasterId}`;
   const headers = {
     'Authorization': `Bearer ${accessToken}`,
     'Client-Id': clientId
   };
-  const response = await fetch(`${url}?broadcaster_id=${broadcasterId}`, { headers });
+  console.debug(`[TwitchWorker] API GET ${getApiPath(requestUrl)}`);
+  const response = await fetch(requestUrl, { headers });
+  console.debug(`[TwitchWorker] API GET ${getApiPath(requestUrl)} -> ${response.status} (${response.ok ? 'ok' : 'error'})`);
   if (!response.ok) {
-    console.error("Failed to fetch Twitch redemptions:", await response.text());
+    console.error(`[TwitchWorker] API GET ${getApiPath(requestUrl)} failed:`, await response.text());
     throw new Error('Failed to fetch Twitch redemptions: ' + response.statusText);
   }
   const data = await response.json();
@@ -36,13 +48,16 @@ const getTwitchRedemptions = async (accessToken: string, broadcasterId: string) 
 
 const getOnlyManageableRewards = async (accessToken: string, broadcasterId: string) => {
   const url = 'https://api.twitch.tv/helix/channel_points/custom_rewards';
+  const requestUrl = `${url}?broadcaster_id=${broadcasterId}&only_manageable_rewards=true`;
   const headers = {
     'Authorization': `Bearer ${accessToken}`,
     'Client-Id': clientId
   };
-  const response = await fetch(`${url}?broadcaster_id=${broadcasterId}&only_manageable_rewards=true`, { headers });
+  console.debug(`[TwitchWorker] API GET ${getApiPath(requestUrl)}`);
+  const response = await fetch(requestUrl, { headers });
+  console.debug(`[TwitchWorker] API GET ${getApiPath(requestUrl)} -> ${response.status} (${response.ok ? 'ok' : 'error'})`);
   if (!response.ok) {
-    console.error("Failed to fetch manageable rewards:", await response.text());
+    console.error(`[TwitchWorker] API GET ${getApiPath(requestUrl)} failed:`, await response.text());
     throw new Error('Failed to fetch manageable rewards: ' + response.statusText);
   }
   const data = await response.json();
@@ -51,13 +66,16 @@ const getOnlyManageableRewards = async (accessToken: string, broadcasterId: stri
 
 const getCustomRewards = async (accessToken: string, broadcasterId: string) => {
   const url = 'https://api.twitch.tv/helix/channel_points/custom_rewards';
+  const requestUrl = `${url}?broadcaster_id=${broadcasterId}`;
   const headers = {
     'Authorization': `Bearer ${accessToken}`,
     'Client-Id': clientId
   };
-  const response = await fetch(`${url}?broadcaster_id=${broadcasterId}`, { headers });
+  console.debug(`[TwitchWorker] API GET ${getApiPath(requestUrl)}`);
+  const response = await fetch(requestUrl, { headers });
+  console.debug(`[TwitchWorker] API GET ${getApiPath(requestUrl)} -> ${response.status} (${response.ok ? 'ok' : 'error'})`);
   if (!response.ok) {
-    console.error("Failed to fetch custom rewards:", await response.text());
+    console.error(`[TwitchWorker] API GET ${getApiPath(requestUrl)} failed:`, await response.text());
     throw new Error('Failed to fetch custom rewards: ' + response.statusText);
   }
   const data = await response.json();
@@ -70,9 +88,11 @@ const getBroadcasterId = async (accessToken: string): Promise<string> => {
     'Authorization': `Bearer ${accessToken}`,
     'Client-Id': clientId
   };
+  console.debug(`[TwitchWorker] API GET ${getApiPath(url)}`);
   const response = await fetch(url, { headers });
+  console.debug(`[TwitchWorker] API GET ${getApiPath(url)} -> ${response.status} (${response.ok ? 'ok' : 'error'})`);
   if (!response.ok) {
-    console.error("Failed to fetch broadcaster ID:", await response.text());
+    console.error(`[TwitchWorker] API GET ${getApiPath(url)} failed:`, await response.text());
     throw new Error('Failed to fetch broadcaster ID');
   }
   const data = await response.json();
@@ -86,13 +106,15 @@ const updateCustomReward = async (accessToken: string, broadcasterId: string, re
     'Client-Id': clientId,
     'Content-Type': 'application/json'
   };
+  console.debug(`[TwitchWorker] API PATCH ${getApiPath(url)}`);
   const response = await fetch(url, {
     method: 'PATCH',
     headers,
     body: JSON.stringify(settings)
   });
+  console.debug(`[TwitchWorker] API PATCH ${getApiPath(url)} -> ${response.status} (${response.ok ? 'ok' : 'error'})`);
   if (!response.ok) {
-    console.error("Failed to update custom reward:", await response.text());
+    console.error(`[TwitchWorker] API PATCH ${getApiPath(url)} failed:`, await response.text());
     throw new Error('Failed to update custom reward: ' + response.statusText);
   }
   const data = await response.json();
@@ -106,13 +128,15 @@ const createCustomReward = async (accessToken: string, broadcasterId: string, se
     'Client-Id': clientId,
     'Content-Type': 'application/json'
   };
+  console.debug(`[TwitchWorker] API POST ${getApiPath(url)}`);
   const response = await fetch(url, {
     method: 'POST',
     headers,
     body: JSON.stringify(settings)
   });
+  console.debug(`[TwitchWorker] API POST ${getApiPath(url)} -> ${response.status} (${response.ok ? 'ok' : 'error'})`);
   if (!response.ok) {
-    console.error("Failed to create custom reward:", await response.text());
+    console.error(`[TwitchWorker] API POST ${getApiPath(url)} failed:`, await response.text());
     throw new Error('Failed to create custom reward: ' + response.statusText);
   }
   console.debug("[TwitchWorker] Create Reward Response Status:", response.status);
@@ -126,12 +150,14 @@ const deleteCustomReward = async (accessToken: string, broadcasterId: string, re
     'Authorization': `Bearer ${accessToken}`,
     'Client-Id': clientId
   };
+  console.debug(`[TwitchWorker] API DELETE ${getApiPath(url)}`);
   const response = await fetch(url, {
     method: 'DELETE',
     headers
   });
+  console.debug(`[TwitchWorker] API DELETE ${getApiPath(url)} -> ${response.status} (${response.ok ? 'ok' : 'error'})`);
   if (!response.ok) {
-    console.error("Failed to delete custom reward:", await response.text());
+    console.error(`[TwitchWorker] API DELETE ${getApiPath(url)} failed:`, await response.text());
     throw new Error('Failed to delete custom reward: ' + response.statusText);
   }
   return;
@@ -145,9 +171,11 @@ const getGlobalEmotes = async (accessToken: string) => {
     'Content-Type': 'application/json'
   };
 
+  console.debug(`[TwitchWorker] API GET ${getApiPath(url)}`);
   const response = await fetch(url, { headers });
+  console.debug(`[TwitchWorker] API GET ${getApiPath(url)} -> ${response.status} (${response.ok ? 'ok' : 'error'})`);
   if (!response.ok) {
-    console.error("Failed to get global emotes:", await response.text());
+    console.error(`[TwitchWorker] API GET ${getApiPath(url)} failed:`, await response.text());
     throw new Error('Failed to get global emotes: ' + response.statusText);
   }
 
@@ -171,14 +199,17 @@ const getChannelEmotes = async (accessToken: string, broadcasterId: string) => {
   };
 
   try {
+    console.debug(`[TwitchWorker] API GET ${getApiPath(url)}`);
     const response = await fetch(url, { headers });
+    console.debug(`[TwitchWorker] API GET ${getApiPath(url)} -> ${response.status} (${response.ok ? 'ok' : 'error'})`);
     if (!response.ok) {
       const body = await response.text();
-      console.error("Failed to get channel emotes:", body);
+      console.error(`[TwitchWorker] API GET ${getApiPath(url)} failed:`, body);
       throw new Error('Failed to get channel emotes: ' + response.statusText);
     }
     return response.json();
   } catch (error) {
+    console.error(`[TwitchWorker] API GET ${getApiPath(url)} failed`, error);
     console.warn('[TwitchWorker] Falling back to global emotes after channel emotes failure:', error);
     return getGlobalEmotes(accessToken);
   }
