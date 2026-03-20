@@ -3,10 +3,19 @@ import { useContext } from 'react'
 
 import style from './sidebar.module.css'
 
-import { Settings, LogoutOutlined, Tv, VideoLibrary, Forum, CloudUpload, BrowserUpdated, InsertEmoticon } from '@mui/icons-material'
+import {
+  Settings,
+  // LogoutOutlined,
+  Tv,
+  VideoLibrary,
+  Forum,
+  CloudUpload,
+  BrowserUpdated,
+  InsertEmoticon
+} from '@mui/icons-material'
 
 import { TranslationContext } from '@/i18n/TranslationProvider'
-import { NotificationContext } from '@/context/NotificationProvider'
+// import { NotificationContext } from '@/context/NotificationProvider'
 
 interface SidebarProps {
   isLoggedIn: boolean
@@ -15,17 +24,22 @@ interface SidebarProps {
   setSelectedPage?: (page: string) => void
 }
 
-export default function Sidebar({ isLoggedIn, onLogout, selectedPage, setSelectedPage }: SidebarProps) {
+export default function Sidebar({
+  isLoggedIn,
+  // onLogout,
+  selectedPage,
+  setSelectedPage
+}: SidebarProps) {
   const { t } = useContext(TranslationContext)
-  const { error } = useContext(NotificationContext)
+  // const { error } = useContext(NotificationContext)
 
-  const logout = () => {
-    onLogout()
-      .catch((err) => {
-        error(t('sidebar.logoutFailed'), err.message);
-        console.error('Error during logout:', err)
-      })
-  }
+  // const logout = () => {
+  //   onLogout()
+  //     .catch((err) => {
+  //       error(t('sidebar.logoutFailed'), err.message);
+  //       console.error('Error during logout:', err)
+  //     })
+  // }
 
   const elements = [
     {
@@ -70,19 +84,19 @@ export default function Sidebar({ isLoggedIn, onLogout, selectedPage, setSelecte
       onSelect: "filemanager",
       disabled: !isLoggedIn
     },
-    {
-      icon: <LogoutOutlined />,
-      text: t('sidebar.logout'),
-      onSelect: "logout",
-      disabled: !isLoggedIn
-    }
+    // {
+    //   icon: <LogoutOutlined />,
+    //   text: t('sidebar.logout'),
+    //   onSelect: "logout",
+    //   disabled: !isLoggedIn
+    // }
   ]
 
   const currentView = selectedPage ?? 'settings'
 
   const handleNavigation = (page: string, disabled?: boolean) => {
     if (disabled) return
-    if (page === "logout") return logout();
+    // if (page === "logout") return logout();
     setSelectedPage?.(page)
   }
 
