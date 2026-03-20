@@ -42,6 +42,7 @@ export default function Settings({ isLoggedIn, onLoginSuccess, onLogout }: Setti
   const [enableBackground, setEnableBackground] = useState(true)
   const [startupEnabled, setStartupEnabled] = useState(false)
   const [authLoading, setAuthLoading] = useState(false)
+  const [debugLogsEnabled, setDebugLogsEnabled] = useState(false)
 
   useEffect(() => {
     (window.alerts as any).getPort().then((res: any) => {
@@ -59,13 +60,21 @@ export default function Settings({ isLoggedIn, onLoginSuccess, onLogout }: Setti
     }).catch(() => {
       // ignore
     })
-    
-    
+
+    window.ipcRenderer.invoke('app:get-debug-logs-enabled').then((res: any) => {
+      if (res?.ok) {
+        setDebugLogsEnabled(Boolean(res.enabled))
+      }
+    }).catch(() => {
+      // ignore
+    })
+
+
     window.windowManager.isTrayEnabled()
       .then((enabled: boolean) => {
         setEnableBackground(enabled)
       })
-    
+
     window.windowManager.isStartupEnabled()
       .then((enabled: boolean) => {
         setStartupEnabled(enabled);
@@ -131,6 +140,31 @@ export default function Settings({ isLoggedIn, onLoginSuccess, onLogout }: Setti
     try {
       await window.windowManager.setStartupEnabled(enabled)
       setStartupEnabled(enabled)
+    } catch (e: any) {
+      error(t('settings.error'), e.message || '')
+    }
+  }
+
+  const setDebugLogs = async (enabled: boolean) => {
+    try {
+      const res = await window.ipcRenderer.invoke('app:set-debug-logs-enabled', enabled)
+      if (res?.ok) {
+        setDebugLogsEnabled(Boolean(res.enabled))
+        success(t('settings.debugLogsSaved'))
+      } else {
+        error(t('settings.saveFailed'), res?.error || '')
+      }
+    } catch (e: any) {
+      error(t('settings.error'), e.message || '')
+    }
+  }
+
+  const openInstallFolder = async () => {
+    try {
+      const res = await window.ipcRenderer.invoke('app:open-install-folder')
+      if (!res?.ok) {
+        error(t('settings.error'), res?.error || '')
+      }
     } catch (e: any) {
       error(t('settings.error'), e.message || '')
     }
@@ -318,6 +352,29 @@ export default function Settings({ isLoggedIn, onLoginSuccess, onLogout }: Setti
               onChange={(e) => setEnableStartup(e.target.checked)}
               color="primary"
             />
+          </StyledBox>
+        </Grid>
+
+        <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2} justifyContent={"space-between"}>
+          <StyledBox>
+            <Stack direction="row" alignItems="center" gap={1}>
+              <Typography variant="subtitle1">{t('settings.debugTitle')}</Typography>
+              <Tooltip title={t('settings.debugDescription')} arrow placement='right'>
+                <Info style={{ cursor: 'pointer' }} />
+              </Tooltip>
+            </Stack>
+            <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" justifyContent="flex-end">
+              <Stack direction="row" alignItems="center" gap={1}>
+                <Switch
+                  checked={debugLogsEnabled}
+                  onChange={(e) => setDebugLogs(e.target.checked)}
+                  color="primary"
+                />
+              </Stack>
+              <Button variant="outlined" color="secondary" onClick={openInstallFolder}>
+                {t('settings.openInstallFolder')}
+              </Button>
+            </Stack>
           </StyledBox>
         </Grid>
 

@@ -2,10 +2,14 @@ import { app } from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
 import util from 'node:util'
+import Store from 'electron-store'
 
-const isDevelopment = process.env.IS_PACKAGED === "false" ||
-                      process.env.NODE_ENV === 'development' ||
-                      process.env.ELECTRON_ENV === 'development'
+interface LoggerConfig {
+  debugLogsEnabled?: boolean
+}
+
+const configStore = new Store<LoggerConfig>()
+let runtimeDebugEnabled = Boolean((configStore as any).get('debugLogsEnabled', false))
 
 class Logger {
   private logFilePath: string
@@ -131,7 +135,7 @@ class Logger {
   }
 
   public debug(...args: any[]) {
-    if (!isDevelopment) return;
+    if (!runtimeDebugEnabled) return
     this.originalConsole.debug(...args)
     const message = this.formatMessage('DEBUG', ...args)
     this.writeToFile(this.logStream, message)
@@ -217,6 +221,19 @@ export function closeLogger() {
 
 export function getLogger(): Logger | null {
   return loggerInstance
+}
+
+export function setDebugLoggingEnabled(enabled: boolean): boolean {
+  runtimeDebugEnabled = Boolean(enabled)
+  ;(configStore as any).set('debugLogsEnabled', runtimeDebugEnabled)
+  if (loggerInstance) {
+    loggerInstance.log('Runtime debug logging', runtimeDebugEnabled ? 'enabled' : 'disabled')
+  }
+  return runtimeDebugEnabled
+}
+
+export function getDebugLoggingEnabled(): boolean {
+  return runtimeDebugEnabled
 }
 
 export default {

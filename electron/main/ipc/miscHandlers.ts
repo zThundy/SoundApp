@@ -1,5 +1,7 @@
 import { ipcMain, BrowserWindow, shell, app } from 'electron'
+import path from 'node:path'
 import { getLogger } from '../logger'
+import { getDebugLoggingEnabled, setDebugLoggingEnabled } from '../logger'
 
 export async function openExternalLink(url: string) {
   try {
@@ -83,5 +85,38 @@ export function registerMiscHandlers(
   // Get app version
   ipcMain.handle('app:get-version', () => {
     return { ok: true, version: app.getVersion() }
+  })
+
+  // Debug log switch used by renderer settings
+  ipcMain.handle('app:get-debug-logs-enabled', () => {
+    return { ok: true, enabled: getDebugLoggingEnabled() }
+  })
+
+  ipcMain.handle('app:set-debug-logs-enabled', (_evt, enabled: boolean) => {
+    if (typeof enabled !== 'boolean') {
+      return { ok: false, error: 'Invalid debug log value' }
+    }
+
+    const activeValue = setDebugLoggingEnabled(enabled)
+
+    return { ok: true, enabled: activeValue }
+  })
+
+  // Open the folder where the app executable is installed.
+  ipcMain.handle('app:open-install-folder', async () => {
+    try {
+      const installFolder = app.isPackaged
+        ? path.dirname(app.getPath('exe'))
+        : app.getAppPath()
+
+      const openResult = await shell.openPath(installFolder)
+      if (openResult) {
+        return { ok: false, error: openResult }
+      }
+
+      return { ok: true, folder: installFolder }
+    } catch (err: any) {
+      return { ok: false, error: err?.message ?? 'Failed to open app install folder' }
+    }
   })
 }
