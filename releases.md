@@ -218,3 +218,6 @@
 - Minor fixes to settings page
 
 ## 0.3.2
+
+
+## 0.3.3
