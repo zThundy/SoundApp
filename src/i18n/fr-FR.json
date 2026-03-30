@@ -22,6 +22,7 @@
   "settings.debugDescription": "Activez les journaux de débogage détaillés et ouvrez le dossier de données de l'application (AppData/Roaming).",
   "settings.debugLogsSaved": "Préférence de logs de débogage enregistrée.",
   "settings.openInstallFolder": "Ouvrir le dossier de données de l'app",
+  "settings.checkForUpdates": "Rechercher des mises à jour",
   "settings.accountTitle": "Compte Twitch",
   "settings.accountConnected": "Connecté",
   "settings.accountDisconnected": "Non connecté",
@@ -54,6 +55,7 @@
   "update.noChangelog": "Aucun journal des modifications n’a été fourni pour cette version.",
   "update.downloaded": "Mise à jour téléchargée avec succès !",
   "update.checkFailed": "Échec de la vérification des mises à jour",
+  "update.noUpdatesFound": "Aucune mise à jour trouvée",
 
   "common.cancel": "Annuler",
   "common.ok": "OK",

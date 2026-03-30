@@ -22,6 +22,7 @@
   "settings.debugDescription": "Aktivieren Sie ausführliche Debug-Logs und öffnen Sie den App-Datenordner (AppData/Roaming).",
   "settings.debugLogsSaved": "Debug-Log-Einstellung gespeichert.",
   "settings.openInstallFolder": "App-Datenordner öffnen",
+  "settings.checkForUpdates": "Nach Updates suchen",
   "settings.accountTitle": "Twitch-Konto",
   "settings.accountConnected": "Verbunden",
   "settings.accountDisconnected": "Nicht verbunden",
@@ -54,6 +55,7 @@
   "update.noChangelog": "Für diese Version wurde kein Änderungsprotokoll bereitgestellt.",
   "update.downloaded": "Update erfolgreich heruntergeladen!",
   "update.checkFailed": "Fehler beim Überprüfen auf Updates",
+  "update.noUpdatesFound": "Keine Updates gefunden",
 
   "common.cancel": "Abbrechen",
   "common.ok": "OK",

@@ -1,6 +1,6 @@
 import type { ProgressInfo } from 'electron-updater'
 
-import { useCallback, useEffect, useState, useContext } from 'react'
+import { useCallback, useEffect, useRef, useState, useContext } from 'react'
 import { TranslationContext } from '@/i18n/TranslationProvider'
 import { NotificationContext } from '@/context/NotificationProvider'
 
@@ -119,7 +119,7 @@ const UpdateRoutePage = () => {
   const navigate = useNavigate()
 
   const { t } = useContext(TranslationContext)
-  const { error, success } = useContext(NotificationContext)
+  const { error, info, success } = useContext(NotificationContext)
 
   const [checking, setChecking] = useState(true)
   const [updateAvailable, setUpdateAvailable] = useState(false)
@@ -127,19 +127,37 @@ const UpdateRoutePage = () => {
   const [updateError, setUpdateError] = useState<ErrorType>()
   const [progressInfo, setProgressInfo] = useState<Partial<ProgressInfo>>({ percent: 0 })
   const [downloaded, setDownloaded] = useState(false)
+  const noUpdateHandledRef = useRef(false)
 
   const changelog = formatReleaseNotes(versionInfo?.releaseNotes)
   const changelogHtml = toChangelogHtml(changelog || t('update.noChangelog'))
+
+  const handleNoUpdateFound = useCallback(() => {
+    if (noUpdateHandledRef.current) {
+      return
+    }
+
+    noUpdateHandledRef.current = true
+    setChecking(false)
+    setUpdateAvailable(false)
+    info(t('update.noUpdatesFound'))
+    navigate('/home')
+  }, [info, navigate, t])
 
   const onUpdateCanAvailable = useCallback((_event: Electron.IpcRendererEvent, info: VersionInfo) => {
     setVersionInfo(info)
     setUpdateError(undefined)
     if (info.update) {
       setUpdateAvailable(true)
+      setChecking(false)
     } else {
-      setUpdateAvailable(false)
+      handleNoUpdateFound()
     }
-  }, [])
+  }, [handleNoUpdateFound])
+
+  const onUpdaterNotAvailable = useCallback((_event: Electron.IpcRendererEvent) => {
+    handleNoUpdateFound()
+  }, [handleNoUpdateFound])
 
   const onUpdaterAvailable = useCallback((_event: Electron.IpcRendererEvent, info: any) => {
     // If main emits the simplified updater channel
@@ -229,6 +247,7 @@ const UpdateRoutePage = () => {
     window.ipcRenderer.on('updater:download-progress', onUpdaterProgress);
     window.ipcRenderer.on('updater:downloaded', onUpdaterDownloaded);
     window.ipcRenderer.on('updater:available', onUpdaterAvailable);
+    window.ipcRenderer.on('updater:not-available', onUpdaterNotAvailable);
 
     // Trigger a check on mount
     (async () => {
@@ -248,8 +267,9 @@ const UpdateRoutePage = () => {
       window.ipcRenderer.off('updater:download-progress', onUpdaterProgress);
       window.ipcRenderer.off('updater:downloaded', onUpdaterDownloaded);
       window.ipcRenderer.off('updater:available', onUpdaterAvailable);
+      window.ipcRenderer.off('updater:not-available', onUpdaterNotAvailable);
     }
-  }, [])
+  }, [error, onDownloadProgress, onUpdateCanAvailable, onUpdateDownloaded, onUpdateError, onUpdaterAvailable, onUpdaterDownloaded, onUpdaterNotAvailable, onUpdaterProgress, t])
 
   const installNow = async () => {
     try {

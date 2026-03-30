@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import { Alert, Box, Button, Chip, Grid, MenuItem, Select, Stack, Switch, SvgIcon, TextField, Tooltip, Typography } from '@mui/material'
 import { GitHub, Info, LinkedIn } from '@mui/icons-material'
+import { useNavigate } from 'react-router'
 
 import { TranslationContext } from '@/i18n/TranslationProvider'
 import { NotificationContext } from '@/context/NotificationProvider'
@@ -34,6 +35,8 @@ interface SettingsProps {
 }
 
 export default function Settings({ isLoggedIn, onLoginSuccess, onLogout }: SettingsProps) {
+  const navigate = useNavigate()
+  const isDev = import.meta.env.DEV
   const { t, language, setLanguage, availableLanguages } = useContext(TranslationContext)
   const { success, error } = useContext(NotificationContext)
   const [port, setPort] = useState<string>('')
@@ -371,17 +374,26 @@ export default function Settings({ isLoggedIn, onLoginSuccess, onLogout }: Setti
                   color="primary"
                 />
               </Stack>
-              <Button variant="outlined" color="secondary" onClick={openInstallFolder}>
-                {t('settings.openInstallFolder')}
-              </Button>
+              <Stack spacing={1} width={{ xs: '100%', sm: 'auto' }}>
+                <Button variant="outlined" color="secondary" onClick={openInstallFolder}>
+                  {t('settings.openInstallFolder')}
+                </Button>
+              </Stack>
             </Stack>
           </StyledBox>
         </Grid>
 
         <Grid size={{ lg: 12, md: 12 }} display="flex" alignItems="center" gap={2} justifyContent={"space-between"}>
           <StyledBox>
-            <Typography variant="subtitle1">{t('settings.version')}</Typography>
-            <Typography variant="body1">{version || t("settings.loading")}</Typography>
+            <Stack direction="row" alignItems="center" gap={1}>
+              <Typography variant="subtitle1">{t('settings.version')}</Typography>
+            </Stack>
+            <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" justifyContent="flex-end">
+              <Button variant="outlined" color="secondary" disabled={isDev} onClick={() => navigate('/update')}>
+                {t('settings.checkForUpdates')}
+              </Button>
+              <Typography variant="body1">{version || t("settings.loading")}</Typography>
+            </Stack>
           </StyledBox>
         </Grid>
 

@@ -22,6 +22,7 @@
   "settings.debugDescription": "Enable detailed captain logs and open the vessel's data hold (AppData/Roaming).",
   "settings.debugLogsSaved": "Captain log preference secured.",
   "settings.openInstallFolder": "Open vessel data hold",
+  "settings.checkForUpdates": "Scout fer updates",
   "settings.accountTitle": "Twitch crew account",
   "settings.accountConnected": "Hooked to Twitch",
   "settings.accountDisconnected": "Not yet aboard",
@@ -54,6 +55,7 @@
   "update.noChangelog": "No captain's log be posted fer this release.",
   "update.downloaded": "Update plundered successfully, arr!",
   "update.checkFailed": "Failed to scout fer updates",
+  "update.noUpdatesFound": "No updates found on the horizon",
 
   "common.cancel": "Belay that",
   "common.ok": "Aye aye",

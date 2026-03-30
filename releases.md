@@ -219,5 +219,7 @@
 
 ## 0.3.2
 
+- Added "Check for updates" in settings
+- Added "update-not-available" check on updater route
 
 ## 0.3.3

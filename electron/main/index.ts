@@ -103,13 +103,13 @@ async function createWindow() {
       try {
         await win?.webContents.executeJavaScript('void 0'); // Ensure webContents is ready
         const { checkForUpdatesOnStartup } = await import('./update')
-        console.debug("[update] Checking for updates on startup...");
+        console.debug("[Updater] Checking for updates on startup...");
         await checkForUpdatesOnStartup(win!)
       } catch (error) {
         console.error('Error during startup update check:', error)
       }
     } else {
-      console.debug('[update] Skipping update check on startup in development mode.');
+      console.debug('[Updater] Skipping update check on startup in development mode.');
     }
     
     // Try to connect Twitch EventSub on window load
