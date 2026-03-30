@@ -212,7 +212,9 @@
 
 - Added emote wall
 
-## 0.2.14
+## 0.3.1
 
+- Minor fixes to login
+- Minor fixes to settings page
 
 ## 0.3.2
