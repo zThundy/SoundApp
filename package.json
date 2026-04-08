@@ -24,13 +24,13 @@
     "publish": "tsc && vite build && electron-builder --publish always"
   },
   "dependencies": {
-    "@mui/icons-material": "^7.3.9",
+    "@mui/icons-material": "^7.3.10",
     "electron-updater": "^6.8.3"
   },
   "devDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/material": "^7.3.9",
+    "@mui/material": "^7.3.10",
     "@types/react": "^18.3.28",
     "@types/react-dom": "^18.3.7",
     "@types/ws": "^8.18.1",
