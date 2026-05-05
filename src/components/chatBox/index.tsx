@@ -21,7 +21,7 @@ import {
 
 import { styled } from '@mui/material/styles';
 
-import style from "./chatBox.module.css"
+import style from "./chatbox.module.css"
 
 import { TranslationContext } from '@/i18n/TranslationProvider';
 import { NotificationContext } from '@/context/NotificationProvider';
