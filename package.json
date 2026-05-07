@@ -24,13 +24,13 @@
     "publish": "tsc && vite build && electron-builder --publish always"
   },
   "dependencies": {
-    "@mui/icons-material": "^7.3.10",
+    "@mui/icons-material": "^7.3.11",
     "electron-updater": "^6.8.3"
   },
   "devDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/material": "^7.3.10",
+    "@mui/material": "^7.3.11",
     "@types/react": "^18.3.28",
     "@types/react-dom": "^18.3.7",
     "@types/ws": "^8.18.1",
@@ -48,7 +48,7 @@
     "react-router": "^7.15.0",
     "typescript": "^5.9.3",
     "utf-8-validate": "^6.0.6",
-    "vite": "^7.3.2",
+    "vite": "^7.3.3",
     "vite-plugin-electron": "^0.29.1",
     "vite-plugin-electron-renderer": "^0.14.7",
     "ws": "^8.20.0"
